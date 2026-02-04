@@ -7,11 +7,11 @@ and scalar addition included to further aid building a PKI using Ed25519. All
 code is in the public domain.
 
 All code is pure ANSI C without any dependencies, except for the random seed
-generation which uses standard OS cryptography APIs (`CryptGenRandom` on
-Windows, `/dev/urandom` on nix). If you wish to be entirely portable define
-`ED25519_NO_SEED`. This disables the `ed25519_create_seed` function, so if your
-application requires key generation you must supply your own seeding function
-(which is simply a 256 bit (32 byte) cryptographic random number generator).
+generation which uses standard OS cryptography APIs. If you wish to be entirely
+portable define `ED25519_NO_SEED`. This disables the `ed25519_create_seed`
+function, so if your application requires key generation you must supply your
+own seeding function (which is simply a 256 bit (32 byte) cryptographic random
+number generator).
 
 
 Performance
@@ -37,8 +37,7 @@ Usage
 
 Simply add all .c and .h files in the `src/` folder to your project and include
 `ed25519.h` in any file you want to use the API. If you prefer to use a shared
-library, only copy `ed25519.h` and define `ED25519_DLL` before importing. A
-windows DLL is pre-built.
+library, only copy `ed25519.h` and define `ED25519_DLL` before importing.
 
 There are no defined types for seeds, private keys, public keys, shared secrets
 or signatures. Instead simple `unsigned char` buffers are used with the
