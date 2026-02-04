@@ -16,17 +16,6 @@ Your distribution may have pre-compiled packages available.  If not, or if you
 need a newer version, you will need to compile from source.  See the "Building"
 section below for more details.
 
-### macOS
-
-The easiest way to install on macOS is via Homebrew.  If you do not have
-Homebrew installed, follow the instructions at https://brew.sh/ to install it.
-
-You can then install libce by running
-
-```bash
-brew install libce
-```
-
 ### Windows
 
 You will need to build from source.  See the "Building" section below for more
@@ -89,7 +78,7 @@ make static
 
 ## Release process
 
-First: bump version numbers in ``common.mk``, ``CMakeLists.txt``, and ``Package.swift``.
+First: bump version numbers in ``common.mk`` and ``CMakeLists.txt``.
 
 Also, ensure that everything is committed to git.
 
