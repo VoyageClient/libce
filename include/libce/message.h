@@ -29,7 +29,7 @@
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -38,7 +38,7 @@ extern "C" {
 /**
  * The length of the buffer needed to hold a group message.
  */
-OLM_EXPORT size_t _olm_encode_group_message_length(
+CE_EXPORT size_t _olm_encode_group_message_length(
     uint32_t chain_index,
     size_t ciphertext_length,
     size_t mac_length,
@@ -59,7 +59,7 @@ OLM_EXPORT size_t _olm_encode_group_message_length(
  *
  * Returns the size of the message, up to the MAC.
  */
-OLM_EXPORT size_t _olm_encode_group_message(
+CE_EXPORT size_t _olm_encode_group_message(
     uint8_t version,
     uint32_t message_index,
     size_t ciphertext_length,
@@ -80,7 +80,7 @@ struct _OlmDecodeGroupMessageResults {
 /**
  * Reads the message headers from the input buffer.
  */
-OLM_EXPORT void _olm_decode_group_message(
+CE_EXPORT void _olm_decode_group_message(
     const uint8_t *input, size_t input_length,
     size_t mac_length, size_t signature_length,
 

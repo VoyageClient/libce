@@ -1,6 +1,6 @@
-#include "olm/crypto.h"
-#include "olm/olm.h"
-#include "olm/pk.h"
+#include "libce/crypto.h"
+#include "libce/olm.h"
+#include "libce/pk.h"
 
 #include "testing.hh"
 #include "utils.hh"

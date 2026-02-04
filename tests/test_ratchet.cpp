@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/ratchet.hh"
-#include "olm/cipher.h"
+#include "libce/ratchet.hh"
+#include "libce/cipher.h"
 #include "testing.hh"
 
 #include <vector>

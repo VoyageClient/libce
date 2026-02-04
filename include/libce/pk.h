@@ -19,9 +19,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "olm/error.h"
+#include "libce/error.h"
 
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -30,54 +30,54 @@ extern "C" {
 typedef struct OlmPkEncryption OlmPkEncryption;
 
 /* The size of an encryption object in bytes */
-OLM_EXPORT size_t olm_pk_encryption_size(void);
+CE_EXPORT size_t olm_pk_encryption_size(void);
 
 /** Initialise an encryption object using the supplied memory
  *  The supplied memory must be at least olm_pk_encryption_size() bytes */
-OLM_EXPORT OlmPkEncryption *olm_pk_encryption(
+CE_EXPORT OlmPkEncryption *olm_pk_encryption(
     void * memory
 );
 
 /** A null terminated string describing the most recent error to happen to an
  * encryption object */
-OLM_EXPORT const char * olm_pk_encryption_last_error(
+CE_EXPORT const char * olm_pk_encryption_last_error(
     const OlmPkEncryption * encryption
 );
 
 /** An error code describing the most recent error to happen to an encryption
  * object */
-OLM_EXPORT enum OlmErrorCode olm_pk_encryption_last_error_code(
+CE_EXPORT enum OlmErrorCode olm_pk_encryption_last_error_code(
     const OlmPkEncryption * encryption
 );
 
 /** Clears the memory used to back this encryption object */
-OLM_EXPORT size_t olm_clear_pk_encryption(
+CE_EXPORT size_t olm_clear_pk_encryption(
     OlmPkEncryption *encryption
 );
 
 /** Set the recipient's public key for encrypting to */
-OLM_EXPORT size_t olm_pk_encryption_set_recipient_key(
+CE_EXPORT size_t olm_pk_encryption_set_recipient_key(
     OlmPkEncryption *encryption,
     void const *public_key, size_t public_key_length
 );
 
 /** Get the length of the ciphertext that will correspond to a plaintext of the
  * given length. */
-OLM_EXPORT size_t olm_pk_ciphertext_length(
+CE_EXPORT size_t olm_pk_ciphertext_length(
     const OlmPkEncryption *encryption,
     size_t plaintext_length
 );
 
 /** Get the length of the message authentication code. */
-OLM_EXPORT size_t olm_pk_mac_length(
+CE_EXPORT size_t olm_pk_mac_length(
     const OlmPkEncryption *encryption
 );
 
 /** Get the length of a public or ephemeral key */
-OLM_EXPORT size_t olm_pk_key_length(void);
+CE_EXPORT size_t olm_pk_key_length(void);
 
 /** The number of random bytes needed to encrypt a message. */
-OLM_EXPORT size_t olm_pk_encrypt_random_length(
+CE_EXPORT size_t olm_pk_encrypt_random_length(
     const OlmPkEncryption *encryption
 );
 
@@ -91,7 +91,7 @@ OLM_EXPORT size_t olm_pk_encrypt_random_length(
  * ephemeral_key buffers were too small then olm_pk_encryption_last_error()
  * will be "OUTPUT_BUFFER_TOO_SMALL". If there weren't enough random bytes then
  * olm_pk_encryption_last_error() will be "OLM_INPUT_BUFFER_TOO_SMALL". */
-OLM_EXPORT size_t olm_pk_encrypt(
+CE_EXPORT size_t olm_pk_encrypt(
     OlmPkEncryption *encryption,
     void const * plaintext, size_t plaintext_length,
     void * ciphertext, size_t ciphertext_length,
@@ -103,38 +103,38 @@ OLM_EXPORT size_t olm_pk_encrypt(
 typedef struct OlmPkDecryption OlmPkDecryption;
 
 /* The size of a decryption object in bytes */
-OLM_EXPORT size_t olm_pk_decryption_size(void);
+CE_EXPORT size_t olm_pk_decryption_size(void);
 
 /** Initialise a decryption object using the supplied memory
  *  The supplied memory must be at least olm_pk_decryption_size() bytes */
-OLM_EXPORT OlmPkDecryption *olm_pk_decryption(
+CE_EXPORT OlmPkDecryption *olm_pk_decryption(
     void * memory
 );
 
 /** A null terminated string describing the most recent error to happen to a
  * decription object */
-OLM_EXPORT const char * olm_pk_decryption_last_error(
+CE_EXPORT const char * olm_pk_decryption_last_error(
     const OlmPkDecryption * decryption
 );
 
 /** An error code describing the most recent error to happen to a decription
  * object */
-OLM_EXPORT enum OlmErrorCode olm_pk_decryption_last_error_code(
+CE_EXPORT enum OlmErrorCode olm_pk_decryption_last_error_code(
     const OlmPkDecryption * decryption
 );
 
 /** Clears the memory used to back this decryption object */
-OLM_EXPORT size_t olm_clear_pk_decryption(
+CE_EXPORT size_t olm_clear_pk_decryption(
     OlmPkDecryption *decryption
 );
 
 /** Get the number of bytes required to store an olm private key
  */
-OLM_EXPORT size_t olm_pk_private_key_length(void);
+CE_EXPORT size_t olm_pk_private_key_length(void);
 
 /** DEPRECATED: Use olm_pk_private_key_length()
  */
-OLM_EXPORT size_t olm_pk_generate_key_random_length(void);
+CE_EXPORT size_t olm_pk_generate_key_random_length(void);
 
 /** Initialise the key from the private part of a key as returned by
  * olm_pk_get_private_key(). The associated public key will be written to the
@@ -146,7 +146,7 @@ OLM_EXPORT size_t olm_pk_generate_key_random_length(void);
  * Note that the pubkey is a base64 encoded string, but the private key is
  * an unencoded byte array
  */
-OLM_EXPORT size_t olm_pk_key_from_private(
+CE_EXPORT size_t olm_pk_key_from_private(
     OlmPkDecryption * decryption,
     void * pubkey, size_t pubkey_length,
     const void * privkey, size_t privkey_length
@@ -154,14 +154,14 @@ OLM_EXPORT size_t olm_pk_key_from_private(
 
 /** DEPRECATED: Use olm_pk_key_from_private
  */
-OLM_EXPORT size_t olm_pk_generate_key(
+CE_EXPORT size_t olm_pk_generate_key(
     OlmPkDecryption * decryption,
     void * pubkey, size_t pubkey_length,
     const void * privkey, size_t privkey_length
 );
 
 /** Returns the number of bytes needed to store a decryption object. */
-OLM_EXPORT size_t olm_pickle_pk_decryption_length(
+CE_EXPORT size_t olm_pickle_pk_decryption_length(
     const OlmPkDecryption * decryption
 );
 
@@ -170,7 +170,7 @@ OLM_EXPORT size_t olm_pickle_pk_decryption_length(
  * Returns olm_error() on failure. If the pickle output buffer
  * is smaller than olm_pickle_pk_decryption_length() then
  * olm_pk_decryption_last_error() will be "OUTPUT_BUFFER_TOO_SMALL" */
-OLM_EXPORT size_t olm_pickle_pk_decryption(
+CE_EXPORT size_t olm_pickle_pk_decryption(
     OlmPkDecryption * decryption,
     void const * key, size_t key_length,
     void *pickled, size_t pickled_length
@@ -183,7 +183,7 @@ OLM_EXPORT size_t olm_pickle_pk_decryption(
  * will be "BAD_ACCOUNT_KEY". If the base64 couldn't be decoded then
  * olm_pk_decryption_last_error() will be "INVALID_BASE64". The input pickled
  * buffer is destroyed */
-OLM_EXPORT size_t olm_unpickle_pk_decryption(
+CE_EXPORT size_t olm_unpickle_pk_decryption(
     OlmPkDecryption * decryption,
     void const * key, size_t key_length,
     void *pickled, size_t pickled_length,
@@ -192,7 +192,7 @@ OLM_EXPORT size_t olm_unpickle_pk_decryption(
 
 /** Get the length of the plaintext that will correspond to a ciphertext of the
  * given length. */
-OLM_EXPORT size_t olm_pk_max_plaintext_length(
+CE_EXPORT size_t olm_pk_max_plaintext_length(
     const OlmPkDecryption * decryption,
     size_t ciphertext_length
 );
@@ -202,7 +202,7 @@ OLM_EXPORT size_t olm_pk_max_plaintext_length(
  * arguments. Returns the length of the plaintext on success. Returns
  * olm_error() on failure. If the plaintext buffer is too small then
  * olm_pk_encryption_last_error() will be "OUTPUT_BUFFER_TOO_SMALL". */
-OLM_EXPORT size_t olm_pk_decrypt(
+CE_EXPORT size_t olm_pk_decrypt(
     OlmPkDecryption * decryption,
     void const * ephemeral_key, size_t ephemeral_key_length,
     void const * mac, size_t mac_length,
@@ -218,7 +218,7 @@ OLM_EXPORT size_t olm_pk_decrypt(
  * and olm_pk_encryption_last_error() will be "OUTPUT_BUFFER_TOO_SMALL".
  * Returns the number of bytes written.
  */
-OLM_EXPORT size_t olm_pk_get_private_key(
+CE_EXPORT size_t olm_pk_get_private_key(
     OlmPkDecryption * decryption,
     void *private_key, size_t private_key_length
 );
@@ -226,28 +226,28 @@ OLM_EXPORT size_t olm_pk_get_private_key(
 typedef struct OlmPkSigning OlmPkSigning;
 
 /* The size of a signing object in bytes */
-OLM_EXPORT size_t olm_pk_signing_size(void);
+CE_EXPORT size_t olm_pk_signing_size(void);
 
 /** Initialise a signing object using the supplied memory
  *  The supplied memory must be at least olm_pk_signing_size() bytes */
-OLM_EXPORT OlmPkSigning *olm_pk_signing(
+CE_EXPORT OlmPkSigning *olm_pk_signing(
     void * memory
 );
 
 /** A null terminated string describing the most recent error to happen to a
  * signing object */
-OLM_EXPORT const char * olm_pk_signing_last_error(
+CE_EXPORT const char * olm_pk_signing_last_error(
     const OlmPkSigning * sign
 );
 
 /** A null terminated string describing the most recent error to happen to a
  * signing object */
-OLM_EXPORT enum OlmErrorCode olm_pk_signing_last_error_code(
+CE_EXPORT enum OlmErrorCode olm_pk_signing_last_error_code(
     const OlmPkSigning * sign
 );
 
 /** Clears the memory used to back this signing object */
-OLM_EXPORT size_t olm_clear_pk_signing(
+CE_EXPORT size_t olm_clear_pk_signing(
     OlmPkSigning *sign
 );
 
@@ -259,7 +259,7 @@ OLM_EXPORT size_t olm_clear_pk_signing(
  * buffer is too small then olm_pk_signing_last_error() will be
  * "INPUT_BUFFER_TOO_SMALL".
  */
-OLM_EXPORT size_t olm_pk_signing_key_from_seed(
+CE_EXPORT size_t olm_pk_signing_key_from_seed(
     OlmPkSigning * sign,
     void * pubkey, size_t pubkey_length,
     const void * seed, size_t seed_length
@@ -268,24 +268,24 @@ OLM_EXPORT size_t olm_pk_signing_key_from_seed(
 /**
  * The size required for the seed for initialising a signing object.
  */
-OLM_EXPORT size_t olm_pk_signing_seed_length(void);
+CE_EXPORT size_t olm_pk_signing_seed_length(void);
 
 /**
  * The size of the public key of a signing object.
  */
-OLM_EXPORT size_t olm_pk_signing_public_key_length(void);
+CE_EXPORT size_t olm_pk_signing_public_key_length(void);
 
 /**
  * The size of a signature created by a signing object.
  */
-OLM_EXPORT size_t olm_pk_signature_length(void);
+CE_EXPORT size_t olm_pk_signature_length(void);
 
 /**
  * Sign a message. The signature will be written to the signature
  * buffer. Returns olm_error() on failure. If the signature buffer is too
  * small, olm_pk_signing_last_error() will be "OUTPUT_BUFFER_TOO_SMALL".
  */
-OLM_EXPORT size_t olm_pk_sign(
+CE_EXPORT size_t olm_pk_sign(
     OlmPkSigning *sign,
     uint8_t const * message, size_t message_length,
     uint8_t * signature, size_t signature_length

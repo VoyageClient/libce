@@ -12,18 +12,18 @@ AR = ar
 UNAME := $(shell uname)
 ifeq ($(UNAME),Darwin)
 	SO := dylib
-	OLM_LDFLAGS :=
+	LIBCE_LDFLAGS :=
 else
 	SO := so
-	OLM_LDFLAGS := -Wl,-soname,libolm.so.$(MAJOR) \
+	LIBCE_LDFLAGS := -Wl,-soname,libce.so.$(MAJOR) \
                        -Wl,--version-script,version_script.ver
 endif
 
-RELEASE_TARGET := $(BUILD_DIR)/libolm.$(SO).$(VERSION)
-STATIC_RELEASE_TARGET := $(BUILD_DIR)/libolm.a
-DEBUG_TARGET := $(BUILD_DIR)/libolm_debug.$(SO).$(VERSION)
+RELEASE_TARGET := $(BUILD_DIR)/libce.$(SO).$(VERSION)
+STATIC_RELEASE_TARGET := $(BUILD_DIR)/libce.a
+DEBUG_TARGET := $(BUILD_DIR)/libce_debug.$(SO).$(VERSION)
 
-PUBLIC_HEADERS := include/olm/olm.h include/olm/outbound_group_session.h include/olm/inbound_group_session.h include/olm/pk.h include/olm/sas.h include/olm/error.h include/olm/olm_export.h
+PUBLIC_HEADERS := include/libce/olm.h include/libce/outbound_group_session.h include/libce/inbound_group_session.h include/libce/pk.h include/libce/sas.h include/libce/error.h include/libce/olm_export.h
 
 SOURCES := $(wildcard src/*.cpp) $(wildcard src/*.c) \
     lib/crypto-algorithms/sha256.c \
@@ -54,8 +54,8 @@ DOCS := tracing/README.html \
     CHANGELOG.html
 
 CPPFLAGS += -Iinclude -Ilib \
-    -DOLMLIB_VERSION_MAJOR=$(MAJOR) -DOLMLIB_VERSION_MINOR=$(MINOR) \
-    -DOLMLIB_VERSION_PATCH=$(PATCH)
+    -DLIBCE_VERSION_MAJOR=$(MAJOR) -DLIBCE_VERSION_MINOR=$(MINOR) \
+    -DLIBCE_VERSION_PATCH=$(PATCH)
 
 # we rely on <stdint.h>, which was introduced in C99
 CFLAGS += -Wall -Werror -std=c99
@@ -97,14 +97,14 @@ $(DEBUG_TARGET): LDFLAGS += $(DEBUG_OPTIMIZE_FLAGS)
 $(TEST_BINARIES): CPPFLAGS += -Itests/include
 $(TEST_BINARIES): LDFLAGS += $(DEBUG_OPTIMIZE_FLAGS) -L$(BUILD_DIR)
 
-$(FUZZER_OBJECTS): CFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D OLM_FUZZING=1
-$(FUZZER_OBJECTS): CXXFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D OLM_FUZZING=1
-$(FUZZER_DEBUG_OBJECTS): CFLAGS += $(DEBUG_OPTIMIZE_FLAGS) $(CFLAGS_NATIVE) -D OLM_FUZZING=1
-$(FUZZER_DEBUG_OBJECTS): CXXFLAGS += $(DEBUG_OPTIMIZE_FLAGS) $(CXXFLAGS_NATIVE) -D OLM_FUZZING=1
-$(FUZZER_ASAN_OBJECTS): CFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D OLM_FUZZING=1
-$(FUZZER_ASAN_OBJECTS): CXXFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D OLM_FUZZING=1
-$(FUZZER_MSAN_OBJECTS): CFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D OLM_FUZZING=1
-$(FUZZER_MSAN_OBJECTS): CXXFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D OLM_FUZZING=1
+$(FUZZER_OBJECTS): CFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D LIBCE_FUZZING=1
+$(FUZZER_OBJECTS): CXXFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D LIBCE_FUZZING=1
+$(FUZZER_DEBUG_OBJECTS): CFLAGS += $(DEBUG_OPTIMIZE_FLAGS) $(CFLAGS_NATIVE) -D LIBCE_FUZZING=1
+$(FUZZER_DEBUG_OBJECTS): CXXFLAGS += $(DEBUG_OPTIMIZE_FLAGS) $(CXXFLAGS_NATIVE) -D LIBCE_FUZZING=1
+$(FUZZER_ASAN_OBJECTS): CFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D LIBCE_FUZZING=1
+$(FUZZER_ASAN_OBJECTS): CXXFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D LIBCE_FUZZING=1
+$(FUZZER_MSAN_OBJECTS): CFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D LIBCE_FUZZING=1
+$(FUZZER_MSAN_OBJECTS): CXXFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -D LIBCE_FUZZING=1
 
 $(FUZZER_BINARIES): CPPFLAGS += -Ifuzzing/fuzzers/include
 $(FUZZER_BINARIES): LDFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -L$(BUILD_DIR) -lstdc++
@@ -136,24 +136,24 @@ lib: $(RELEASE_TARGET)
 $(RELEASE_TARGET): $(RELEASE_OBJECTS)
 	@echo
 	@echo '****************************************************************************'
-	@echo '* WARNING: Building olm with make is deprecated. Please use cmake instead. *'
+	@echo '* WARNING: Building libce with make is deprecated. Please use CMake instead. *'
 	@echo '****************************************************************************'
 	@echo
 
 	$(CXX) $(LDFLAGS) --shared -fPIC \
-            $(OLM_LDFLAGS) \
+            $(LIBCE_LDFLAGS) \
             $(OUTPUT_OPTION) $(RELEASE_OBJECTS)
-	ln -sf libolm.$(SO).$(VERSION) $(BUILD_DIR)/libolm.$(SO).$(MAJOR)
-	ln -sf libolm.$(SO).$(VERSION) $(BUILD_DIR)/libolm.$(SO)
+	ln -sf libce.$(SO).$(VERSION) $(BUILD_DIR)/libce.$(SO).$(MAJOR)
+	ln -sf libce.$(SO).$(VERSION) $(BUILD_DIR)/libce.$(SO)
 
 debug: $(DEBUG_TARGET)
 .PHONY: debug
 
 $(DEBUG_TARGET): $(DEBUG_OBJECTS)
 	$(CXX) $(LDFLAGS) --shared -fPIC \
-            $(OLM_LDFLAGS) \
+            $(LIBCE_LDFLAGS) \
             $(OUTPUT_OPTION) $(DEBUG_OBJECTS)
-	ln -sf libolm_debug.$(SO).$(VERSION) $(BUILD_DIR)/libolm_debug.$(SO).$(MAJOR)
+	ln -sf libce_debug.$(SO).$(VERSION) $(BUILD_DIR)/libce_debug.$(SO).$(MAJOR)
 
 static: $(STATIC_RELEASE_TARGET)
 .PHONY: static
@@ -182,22 +182,22 @@ all: test lib debug doc
 .PHONY: all
 
 install-headers: $(PUBLIC_HEADERS)
-	test -d $(DESTDIR)$(PREFIX)/include/olm || $(call mkdir,$(DESTDIR)$(PREFIX)/include/olm)
-	install $(PUBLIC_HEADERS) $(DESTDIR)$(PREFIX)/include/olm/
+	test -d $(DESTDIR)$(PREFIX)/include/libce || $(call mkdir,$(DESTDIR)$(PREFIX)/include/libce)
+	install $(PUBLIC_HEADERS) $(DESTDIR)$(PREFIX)/include/libce/
 .PHONY: install-headers
 
 install-debug: debug install-headers
 	test -d $(DESTDIR)$(PREFIX)/lib || $(call mkdir,$(DESTDIR)$(PREFIX)/lib)
-	install $(DEBUG_TARGET) $(DESTDIR)$(PREFIX)/lib/libolm_debug.$(SO).$(VERSION)
-	ln -sf libolm_debug.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libolm_debug.$(SO).$(MAJOR)
-	ln -sf libolm_debug.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libolm_debug.$(SO)
+	install $(DEBUG_TARGET) $(DESTDIR)$(PREFIX)/lib/libce_debug.$(SO).$(VERSION)
+	ln -sf libce_debug.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libce_debug.$(SO).$(MAJOR)
+	ln -sf libce_debug.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libce_debug.$(SO)
 .PHONY: install-debug
 
 install: lib install-headers
 	test -d $(DESTDIR)$(PREFIX)/lib || $(call mkdir,$(DESTDIR)$(PREFIX)/lib)
-	install $(RELEASE_TARGET) $(DESTDIR)$(PREFIX)/lib/libolm.$(SO).$(VERSION)
-	ln -sf libolm.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libolm.$(SO).$(MAJOR)
-	ln -sf libolm.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libolm.$(SO)
+	install $(RELEASE_TARGET) $(DESTDIR)$(PREFIX)/lib/libce.$(SO).$(VERSION)
+	ln -sf libce.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libce.$(SO).$(MAJOR)
+	ln -sf libce.$(SO).$(VERSION) $(DESTDIR)$(PREFIX)/lib/libce.$(SO)
 .PHONY: install
 
 clean:;

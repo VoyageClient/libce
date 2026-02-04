@@ -1,4 +1,4 @@
-#include <olm/outbound_group_session.h>
+#include <libce/outbound_group_session.h>
 
 #include "fuzzing.h"
 

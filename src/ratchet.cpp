@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/ratchet.hh"
-#include "olm/message.hh"
-#include "olm/memory.hh"
-#include "olm/cipher.h"
-#include "olm/pickle.hh"
+#include "libce/ratchet.hh"
+#include "libce/message.hh"
+#include "libce/memory.hh"
+#include "libce/cipher.h"
+#include "libce/pickle.hh"
 
 #include <cstring>
 

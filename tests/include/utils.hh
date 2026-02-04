@@ -15,7 +15,7 @@
 
 #include <string.h>
 
-#include "olm/pickle_encoding.h"
+#include "libce/pickle_encoding.h"
 
 size_t add_junk_suffix_to_pickle(void const * key, size_t key_length,
     void * pickled, size_t pickled_length, size_t junk_length)

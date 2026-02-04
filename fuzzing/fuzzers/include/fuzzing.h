@@ -1,4 +1,4 @@
-#include "olm/olm.h"
+#include "libce/olm.h"
 
 #include <stdio.h>
 #include <stdlib.h>

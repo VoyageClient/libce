@@ -1,4 +1,4 @@
-#include "olm/session.hh"
+#include "libce/session.hh"
 #include "fuzzing.hh"
 
 int main(int argc, const char *argv[]) {

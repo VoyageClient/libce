@@ -14,8 +14,8 @@
  */
 #include <cassert>
 
-#include "olm/base64.h"
-#include "olm/base64.hh"
+#include "libce/base64.h"
+#include "libce/base64.hh"
 
 namespace {
 

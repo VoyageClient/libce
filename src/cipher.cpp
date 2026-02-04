@@ -12,9 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/cipher.h"
-#include "olm/crypto.h"
-#include "olm/memory.hh"
+#include "libce/cipher.h"
+#include "libce/crypto.h"
+#include "libce/memory.hh"
 #include <cstring>
 
 const std::size_t HMAC_KEY_LENGTH = 32;

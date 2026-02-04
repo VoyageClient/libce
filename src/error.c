@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-#include "olm/error.h"
+#include "libce/error.h"
 
 static const char * ERRORS[] = {
     "SUCCESS",

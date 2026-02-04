@@ -16,7 +16,7 @@
 #ifndef UTILITY_HH_
 #define UTILITY_HH_
 
-#include "olm/error.h"
+#include "libce/error.h"
 
 #include <cstddef>
 #include <cstdint>

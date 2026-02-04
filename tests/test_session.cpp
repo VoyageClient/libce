@@ -1,5 +1,5 @@
-#include "olm/session.hh"
-#include "olm/pickle_encoding.h"
+#include "libce/session.hh"
+#include "libce/pickle_encoding.h"
 
 #include "testing.hh"
 

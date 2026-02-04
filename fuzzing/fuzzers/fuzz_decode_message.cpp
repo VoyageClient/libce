@@ -1,4 +1,4 @@
-#include "olm/message.hh"
+#include "libce/message.hh"
 #include "fuzzing.hh"
 
 int main(int argc, const char *argv[]) {

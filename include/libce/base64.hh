@@ -20,14 +20,14 @@
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 namespace olm {
 
 /**
  * The number of bytes of unpadded base64 needed to encode a length of input.
  */
-OLM_EXPORT std::size_t encode_base64_length(
+CE_EXPORT std::size_t encode_base64_length(
     std::size_t input_length
 );
 
@@ -37,7 +37,7 @@ OLM_EXPORT std::size_t encode_base64_length(
  * The input can overlap with the last three quarters of the output buffer.
  * That is, the input pointer may be output + output_length - input_length.
  */
-OLM_EXPORT std::uint8_t * encode_base64(
+CE_EXPORT std::uint8_t * encode_base64(
     std::uint8_t const * input, std::size_t input_length,
     std::uint8_t * output
 );
@@ -46,7 +46,7 @@ OLM_EXPORT std::uint8_t * encode_base64(
  * The number of bytes of raw data a length of unpadded base64 will encode to.
  * Returns std::size_t(-1) if the length is not a valid length for base64.
  */
-OLM_EXPORT std::size_t decode_base64_length(
+CE_EXPORT std::size_t decode_base64_length(
     std::size_t input_length
 );
 
@@ -60,7 +60,7 @@ OLM_EXPORT std::size_t decode_base64_length(
  * input length supplied is not a valid length for base64, returns
  * std::size_t(-1) and does not decode.
  */
-OLM_EXPORT std::size_t decode_base64(
+CE_EXPORT std::size_t decode_base64(
     std::uint8_t const * input, std::size_t input_length,
     std::uint8_t * output
 );

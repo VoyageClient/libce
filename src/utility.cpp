@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-#include "olm/utility.hh"
-#include "olm/crypto.h"
+#include "libce/utility.hh"
+#include "libce/crypto.h"
 
 
 olm::Utility::Utility(

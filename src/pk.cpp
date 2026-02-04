@@ -12,15 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/pk.h"
-#include "olm/cipher.h"
-#include "olm/crypto.h"
-#include "olm/ratchet.hh"
-#include "olm/error.h"
-#include "olm/memory.hh"
-#include "olm/base64.hh"
-#include "olm/pickle_encoding.h"
-#include "olm/pickle.hh"
+#include "libce/pk.h"
+#include "libce/cipher.h"
+#include "libce/crypto.h"
+#include "libce/ratchet.hh"
+#include "libce/error.h"
+#include "libce/memory.hh"
+#include "libce/base64.hh"
+#include "libce/pickle_encoding.h"
+#include "libce/pickle.hh"
 
 static const std::size_t MAC_LENGTH = 8;
 

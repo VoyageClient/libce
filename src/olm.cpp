@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/olm.h"
-#include "olm/session.hh"
-#include "olm/account.hh"
-#include "olm/cipher.h"
-#include "olm/pickle_encoding.h"
-#include "olm/utility.hh"
-#include "olm/base64.hh"
-#include "olm/memory.hh"
+#include "libce/olm.h"
+#include "libce/session.hh"
+#include "libce/account.hh"
+#include "libce/cipher.h"
+#include "libce/pickle_encoding.h"
+#include "libce/utility.hh"
+#include "libce/base64.hh"
+#include "libce/memory.hh"
 
 #include <new>
 #include <cstring>
@@ -111,9 +111,9 @@ std::size_t b64_input(
 extern "C" {
 
 void olm_get_library_version(uint8_t *major, uint8_t *minor, uint8_t *patch) {
-    if (major != NULL) *major = OLMLIB_VERSION_MAJOR;
-    if (minor != NULL) *minor = OLMLIB_VERSION_MINOR;
-    if (patch != NULL) *patch = OLMLIB_VERSION_PATCH;
+    if (major != NULL) *major = LIBCE_VERSION_MAJOR;
+    if (minor != NULL) *minor = LIBCE_VERSION_MINOR;
+    if (patch != NULL) *patch = LIBCE_VERSION_PATCH;
 }
 
 size_t olm_error(void) {

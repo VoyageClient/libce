@@ -1,7 +1,6 @@
-# libolm
-
-An implementation of the Double Ratchet cryptographic ratchet described by
-https://whispersystems.org/docs/specifications/doubleratchet/, written in C and
+# libce - Fast & Secure libolm fork
+lib**c**reek-**e**ncrypt is an implementation of the Double Ratchet cryptographic ratchet
+described by https://whispersystems.org/docs/specifications/doubleratchet/, written in C and
 C++11 and exposed as a C API.
 
 The specification of the Olm ratchet can be found in [docs/olm.md](docs/olm.md).
@@ -22,10 +21,10 @@ section below for more details.
 The easiest way to install on macOS is via Homebrew.  If you do not have
 Homebrew installed, follow the instructions at https://brew.sh/ to install it.
 
-You can then install libolm by running
+You can then install libce by running
 
 ```bash
-brew install libolm
+brew install libce
 ```
 
 ### Windows
@@ -59,8 +58,8 @@ cmake --build build
 The library can also be used as a dependency with CMake using:
 
 ```cmake
-find_package(Olm::Olm REQUIRED)
-target_link_libraries(my_exe Olm::Olm)
+find_package(libce::libce REQUIRED)
+target_link_libraries(my_exe libce::libce)
 ```
 
 ### Using make instead of cmake
@@ -110,7 +109,7 @@ git push --tags
 
 ## Design
 
-Olm was originally implemented in C++, with a plain-C layer providing the public
+libce was originally implemented in C++, with a plain-C layer providing the public
 API. As development has progressed, it has become clear that C++ gives little
 advantage, and new functionality is being added in C, with C++ parts being
 rewritten as the need ariases.
@@ -121,14 +120,14 @@ All C functions in the API for olm return ``olm_error()`` on error.
 
 ### Random Numbers
 
-Olm doesn't generate random numbers itself. Instead the caller must
+libce doesn't generate random numbers itself. Instead the caller must
 provide the random data. This makes it easier to port the library to different
 platforms since the caller can use whatever cryptographic random number
 generator their platform provides.
 
 ### Memory
 
-Olm avoids calling malloc or allocating memory on the heap itself.
+libce avoids calling malloc or allocating memory on the heap itself.
 Instead the library calculates how much memory will be needed to hold the
 output and the caller supplies a buffer of the appropriate size.
 
@@ -139,7 +138,7 @@ strings will find it easier to handle the output.
 
 ### Dependencies
 
-Olm uses pure C implementations of the cryptographic primitives used by
+libce uses pure C implementations of the cryptographic primitives used by
 the ratchet. While this decreases the performance it makes it much easier
 to compile the library for different architectures.
 

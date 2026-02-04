@@ -1,4 +1,4 @@
-#include "olm/olm.h"
+#include "libce/olm.h"
 #include "testing.hh"
 
 #include <vector>

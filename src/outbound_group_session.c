@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-#include "olm/outbound_group_session.h"
+#include "libce/outbound_group_session.h"
 
 #include <string.h>
 
-#include "olm/base64.h"
-#include "olm/cipher.h"
-#include "olm/crypto.h"
-#include "olm/error.h"
-#include "olm/megolm.h"
-#include "olm/memory.h"
-#include "olm/message.h"
-#include "olm/pickle.h"
-#include "olm/pickle_encoding.h"
+#include "libce/base64.h"
+#include "libce/cipher.h"
+#include "libce/crypto.h"
+#include "libce/error.h"
+#include "libce/megolm.h"
+#include "libce/memory.h"
+#include "libce/message.h"
+#include "libce/pickle.h"
+#include "libce/pickle_encoding.h"
 
 #define OLM_PROTOCOL_VERSION     3
 #define GROUP_SESSION_ID_LENGTH  ED25519_PUBLIC_KEY_LENGTH

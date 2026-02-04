@@ -27,7 +27,7 @@ endif()
 foreach(test IN ITEMS ${TEST_LIST})
 add_executable(test_${test} test_${test}.cpp)
 target_include_directories(test_${test} PRIVATE include)
-target_link_libraries(test_${test} Olm::Olm)
+target_link_libraries(test_${test} LibCE::LibCE)
 
 add_test(${test} test_${test} --reporters=console,junit --out=${test}.xml)
 endforeach(test)

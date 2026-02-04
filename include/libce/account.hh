@@ -15,9 +15,9 @@
 #ifndef OLM_ACCOUNT_HH_
 #define OLM_ACCOUNT_HH_
 
-#include "olm/list.hh"
-#include "olm/crypto.h"
-#include "olm/error.h"
+#include "libce/list.hh"
+#include "libce/crypto.h"
+#include "libce/error.h"
 
 #include <cstdint>
 

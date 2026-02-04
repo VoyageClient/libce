@@ -29,14 +29,14 @@
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 namespace olm {
 
 /**
  * The length of the buffer needed to hold a message.
  */
-OLM_EXPORT std::size_t encode_message_length(
+CE_EXPORT std::size_t encode_message_length(
     std::uint32_t counter,
     std::size_t ratchet_key_length,
     std::size_t ciphertext_length,
@@ -64,7 +64,7 @@ struct MessageReader {
  * Writes the message headers into the output buffer.
  * Populates the writer struct with pointers into the output buffer.
  */
-OLM_EXPORT void encode_message(
+CE_EXPORT void encode_message(
     MessageWriter & writer,
     std::uint8_t version,
     std::uint32_t counter,
@@ -78,7 +78,7 @@ OLM_EXPORT void encode_message(
  * Reads the message headers from the input buffer.
  * Populates the reader struct with pointers into the input buffer.
  */
-OLM_EXPORT void decode_message(
+CE_EXPORT void decode_message(
     MessageReader & reader,
     std::uint8_t const * input, std::size_t input_length,
     std::size_t mac_length

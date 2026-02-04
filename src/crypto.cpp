@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/crypto.h"
-#include "olm/memory.hh"
+#include "libce/crypto.h"
+#include "libce/memory.hh"
 
 #include <cstring>
 

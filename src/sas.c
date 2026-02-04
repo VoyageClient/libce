@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-#include "olm/sas.h"
-#include "olm/base64.h"
-#include "olm/crypto.h"
-#include "olm/error.h"
-#include "olm/memory.h"
+#include "libce/sas.h"
+#include "libce/base64.h"
+#include "libce/crypto.h"
+#include "libce/error.h"
+#include "libce/memory.h"
 
 struct OlmSAS {
     enum OlmErrorCode last_error;

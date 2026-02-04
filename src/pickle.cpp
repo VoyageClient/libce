@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/pickle.hh"
-#include "olm/pickle.h"
+#include "libce/pickle.hh"
+#include "libce/pickle.h"
 
 std::uint8_t * olm::pickle(
     std::uint8_t * pos,

@@ -1,4 +1,4 @@
-# Contributing code to libolm
+# Contributing code to libce
 
 To contribute code to this library, the preferred way is to clone the git
 repository, create a git patch series (for example via ``git

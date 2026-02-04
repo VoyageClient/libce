@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/account.hh"
-#include "olm/base64.hh"
-#include "olm/pickle.h"
-#include "olm/pickle.hh"
-#include "olm/memory.hh"
+#include "libce/account.hh"
+#include "libce/base64.hh"
+#include "libce/pickle.h"
+#include "libce/pickle.hh"
+#include "libce/memory.hh"
 
 olm::Account::Account(
 ) : num_fallback_keys(0),

@@ -1,4 +1,4 @@
-module libolm {
-    header "olm/olm.h"
+module libce {
+    header "libce/olm.h"
     export *
 }

@@ -15,13 +15,13 @@
 
 #include <cstdint>
 
-#include "olm/crypto.h"
-#include "olm/list.hh"
-#include "olm/error.h"
+#include "libce/crypto.h"
+#include "libce/list.hh"
+#include "libce/error.h"
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 struct _olm_cipher;
 
@@ -76,7 +76,7 @@ struct KdfInfo {
 };
 
 
-struct OLM_EXPORT Ratchet {
+struct CE_EXPORT Ratchet {
 
     Ratchet(
         KdfInfo const & kdf_info,

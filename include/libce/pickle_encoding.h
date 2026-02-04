@@ -21,11 +21,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "olm/error.h"
+#include "libce/error.h"
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,7 +35,7 @@ extern "C" {
 /**
  * Get the number of bytes needed to encode a pickle of the length given
  */
-OLM_EXPORT size_t _olm_enc_output_length(size_t raw_length);
+CE_EXPORT size_t _olm_enc_output_length(size_t raw_length);
 
 /**
  * Get the point in the output buffer that the raw pickle should be written to.
@@ -45,7 +45,7 @@ OLM_EXPORT size_t _olm_enc_output_length(size_t raw_length);
  * base-64 encoding would otherwise overwrite the end of the input before it
  * was encoded.)
  */
-OLM_EXPORT uint8_t *_olm_enc_output_pos(uint8_t * output, size_t raw_length);
+CE_EXPORT uint8_t *_olm_enc_output_pos(uint8_t * output, size_t raw_length);
 
 /**
  * Encrypt and encode the given pickle in-situ.
@@ -55,7 +55,7 @@ OLM_EXPORT uint8_t *_olm_enc_output_pos(uint8_t * output, size_t raw_length);
  *
  * Returns the number of bytes in the encoded pickle.
  */
-OLM_EXPORT size_t _olm_enc_output(
+CE_EXPORT size_t _olm_enc_output(
     uint8_t const * key, size_t key_length,
     uint8_t *pickle, size_t raw_length
 );
@@ -66,7 +66,7 @@ OLM_EXPORT size_t _olm_enc_output(
  * Returns the number of bytes in the decoded pickle, or olm_error() on error,
  * in which case *last_error will be updated, if last_error is non-NULL.
  */
-OLM_EXPORT size_t _olm_enc_input(
+CE_EXPORT size_t _olm_enc_input(
     uint8_t const * key, size_t key_length,
     uint8_t * input, size_t b64_length,
     enum OlmErrorCode * last_error

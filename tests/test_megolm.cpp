@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/megolm.h"
-#include "olm/memory.hh"
+#include "libce/megolm.h"
+#include "libce/memory.hh"
 
 #include "testing.hh"
 

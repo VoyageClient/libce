@@ -15,8 +15,8 @@
 #ifndef OLM_PICKLE_HH_
 #define OLM_PICKLE_HH_
 
-#include "olm/list.hh"
-#include "olm/crypto.h"
+#include "libce/list.hh"
+#include "libce/crypto.h"
 
 #include <cstring>
 #include <cstdint>

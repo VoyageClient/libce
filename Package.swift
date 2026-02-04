@@ -5,14 +5,14 @@ import PackageDescription
 let major = 3, minor = 2, patch = 16
 
 let package = Package(
-    name: "Olm",
+    name: "libce",
     platforms: [.iOS(.v8), .macOS(.v10_10)],
     products: [
-        .library(name: "libolm", targets: ["libolm"])
+        .library(name: "libce", targets: ["libce"])
     ],
     targets: [
         .target(
-            name: "libolm",
+            name: "libce",
             path: ".",
             sources: [
                 "src",
@@ -22,9 +22,9 @@ let package = Package(
             ],
             cSettings: [
                 .headerSearchPath("lib"),
-                .define("OLMLIB_VERSION_MAJOR", to: "\(major)"),
-                .define("OLMLIB_VERSION_MINOR", to: "\(minor)"),
-                .define("OLMLIB_VERSION_PATCH", to: "\(patch)")
+                .define("LIBCE_VERSION_MAJOR", to: "\(major)"),
+                .define("LIBCE_VERSION_MINOR", to: "\(minor)"),
+                .define("LIBCE_VERSION_PATCH", to: "\(patch)")
             ]
         )
     ],

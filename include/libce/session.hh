@@ -15,11 +15,11 @@
 #ifndef OLM_SESSION_HH_
 #define OLM_SESSION_HH_
 
-#include "olm/ratchet.hh"
+#include "libce/ratchet.hh"
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
-#include "olm/olm_export.h"
+#include "libce/olm_export.h"
 
 namespace olm {
 
@@ -30,7 +30,7 @@ enum struct MessageType {
     MESSAGE = 1,
 };
 
-struct OLM_EXPORT Session {
+struct CE_EXPORT Session {
 
     Session();
 
@@ -157,7 +157,7 @@ std::uint8_t * pickle(
 );
 
 
-OLM_EXPORT std::uint8_t const * unpickle(
+CE_EXPORT std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     Session & value
 );

@@ -1,4 +1,4 @@
-# Signature keys and user identity in libolm
+# Signature keys and user identity in libce
 
 The use of any public-key based cryptography system such as Olm presents the
 need for our users Alice and Bob to verify that they are in fact communicating

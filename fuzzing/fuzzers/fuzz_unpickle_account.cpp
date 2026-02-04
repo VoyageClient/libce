@@ -1,6 +1,6 @@
 #include "fuzzing.hh"
-#include "olm/account.hh"
-#include "olm/olm.h"
+#include "libce/account.hh"
+#include "libce/olm.h"
 
 size_t fuzz_unpickle_account(
     OlmAccount * account, void * pickled, size_t pickled_length

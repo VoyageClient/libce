@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/memory.hh"
-#include "olm/memory.h"
+#include "libce/memory.hh"
+#include "libce/memory.h"
 
 void _olm_unset(
     void volatile * buffer, size_t buffer_length

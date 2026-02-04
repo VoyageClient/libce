@@ -3,8 +3,8 @@ exec_prefix=${prefix}
 includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 
-Name: olm
+Name: libce
 Description: implementation of the Double Ratchet cryptographic ratchet in C++
 Version: @PROJECT_VERSION@
 Cflags: -I${includedir}
-Libs: -L${libdir} -lolm
+Libs: -L${libdir} -lce

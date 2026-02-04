@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "olm/inbound_group_session.h"
-#include "olm/outbound_group_session.h"
+#include "libce/inbound_group_session.h"
+#include "libce/outbound_group_session.h"
 #include "testing.hh"
 #include "utils.hh"
 
