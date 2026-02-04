@@ -9,51 +9,6 @@ The specification of the Olm ratchet can be found in [docs/olm.md](docs/olm.md).
 This library also includes an implementation of the Megolm cryptographic
 ratchet, as specified in [docs/megolm.md](docs/megolm.md).
 
-# IMPORTANT: libolm is now deprecated.
-
-libolm was Matrix's first implementation of the Double Ratchet algorithm, dating
-back to 2015. It is not written in memory-safe langauges (C and C++11),
-resulting in several CVEs over the years (e.g. CVE-2021-34813 and
-CVE-2021-44538).  It also depends on simplistic cryptography primitive
-implementations which are intended for pragmatic and education purposes rather
-than security - e.g. [Brad Conte's crypto-algorithms](lib/crypto-algorithms/README.md).
-
-As a result, we rewrote libolm in Rust in December 2021 - the result being
-[vodozemac](https://github.com/matrix-org/vodozemac), and [announced it as the
-recommended successor to libolm](https://matrix.org/blog/2022/05/16/independent-public-audit-of-vodozemac-a-native-rust-reference-implementation-of-matrix-end-to-end-encryption/)
-after its audit by Least Authority in May 2022:
-
-> Therefore we highly recommend that developers using libolm migrate over to
-> vodozemac - ideally by switching to matrix-sdk-crypto as a way of managing
-> the interface between Matrix and the E2EE implementation. Vodozemac does also
-> provide a similar API to libolm with bindings for JS and Python (and C++ in
-> progress) if you want to link directly against it - e.g. if you’re using
-> libolm for something other than Matrix, for example XMPP, ActivityPub or
-> Jitsi. We’ll continue to support and maintain libolm for now though, at least
-> until the majority of folks have switched to vodozemac.
-
-The key benefits of vodozemac are:
-
-> * Native Rust - type, memory and thread safety is preserved both internally,
->   and within the context of larger Rust programs (such as those building on
->   matrix-rust-sdk).
-> * Performance - vodozemac benchmarks roughly 5-6x faster than libolm on
->   typical hardware
-> * Better primitives - vodozemac is built on the best practice cryptographic
->   primitives from the Rust community, rather than the generic Brad Conte
->   primitives used by libolm.
-
-All the client SDKs maintained by the Matrix core team
-(matrix-rust-sdk, matrix-js-sdk and matrix-ios-sdk) now
-support vodozemac as their E2EE implementation - and the majority of apps built
-on them (e.g. all variants of Element Web/Desktop/iOS/Android and Element X
-iOS/Android) now use vodozemac.
-
-As such as of July 2024, libolm is now officially deprecated - **please do not
-use it going forwards**.  The Matrix cryptography team sadly does not have
-bandwidth to maintain both vodozemac and libolm, and all of our maintenance
-effort will go into vodozemac.
-
 ## Installing
 
 ### Linux and other Unix-like systems
