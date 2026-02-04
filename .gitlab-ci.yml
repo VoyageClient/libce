@@ -31,9 +31,3 @@ test:lib:
   artifacts:
     paths:
       - build/tests/Testing/Temporary/
-
-trigger:python:
-  stage: trigger
-  trigger:
-    strategy: depend
-    include: python/.gitlab-ci.yml

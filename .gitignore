@@ -6,12 +6,9 @@
 /olm-*.tgz
 /README.html
 /tracing/README.html
-/python/dist
 /compile_commands.json
 /.clang-format
 .ccls-cache/
-/python/.eggs
-/python/install-temp
 /result
 
 # Xcode

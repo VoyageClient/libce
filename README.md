@@ -28,39 +28,10 @@ You can then install libolm by running
 brew install libolm
 ```
 
-If you also need the Python packages, you can run
-
-```bash
-pip3 install python-olm --global-option="build_ext" --global-option="--include-dirs="`brew --prefix libolm`"/include" --global-option="--library-dirs="`brew --prefix libolm`"/lib"
-```
-
-Note that this will install an older version of the Python bindings, which may
-be missing some functions.  If you need the latest version, you will need to
-build from source.
-
 ### Windows
 
 You will need to build from source.  See the "Building" section below for more
 details.
-
-### Bindings
-
-#### Python
-
-A Python source package and pre-built packages for certain architectures from
-<https://pypi.org/project/python-olm/>.  If a pre-built package is not
-available for your architecture, you will need:
-
-- cmake (recommended) or GNU make
-- a C/C++ compiler
-
-to build the source package.
-
-You can then run `pip install python-olm`.
-
-Currently, we try to provide packages for all supported versions of Python on
-x86-64, i686, and aarch64, but we cannot guarantee that packages for all
-versions will be available on all architectures.
 
 ## Building
 
@@ -104,16 +75,6 @@ pod install
 open OLMKit.xcworkspace
 ```
 
-#### Python
-
-To build the Python 3 bindings, first build olm as a library as above, and
-then run:
-
-```bash
-cd python
-make
-```
-
 ### Using make instead of cmake
 
 **WARNING:** Using cmake is the preferred method for building the olm library;
@@ -142,8 +103,7 @@ make static
 ## Bindings
 
 libolm can be used in different environments using bindings. In addition to the
-Python and Objective-C bindings included in this
-repository, some bindings are (in alphabetical order):
+Objective-C bindings included in this repository, some bindings are (in alphabetical order):
 
 - [cl-megolm](https://github.com/K1D77A/cl-megolm) (MIT) Common Lisp bindings
 - [dart-olm](https://gitlab.com/famedly/company/frontend/libraries/dart-olm) (AGPLv3) Dart bindings
@@ -166,7 +126,7 @@ endorsed by the Matrix.org Foundation C.I.C.
 ## Release process
 
 First: bump version numbers in ``common.mk``, ``CMakeLists.txt``,
-``python/pyproject.toml``, ``OLMKit.podspec``, and ``Package.swift``.
+``OLMKit.podspec``, and ``Package.swift``.
 
 Also, ensure the changelog is up to date, and that everything is committed to
 git.
@@ -192,10 +152,6 @@ pod trunk push OLMKit.podspec --use-libraries --allow-warnings
 # Check the pod has been successully published with:
 pod search OLMKit
 ```
-
-Python packages are published to the registry at
-<https://gitlab.matrix.org/matrix-org/olm/-/packages>.  The GitLab
-documentation contains instructions on how to set up twine to upload to the registry.
 
 ## Design
 
