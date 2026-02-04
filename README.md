@@ -88,29 +88,6 @@ To build olm as a static library, run:
 make static
 ```
 
-## Bindings
-
-libolm can be used in different environments using bindings. In addition to the
-Objective-C bindings included in this repository, some bindings are (in alphabetical order):
-
-- [cl-megolm](https://github.com/K1D77A/cl-megolm) (MIT) Common Lisp bindings
-- [dart-olm](https://gitlab.com/famedly/company/frontend/libraries/dart-olm) (AGPLv3) Dart bindings
-- [Dhole/go-olm](https://github.com/Dhole/go-olm) (Apache-2.0) Go bindings
-- [jOlm](https://github.com/brevilo/jolm) (Apache-2.0) Java bindings
-- [libQtOlm](https://gitlab.com/b0/libqtolm/) (GPLv3) Qt bindings
-- [matrix-kt](https://github.com/Dominaezzz/matrix-kt) (Apache-2.0) Kotlin
-  library for Matrix, including Olm methods
-- [maunium.net/go/mautrix/crypto/olm](https://github.com/tulir/mautrix-go/tree/master/crypto/olm)
-  (Apache-2.0) fork of Dhole/go-olm
-- [nim-olm](https://codeberg.org/BarrOff/nim-olm) (MIT) Nim bindings
-- [olm-sys](https://gitlab.gnome.org/BrainBlasted/olm-sys) (Apache-2.0) Rust
-  bindings
-- [Trixnity](https://gitlab.com/trixnity/trixnity) (Apache-2.0) Kotlin SDK for
-  Matrix, including Olm bindings
-
-Note that bindings may have a different license from libolm, and are *not*
-endorsed by the Matrix.org Foundation C.I.C.
-
 ## Release process
 
 First: bump version numbers in ``common.mk``, ``CMakeLists.txt``, and ``Package.swift``.
@@ -134,10 +111,7 @@ git push --tags
 
 ## Design
 
-Olm is designed to be easy port to different platforms and to be easy
-to write bindings for.
-
-It was originally implemented in C++, with a plain-C layer providing the public
+Olm was originally implemented in C++, with a plain-C layer providing the public
 API. As development has progressed, it has become clear that C++ gives little
 advantage, and new functionality is being added in C, with C++ parts being
 rewritten as the need ariases.
@@ -145,7 +119,6 @@ rewritten as the need ariases.
 ### Error Handling
 
 All C functions in the API for olm return ``olm_error()`` on error.
-This makes it easy to check for error conditions within the language bindings.
 
 ### Random Numbers
 
@@ -185,7 +158,7 @@ and https://matrix.org/blog/2016/11/21/matrixs-olm-end-to-end-encryption-securit
 
 ## Security issues
 
-If you think you found a security issue in libolm, any of its bindings or the Olm/Megolm protocols, please follow our [Security Disclosure Policy](https://matrix.org/security-disclosure-policy/) to report.
+If you think you found a security issue in libolm or the Olm/Megolm protocols, please follow our [Security Disclosure Policy](https://matrix.org/security-disclosure-policy/) to report.
 
 ## Bug reports
 
