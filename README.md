@@ -92,8 +92,7 @@ make static
 
 First: bump version numbers in ``common.mk``, ``CMakeLists.txt``, and ``Package.swift``.
 
-Also, ensure the changelog is up to date, and that everything is committed to
-git.
+Also, ensure that everything is committed to git.
 
 It's probably sensible to do the above on a release branch (``release-vx.y.z``
 by convention), and merge back to master once the release is complete.
@@ -147,31 +146,3 @@ to compile the library for different architectures.
 ## Contributing
 
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) when making contributions to the library.
-
-## Security assessment
-
-Olm 1.3.0 was independently assessed by NCC Group's Cryptography Services
-Practive in September 2016 to check for security issues: you can read all
-about it at
-https://www.nccgroup.com/globalassets/our-research/us/public-reports/2016/november/ncc_group_olm_cryptogrpahic_review_2016_11_01.pdf
-and https://matrix.org/blog/2016/11/21/matrixs-olm-end-to-end-encryption-security-assessment-released-and-implemented-cross-platform-on-riot-at-last/
-
-## Security issues
-
-If you think you found a security issue in libolm or the Olm/Megolm protocols, please follow our [Security Disclosure Policy](https://matrix.org/security-disclosure-policy/) to report.
-
-## Bug reports
-
-For non-sensitive bugs, please file bug reports at https://github.com/matrix-org/olm/issues.
-
-## What's an olm?
-
-It's a really cool species of European troglodytic salamander.
-http://www.postojnska-jama.eu/en/come-and-visit-us/vivarium-proteus/
-
-## Legal Notice
-
-The software may be subject to the U.S. export control laws and regulations
-and by downloading the software the user certifies that he/she/it is
-authorized to do so in accordance with those export control laws and
-regulations.
