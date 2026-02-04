@@ -103,7 +103,7 @@ size_t olm_pickle_outbound_group_session(
         return (size_t)-1;
     }
 
-#ifndef OLM_FUZZING
+#ifndef LIBCE_FUZZING
     pos = _olm_enc_output_pos(pickled, raw_length);
 #else
     pos = pickled;
@@ -113,7 +113,7 @@ size_t olm_pickle_outbound_group_session(
     pos = megolm_pickle(&(session->ratchet), pos);
     pos = _olm_pickle_ed25519_key_pair(pos, &(session->signing_key));
 
-#ifndef OLM_FUZZING
+#ifndef LIBCE_FUZZING
     return _olm_enc_output(key, key_length, pickled, raw_length);
 #else
     return raw_length;
@@ -129,7 +129,7 @@ size_t olm_unpickle_outbound_group_session(
     const uint8_t *end;
     uint32_t pickle_version;
 
-#ifndef OLM_FUZZING
+#ifndef LIBCE_FUZZING
     size_t raw_length = _olm_enc_input(
         key, key_length, pickled, pickled_length, &(session->last_error)
     );

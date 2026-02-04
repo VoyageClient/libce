@@ -9,7 +9,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#define OLM_FUZZING 1
+#define LIBCE_FUZZING 1
 
 ssize_t read_file(
     int fd,
