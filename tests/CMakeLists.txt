@@ -15,14 +15,8 @@ set(TEST_LIST
     session
     pk
     sas
-  )
-
-if(NOT (${CMAKE_SYSTEM_NAME} MATCHES "Windows" AND BUILD_SHARED_LIBS))
-  # test_ratchet doesn't work on Windows when building a DLL, because it tries
-  # to use internal symbols, so only enable it if we're not on Windows, or if
-  # we're building statically
-  set(TEST_LIST ${TEST_LIST} ratchet)
-endif()
+    ratchet
+)
 
 foreach(test IN ITEMS ${TEST_LIST})
 add_executable(test_${test} test_${test}.cpp)
@@ -31,4 +25,3 @@ target_link_libraries(test_${test} LibCE::LibCE)
 
 add_test(${test} test_${test} --reporters=console,junit --out=${test}.xml)
 endforeach(test)
-

@@ -16,11 +16,6 @@ Your distribution may have pre-compiled packages available.  If not, or if you
 need a newer version, you will need to compile from source.  See the "Building"
 section below for more details.
 
-### Windows
-
-You will need to build from source.  See the "Building" section below for more
-details.
-
 ## Building
 
 To build libce as a shared library run:
