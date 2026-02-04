@@ -64,22 +64,17 @@ CE_EXPORT size_t olm_pk_encryption_set_recipient_key(
 /** Get the length of the ciphertext that will correspond to a plaintext of the
  * given length. */
 CE_EXPORT size_t olm_pk_ciphertext_length(
-    const OlmPkEncryption *encryption,
     size_t plaintext_length
 );
 
 /** Get the length of the message authentication code. */
-CE_EXPORT size_t olm_pk_mac_length(
-    const OlmPkEncryption *encryption
-);
+CE_EXPORT size_t olm_pk_mac_length(void);
 
 /** Get the length of a public or ephemeral key */
 CE_EXPORT size_t olm_pk_key_length(void);
 
 /** The number of random bytes needed to encrypt a message. */
-CE_EXPORT size_t olm_pk_encrypt_random_length(
-    const OlmPkEncryption *encryption
-);
+CE_EXPORT size_t olm_pk_encrypt_random_length(void);
 
 /** Encrypt a plaintext for the recipient set using
  * olm_pk_encryption_set_recipient_key. Writes to the ciphertext, mac, and
@@ -193,7 +188,6 @@ CE_EXPORT size_t olm_unpickle_pk_decryption(
 /** Get the length of the plaintext that will correspond to a ciphertext of the
  * given length. */
 CE_EXPORT size_t olm_pk_max_plaintext_length(
-    const OlmPkDecryption * decryption,
     size_t ciphertext_length
 );
 

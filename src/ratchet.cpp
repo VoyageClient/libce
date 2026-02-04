@@ -80,7 +80,6 @@ static void advance_chain_key(
 
 static void create_message_keys(
     olm::ChainKey const & chain_key,
-    olm::KdfInfo const & info,
     olm::MessageKey & message_key) {
     _olm_crypto_hmac_sha256(
         chain_key.key, sizeof(chain_key.key),
@@ -129,7 +128,7 @@ static std::size_t verify_mac_and_decrypt_for_existing_chain(
     }
 
     olm::MessageKey message_key;
-    create_message_keys(new_chain, session.kdf_info, message_key);
+    create_message_keys(new_chain, message_key);
 
     std::size_t result = verify_mac_and_decrypt(
         session.ratchet_cipher, message_key, reader,
@@ -448,7 +447,7 @@ std::size_t olm::Ratchet::encrypt(
     }
 
     MessageKey keys;
-    create_message_keys(sender_chain[0].chain_key, kdf_info, keys);
+    create_message_keys(sender_chain[0].chain_key, keys);
     advance_chain_key(sender_chain[0].chain_key, sender_chain[0].chain_key);
 
     std::size_t ciphertext_length = ratchet_cipher->ops->encrypt_ciphertext_length(
@@ -614,7 +613,7 @@ std::size_t olm::Ratchet::decrypt(
 
     while (chain->chain_key.index < reader.counter) {
         olm::SkippedMessageKey & key = *skipped_message_keys.insert();
-        create_message_keys(chain->chain_key, kdf_info, key.message_key);
+        create_message_keys(chain->chain_key, key.message_key);
         key.ratchet_key = chain->ratchet_key;
         advance_chain_key(chain->chain_key, chain->chain_key);
     }

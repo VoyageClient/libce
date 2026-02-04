@@ -57,10 +57,10 @@ olm_pk_encryption_set_recipient_key(encryption, pubkey.data(), pubkey.size());
 const size_t plaintext_length = 14;
 const std::uint8_t *plaintext = (std::uint8_t *) "This is a test";
 
-size_t ciphertext_length = olm_pk_ciphertext_length(encryption, plaintext_length);
+size_t ciphertext_length = olm_pk_ciphertext_length(plaintext_length);
 std::uint8_t *ciphertext_buffer = (std::uint8_t *) malloc(ciphertext_length);
 
-std::vector<std::uint8_t> output_buffer(olm_pk_mac_length(encryption));
+std::vector<std::uint8_t> output_buffer(olm_pk_mac_length());
 std::vector<std::uint8_t> ephemeral_key(olm_pk_key_length());
 
 olm_pk_encrypt(
@@ -74,7 +74,7 @@ olm_pk_encrypt(
 
 CHECK_EQ_SIZE(bob_public, (const std::uint8_t*)ephemeral_key.data(), olm_pk_key_length());
 
-size_t max_plaintext_length = olm_pk_max_plaintext_length(decryption, ciphertext_length);
+size_t max_plaintext_length = olm_pk_max_plaintext_length(ciphertext_length);
 std::uint8_t *plaintext_buffer = (std::uint8_t *) malloc(max_plaintext_length);
 
 olm_pk_decrypt(
@@ -172,7 +172,7 @@ char *ciphertext = strdup("ntk49j/KozVFtSqJXhCejg");
 const char *mac = "zpzU6BkZcNI";
 const char *ephemeral_key = "3p7bfXt9wbTTW2HC7OQ1Nz+DQ8hbeGdNrfx+FG+IK08";
 
-size_t max_plaintext_length = olm_pk_max_plaintext_length(decryption, strlen(ciphertext));
+size_t max_plaintext_length = olm_pk_max_plaintext_length(strlen(ciphertext));
 std::uint8_t *plaintext_buffer = (std::uint8_t *) malloc(max_plaintext_length);
 
 olm_pk_decrypt(

@@ -90,7 +90,6 @@ size_t olm_pk_encryption_set_recipient_key (
 }
 
 size_t olm_pk_ciphertext_length(
-    const OlmPkEncryption *encryption,
     size_t plaintext_length
 ) {
     return olm::encode_base64_length(
@@ -98,15 +97,11 @@ size_t olm_pk_ciphertext_length(
     );
 }
 
-size_t olm_pk_mac_length(
-    const OlmPkEncryption *encryption
-) {
+size_t olm_pk_mac_length(void) {
     return olm::encode_base64_length(_olm_cipher_aes_sha_256_ops.mac_length(olm_pk_cipher));
 }
 
-size_t olm_pk_encrypt_random_length(
-    const OlmPkEncryption *encryption
-) {
+size_t olm_pk_encrypt_random_length(void) {
     return CURVE25519_KEY_LENGTH;
 }
 
@@ -119,7 +114,7 @@ size_t olm_pk_encrypt(
     const void * random, size_t random_length
 ) {
     if (ciphertext_length
-            < olm_pk_ciphertext_length(encryption, plaintext_length)
+            < olm_pk_ciphertext_length(plaintext_length)
         || mac_length
             < _olm_cipher_aes_sha_256_ops.mac_length(olm_pk_cipher)
         || ephemeral_key_size
@@ -128,7 +123,7 @@ size_t olm_pk_encrypt(
             OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
         return std::size_t(-1);
     }
-    if (random_length < olm_pk_encrypt_random_length(encryption)) {
+    if (random_length < olm_pk_encrypt_random_length()) {
         encryption->last_error =
             OlmErrorCode::OLM_NOT_ENOUGH_RANDOM;
         return std::size_t(-1);
@@ -364,7 +359,6 @@ size_t olm_unpickle_pk_decryption(
 }
 
 size_t olm_pk_max_plaintext_length(
-    const OlmPkDecryption * decryption,
     size_t ciphertext_length
 ) {
     return _olm_cipher_aes_sha_256_ops.decrypt_max_plaintext_length(
@@ -380,7 +374,7 @@ size_t olm_pk_decrypt(
     void * plaintext, size_t max_plaintext_length
 ) {
     if (max_plaintext_length
-            < olm_pk_max_plaintext_length(decryption, ciphertext_length)) {
+            < olm_pk_max_plaintext_length(ciphertext_length)) {
         decryption->last_error =
             OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
         return std::size_t(-1);
