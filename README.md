@@ -63,18 +63,6 @@ find_package(Olm::Olm REQUIRED)
 target_link_libraries(my_exe Olm::Olm)
 ```
 
-### Bindings
-
-#### Objective-C
-
-To build the Xcode workspace for Objective-C bindings, run:
-
-```bash
-cd xcode
-pod install
-open OLMKit.xcworkspace
-```
-
 ### Using make instead of cmake
 
 **WARNING:** Using cmake is the preferred method for building the olm library;
@@ -125,8 +113,7 @@ endorsed by the Matrix.org Foundation C.I.C.
 
 ## Release process
 
-First: bump version numbers in ``common.mk``, ``CMakeLists.txt``,
-``OLMKit.podspec``, and ``Package.swift``.
+First: bump version numbers in ``common.mk``, ``CMakeLists.txt``, and ``Package.swift``.
 
 Also, ensure the changelog is up to date, and that everything is committed to
 git.
@@ -143,14 +130,6 @@ make test
 VERSION=x.y.z
 git tag $VERSION -s
 git push --tags
-
-# OLMKit CocoaPod release
-# Make sure the version OLMKit.podspec is the same as the git tag
-# (this must be checked before git tagging)
-pod spec lint OLMKit.podspec --use-libraries --allow-warnings
-pod trunk push OLMKit.podspec --use-libraries --allow-warnings
-# Check the pod has been successully published with:
-pod search OLMKit
 ```
 
 ## Design

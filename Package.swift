@@ -8,8 +8,7 @@ let package = Package(
     name: "Olm",
     platforms: [.iOS(.v8), .macOS(.v10_10)],
     products: [
-        .library(name: "libolm", targets: ["libolm"]),
-        .library(name: "OLMKit", targets: ["OLMKit"])
+        .library(name: "libolm", targets: ["libolm"])
     ],
     targets: [
         .target(
@@ -26,24 +25,6 @@ let package = Package(
                 .define("OLMLIB_VERSION_MAJOR", to: "\(major)"),
                 .define("OLMLIB_VERSION_MINOR", to: "\(minor)"),
                 .define("OLMLIB_VERSION_PATCH", to: "\(patch)")
-            ]
-        ),
-        .target(
-            name: "OLMKit",
-            dependencies: ["libolm"],
-            path: "xcode/OLMKit",
-            exclude: ["Info.plist"],
-            cSettings: [
-                .headerSearchPath("..")
-            ]
-        ),
-        .testTarget(
-            name: "OLMKitTests",
-            dependencies: ["OLMKit"],
-            path: "xcode/OLMKitTests",
-            exclude: ["Info.plist"],
-            cSettings: [
-                .headerSearchPath("..")
             ]
         )
     ],
