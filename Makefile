@@ -115,18 +115,7 @@ $(FUZZER_MSAN_BINARIES): LDFLAGS += $(FUZZER_OPTIMIZE_FLAGS) -L$(BUILD_DIR) -lst
 $(FUZZER_DEBUG_BINARIES): CPPFLAGS += -Ifuzzing/fuzzers/include
 $(FUZZER_DEBUG_BINARIES): LDFLAGS += $(DEBUG_OPTIMIZE_FLAGS) -lstdc++
 
-### Fix to make mkdir work on windows and linux
-ifeq ($(shell echo "check_quotes"),"check_quotes")
-   WINDOWS := yes
-else
-   WINDOWS := no
-endif
-
-ifeq ($(WINDOWS),yes)
-   mkdir = mkdir $(subst /,\,$(1)) > nul 2>&1 || (exit 0)
-else
-   mkdir = mkdir -p $(1)
-endif
+mkdir = mkdir -p $(1)
 
 ### top-level targets
 

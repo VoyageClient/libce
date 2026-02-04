@@ -143,9 +143,7 @@ CHECK_EQ_SIZE(input, actual, length);
 
 TEST_CASE("SHA 256 Test Case 1") {
 
-// we want to take the hash of the empty string, but MSVC doesn't like
-// allocating 0 bytes, so allocate one item, but pass a length of zero to
-// sha256
+// avoid a zero-length array; pass length zero to sha256
 std::uint8_t input[1] = {0};
 
 std::uint8_t expected[32] = {
@@ -167,9 +165,7 @@ CHECK_EQ_SIZE(expected, actual, 32);
 
 TEST_CASE("HMAC Test Case 1") {
 
-// we want to take the hash of the empty string, but MSVC doesn't like
-// allocating 0 bytes, so allocate one item, but pass a length of zero to
-// hmac_sha256
+// avoid a zero-length array; pass length zero to hmac_sha256
 std::uint8_t input[1] = {0};
 
 std::uint8_t expected[32] = {
@@ -245,4 +241,3 @@ _olm_crypto_hkdf_sha256(
 CHECK_EQ_SIZE(hkdf_expected_output, hkdf_actual_output, 42);
 
 } /* HDKF Test Case 1 */
-
