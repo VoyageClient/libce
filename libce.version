@@ -1,4 +1,0 @@
-{
-  global: ce*; _ce*; megolm*; _ZN3olm*; _ZNK3olm*;
-  local: *;
-};
