@@ -4,8 +4,8 @@ include(CMakeFindDependencyMacro)
 list(APPEND CMAKE_MODULE_PATH ${libce_CMAKE_DIR})
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
-if(NOT TARGET libce::libce)
-  include("${libce_CMAKE_DIR}/libceTargets.cmake")
+if(NOT TARGET LibCE::LibCE)
+  include("${libce_CMAKE_DIR}/CETargets.cmake")
 endif()
 
-set(libce_LIBRARIES libce::libce)
+set(libce_LIBRARIES LibCE::LibCE)
