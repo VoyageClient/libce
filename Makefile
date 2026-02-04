@@ -9,15 +9,9 @@ DEBUG_OPTIMIZE_FLAGS ?= -g -O0 -U_FORTIFY_SOURCE
 FUZZER_OPTIMIZE_FLAGS ?= -O3
 AR = ar
 
-UNAME := $(shell uname)
-ifeq ($(UNAME),Darwin)
-	SO := dylib
-	LIBCE_LDFLAGS :=
-else
-	SO := so
-	LIBCE_LDFLAGS := -Wl,-soname,libce.so.$(MAJOR) \
-                       -Wl,--version-script,version_script.ver
-endif
+SO := so
+LIBCE_LDFLAGS := -Wl,-soname,libce.so.$(MAJOR) \
+                   -Wl,--version-script,version_script.ver
 
 RELEASE_TARGET := $(BUILD_DIR)/libce.$(SO).$(VERSION)
 STATIC_RELEASE_TARGET := $(BUILD_DIR)/libce.a

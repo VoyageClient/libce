@@ -19,7 +19,7 @@
       # some systems cause issues, e.g. i686-linux is unsupported by gradle,
       # which causes "nix flake check" to fail. Investigate more later, but for
       # now, we will just allow x86_64-linux
-      flake-utils.lib.eachSystem [ "x86_64-linux" "x86_64-darwin" "aarch64-darwin" ] (system: rec {
+      flake-utils.lib.eachSystem [ "x86_64-linux" ] (system: rec {
         legacyPackages = pkgsForSystem system;
         checks = {
           inherit (legacyPackages) olm-gcc-cmake olm-clang-cmake olm-gcc-make;
