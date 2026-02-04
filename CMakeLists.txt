@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(ce VERSION 3.2.16 LANGUAGES CXX C)
+project(ce VERSION 0.1.0 LANGUAGES CXX C)
 
 option(CE_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
