@@ -5,21 +5,13 @@
   # We can't use the current stable release because of
   # https://github.com/emscripten-core/emscripten/issues/16913
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.npmlock2nix = {
-    url = "github:nix-community/npmlock2nix";
-    flake = false;
-  };
 
-  outputs = { self, nixpkgs, flake-utils, npmlock2nix }:
+  outputs = { self, nixpkgs, flake-utils }:
     let
       localOverlay = import ./nix/overlay.nix;
       pkgsForSystem = system: import nixpkgs {
         inherit system;
         overlays = [
-          (final: prev: {
-            npmlock2nix = final.callPackage npmlock2nix {};
-            node_modules = final.npmlock2nix.node_modules { src = ./javascript; };
-          })
           localOverlay
         ];
       };
@@ -31,9 +23,6 @@
         legacyPackages = pkgsForSystem system;
         checks = {
           inherit (legacyPackages) olm-gcc-cmake olm-clang-cmake olm-gcc-make;
-        };
-        packages = {
-          javascript = legacyPackages.olm-javascript;
         };
       }
     ));

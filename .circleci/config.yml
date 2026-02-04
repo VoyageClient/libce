@@ -14,14 +14,3 @@ jobs:
       - run:
           name: Native Tests
           command: make test
-      - run:
-          name: JS Compile
-          command: make js
-      - run:
-          name: Install JS Deps
-          working_directory: ~/repo/javascript
-          command: npm install
-      - run:
-          name: JS Tests
-          working_directory: ~/repo/javascript
-          command: npm run test

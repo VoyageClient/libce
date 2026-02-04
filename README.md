@@ -90,11 +90,6 @@ details.
 
 ### Bindings
 
-#### JavaScript
-
-You can use pre-built npm packages, available at
-<https://gitlab.matrix.org/matrix-org/olm/-/packages?type=npm>.
-
 #### Python
 
 A Python source package and pre-built packages for certain architectures from
@@ -144,27 +139,6 @@ target_link_libraries(my_exe Olm::Olm)
 
 ### Bindings
 
-#### JavaScript
-
-The recommended way to build the JavaScript bindings is using
-[Nix](https://nixos.org/).  With Nix, you can run
-
-```bash
-nix build .\#javascript
-```
-
-to build the bindings.
-
-If you do not have Nix you can, install emscripten from https://emscripten.org/
-and then run:
-
-```bash
-make js
-```
-
-Emscripten can also be run via Docker, in which case, you need to pass through
-the EMCC_CLOSURE_ARGS environment variable.
-
 #### Objective-C
 
 To build the Xcode workspace for Objective-C bindings, run:
@@ -213,7 +187,7 @@ make static
 ## Bindings
 
 libolm can be used in different environments using bindings. In addition to the
-JavaScript, Python, and Objective-C bindings included in this
+Python and Objective-C bindings included in this
 repository, some bindings are (in alphabetical order):
 
 - [cl-megolm](https://github.com/K1D77A/cl-megolm) (MIT) Common Lisp bindings
@@ -237,8 +211,7 @@ endorsed by the Matrix.org Foundation C.I.C.
 ## Release process
 
 First: bump version numbers in ``common.mk``, ``CMakeLists.txt``,
-``javascript/package.json``, ``python/pyproject.toml``, ``OLMKit.podspec``,
-and ``Package.swift``.
+``python/pyproject.toml``, ``OLMKit.podspec``, and ``Package.swift``.
 
 Also, ensure the changelog is up to date, and that everything is committed to
 git.
@@ -251,14 +224,6 @@ make clean
 
 # build and test C library
 make test
-
-# build and test JS wrapper
-make js
-(cd javascript && \
-     npm run test && \
-     sha256sum olm.js olm_legacy.js olm.wasm > checksums.txt && \
-     gpg -b -a -u F75FDC22C1DE8453 checksums.txt && \
-     npm publish)
 
 VERSION=x.y.z
 git tag $VERSION -s
@@ -273,10 +238,9 @@ pod trunk push OLMKit.podspec --use-libraries --allow-warnings
 pod search OLMKit
 ```
 
-Python and JavaScript packages are published to the registry at
+Python packages are published to the registry at
 <https://gitlab.matrix.org/matrix-org/olm/-/packages>.  The GitLab
-documentation contains instructions on how to set up twine (Python) and npm
-(JavaScript) to upload to the registry.
+documentation contains instructions on how to set up twine to upload to the registry.
 
 ## Design
 

@@ -32,12 +32,6 @@ test:lib:
     paths:
       - build/tests/Testing/Temporary/
 
-trigger:javascript:
-  stage: trigger
-  trigger:
-    strategy: depend
-    include: javascript/.gitlab-ci.yml
-
 trigger:python:
   stage: trigger
   trigger:
