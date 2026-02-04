@@ -32,12 +32,6 @@ test:lib:
     paths:
       - build/tests/Testing/Temporary/
 
-trigger:android:
-  stage: trigger
-  trigger:
-    strategy: depend
-    include: android/.gitlab-ci.yml
-
 trigger:javascript:
   stage: trigger
   trigger:

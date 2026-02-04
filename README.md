@@ -44,7 +44,7 @@ The key benefits of vodozemac are:
 >   primitives used by libolm.
 
 All the client SDKs maintained by the Matrix core team
-(matrix-rust-sdk, matrix-js-sdk, matrix-ios-sdk and matrix-android-sdk2) now
+(matrix-rust-sdk, matrix-js-sdk and matrix-ios-sdk) now
 support vodozemac as their E2EE implementation - and the majority of apps built
 on them (e.g. all variants of Element Web/Desktop/iOS/Android and Element X
 iOS/Android) now use vodozemac.
@@ -112,11 +112,6 @@ Currently, we try to provide packages for all supported versions of Python on
 x86-64, i686, and aarch64, but we cannot guarantee that packages for all
 versions will be available on all architectures.
 
-#### Android
-
-Pre-built Android bindings are available at
-<https://gitlab.matrix.org/matrix-org/olm/-/packages?type=Maven>.
-
 ## Building
 
 To build olm as a shared library run:
@@ -170,15 +165,6 @@ make js
 Emscripten can also be run via Docker, in which case, you need to pass through
 the EMCC_CLOSURE_ARGS environment variable.
 
-#### Android
-
-To build the android project for Android bindings, run:
-
-```bash
-cd android
-./gradlew clean build
-```
-
 #### Objective-C
 
 To build the Xcode workspace for Objective-C bindings, run:
@@ -227,7 +213,7 @@ make static
 ## Bindings
 
 libolm can be used in different environments using bindings. In addition to the
-JavaScript, Python, Java (Android), and Objective-C bindings included in this
+JavaScript, Python, and Objective-C bindings included in this
 repository, some bindings are (in alphabetical order):
 
 - [cl-megolm](https://github.com/K1D77A/cl-megolm) (MIT) Common Lisp bindings
@@ -252,7 +238,7 @@ endorsed by the Matrix.org Foundation C.I.C.
 
 First: bump version numbers in ``common.mk``, ``CMakeLists.txt``,
 ``javascript/package.json``, ``python/pyproject.toml``, ``OLMKit.podspec``,
-``Package.swift``, and ``android/gradle.properties``.
+and ``Package.swift``.
 
 Also, ensure the changelog is up to date, and that everything is committed to
 git.
@@ -291,15 +277,6 @@ Python and JavaScript packages are published to the registry at
 <https://gitlab.matrix.org/matrix-org/olm/-/packages>.  The GitLab
 documentation contains instructions on how to set up twine (Python) and npm
 (JavaScript) to upload to the registry.
-
-To publish the Android library to MavenCentral (you will need some secrets), in the /android folder:
- - Run the command `./gradlew clean build publish --no-daemon --no-parallel --stacktrace`. The generated AAR must be approx 500 kb.
- - Connect to https://s01.oss.sonatype.org
- - Click on Staging Repositories and check the the files have been uploaded
- - Click on close
- - Wait (check Activity tab until step "Repository closed" is displayed)
- - Click on release. The staging repository will disappear
- - Check that the release is available in https://repo1.maven.org/maven2/org/matrix/android/olm-sdk/ (it can take a few minutes)
 
 ## Design
 
