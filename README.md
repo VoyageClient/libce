@@ -23,7 +23,7 @@ details.
 
 ## Building
 
-To build olm as a shared library run:
+To build libce as a shared library run:
 
 ```bash
 cmake . -Bbuild
@@ -37,7 +37,7 @@ cd build/tests
 ctest .
 ```
 
-To build olm as a static library (which still needs libstdc++ dynamically) run:
+To build libce as a static library (which still needs libstdc++ dynamically) run:
 
 ```bash
 cmake . -Bbuild -DBUILD_SHARED_LIBS=NO
@@ -53,12 +53,12 @@ target_link_libraries(my_exe libce::libce)
 
 ### Using make instead of cmake
 
-**WARNING:** Using cmake is the preferred method for building the olm library;
+**WARNING:** Using cmake is the preferred method for building the libce library;
 the Makefile may be removed in the future or have functionality removed.  In
 addition, the Makefile may make certain assumptions about your system and is
 not as well tested.
 
-To build olm as a dynamic library, run:
+To build libce as a dynamic library, run:
 
 ```bash
 make
@@ -70,7 +70,7 @@ To run the tests, run:
 make test
 ```
 
-To build olm as a static library, run:
+To build libce as a static library, run:
 
 ```bash
 make static
@@ -105,7 +105,7 @@ rewritten as the need ariases.
 
 ### Error Handling
 
-All C functions in the API for olm return ``olm_error()`` on error.
+All C functions in the API for libce return ``olm_error()`` on error.
 
 ### Random Numbers
 
