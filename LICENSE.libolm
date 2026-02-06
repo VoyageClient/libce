@@ -1,8 +1,8 @@
-libce - Fast & Secure libolm fork
+libolm
 
-Copyright © 2026 Frantic <frantic@paranoia.wf>
-
-See also the file LICENSE.libolm.
+Copyright © 2015-2016 OpenMarket Ltd
+Copyright © 2018-2019 New Vector Ltd
+Copyright © 2021 The Matrix.org Foundation C.I.C.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
