@@ -158,7 +158,7 @@ const size_t junk_pickle_length = add_junk_suffix_to_pickle(
     pickle_length,
     junk_length);
 
-CHECK_EQ(std::size_t(-1),
+CHECK_EQ(SIZE_MAX,
     olm_unpickle_pk_decryption(
         decryption,
         PICKLE_KEY, strlen((char *)PICKLE_KEY),

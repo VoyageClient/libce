@@ -30,8 +30,8 @@ struct MockRandom {
 };
 
 std::uint8_t * check_malloc(std::size_t size) {
-    if (size == std::size_t(-1)) {
-        CHECK_NE(std::size_t(-1), size);
+    if (size == SIZE_MAX) {
+        CHECK_NE(SIZE_MAX, size);
     }
     return (std::uint8_t *)::malloc(size);
 }
@@ -83,7 +83,7 @@ void * a_session_buffer = check_malloc(::olm_session_size());
 std::size_t a_rand_size = ::olm_create_outbound_session_random_length(a_session);
 void * a_rand = check_malloc(a_rand_size);
 mock_random_a(a_rand, a_rand_size);
-CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_outbound_session(
     a_session, a_account,
     b_id_keys + 15, 43,
     b_ot_keys + 25, 43,
@@ -101,8 +101,8 @@ void * message_1 = check_malloc(message_1_size);
 std::size_t a_message_random_size = ::olm_encrypt_random_length(a_session);
 void * a_message_random = check_malloc(a_message_random_size);
 mock_random_a(a_message_random, a_message_random_size);
-CHECK_EQ(std::size_t(0), ::olm_encrypt_message_type(a_session));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_EQ(0, ::olm_encrypt_message_type(a_session));
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     a_session,
     plaintext, 12,
     a_message_random, a_message_random_size,
@@ -136,7 +136,7 @@ free(plaintext_1);
 free(message_1);
 
 CHECK_NE(
-    std::size_t(-1), ::olm_remove_one_time_keys(b_account, b_session)
+    SIZE_MAX, ::olm_remove_one_time_keys(b_account, b_session)
 );
 
 for (unsigned i = 0; i < 8; ++i) {
@@ -147,7 +147,7 @@ for (unsigned i = 0; i < 8; ++i) {
     void * rnd_a = check_malloc(rnd_a_size);
     mock_random_a(rnd_a, rnd_a_size);
     std::size_t type_a = ::olm_encrypt_message_type(a_session);
-    CHECK_NE(std::size_t(-1), ::olm_encrypt(
+    CHECK_NE(SIZE_MAX, ::olm_encrypt(
         a_session, plaintext, 12, rnd_a, rnd_a_size, msg_a, msg_a_size
     ));
     free(rnd_a);
@@ -173,7 +173,7 @@ for (unsigned i = 0; i < 8; ++i) {
     void * rnd_b = check_malloc(rnd_b_size);
     mock_random_b(rnd_b, rnd_b_size);
     std::size_t type_b = ::olm_encrypt_message_type(b_session);
-    CHECK_NE(std::size_t(-1), ::olm_encrypt(
+    CHECK_NE(SIZE_MAX, ::olm_encrypt(
             b_session, plaintext, 12, rnd_b, rnd_b_size, msg_b, msg_b_size
     ));
     free(rnd_b);

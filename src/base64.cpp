@@ -83,7 +83,7 @@ std::size_t olm::decode_base64_length(
     std::size_t input_length
 ) {
     if (input_length % 4 == 1) {
-        return std::size_t(-1);
+        return SIZE_MAX;
     } else {
         return 3 * ((input_length + 2) / 4) + (input_length + 2) % 4 - 2;
     }
@@ -96,8 +96,8 @@ std::size_t olm::decode_base64(
 ) {
     size_t raw_length = olm::decode_base64_length(input_length);
 
-    if (raw_length == std::size_t(-1)) {
-        return std::size_t(-1);
+    if (raw_length == SIZE_MAX) {
+        return SIZE_MAX;
     }
 
     std::uint8_t const * end = input + (input_length / 4) * 4;

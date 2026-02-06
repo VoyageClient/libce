@@ -209,7 +209,7 @@ std::size_t _olm_crypto_aes_decrypt_cbc(
     olm::unset(block1);
     olm::unset(block2);
     std::size_t padding = output[input_length - 1];
-    return (padding > input_length) ? std::size_t(-1) : (input_length - padding);
+    return (padding > input_length) ? SIZE_MAX : (input_length - padding);
 }
 
 

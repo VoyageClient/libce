@@ -51,7 +51,7 @@ TEST_CASE("Pickle outbound group session") {
         pickle_length,
         junk_length);
 
-    CHECK_EQ(std::size_t(-1),
+    CHECK_EQ(SIZE_MAX,
         olm_unpickle_outbound_group_session(
             session,
             "secret_key", 10,
@@ -105,7 +105,7 @@ TEST_CASE("Pickle inbound group session") {
         pickle_length,
         junk_length);
 
-    CHECK_EQ(std::size_t(-1),
+    CHECK_EQ(SIZE_MAX,
         olm_unpickle_inbound_group_session(
             session,
             "secret_key", 10,

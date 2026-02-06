@@ -41,7 +41,7 @@ struct _olm_cipher_ops {
      *
      * The plain-text pointers and cipher-text pointers may be the same.
      *
-     * Returns size_t(-1) if the length of the cipher-text or the output
+     * Returns SIZE_MAX if the length of the cipher-text or the output
      * buffer is too small. Otherwise returns the length of the output buffer.
      */
     size_t (*encrypt)(
@@ -71,7 +71,7 @@ struct _olm_cipher_ops {
      *
      * The plain-text pointers and cipher-text pointers may be the same.
      *
-     *  Returns size_t(-1) if the length of the plain-text buffer is too
+     *  Returns SIZE_MAX if the length of the plain-text buffer is too
      *  small or if the authentication check fails. Otherwise returns the length
      *  of the plain text.
      */

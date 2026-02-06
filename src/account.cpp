@@ -64,7 +64,7 @@ std::size_t olm::Account::remove_key(
     ) {
         return prev_fallback_key.id;
     }
-    return std::size_t(-1);
+    return SIZE_MAX;
 }
 
 std::size_t olm::Account::new_account_random_length() const {
@@ -76,7 +76,7 @@ std::size_t olm::Account::new_account(
 ) {
     if (random_length < new_account_random_length()) {
         last_error = OlmErrorCode::OLM_NOT_ENOUGH_RANDOM;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     _olm_crypto_ed25519_generate_key(random, &identity_keys.ed25519_key);
@@ -130,7 +130,7 @@ std::size_t olm::Account::get_identity_json(
 
     if (identity_json_length < expected_length) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     *(pos++) = '{';
@@ -166,7 +166,7 @@ std::size_t olm::Account::sign(
 ) {
     if (signature_length < this->signature_length()) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     _olm_crypto_ed25519_sign(
         &identity_keys.ed25519_key, message, message_length, signature
@@ -205,7 +205,7 @@ std::size_t olm::Account::get_one_time_keys_json(
     std::uint8_t * pos = one_time_json;
     if (one_time_json_length < get_one_time_keys_json_length()) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     *(pos++) = '{';
     pos = write_string(pos, KEY_JSON_CURVE25519);
@@ -267,7 +267,7 @@ std::size_t olm::Account::generate_one_time_keys(
 ) {
     if (random_length < generate_one_time_keys_random_length(number_of_keys)) {
         last_error = OlmErrorCode::OLM_NOT_ENOUGH_RANDOM;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     for (unsigned i = 0; i < number_of_keys; ++i) {
         OneTimeKey & key = *one_time_keys.insert(one_time_keys.begin());
@@ -288,7 +288,7 @@ std::size_t olm::Account::generate_fallback_key(
 ) {
     if (random_length < generate_fallback_key_random_length()) {
         last_error = OlmErrorCode::OLM_NOT_ENOUGH_RANDOM;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     if (num_fallback_keys < 2) {
         num_fallback_keys++;
@@ -321,7 +321,7 @@ std::size_t olm::Account::get_fallback_key_json(
     std::uint8_t * pos = fallback_json;
     if (fallback_json_length < get_fallback_key_json_length()) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     *(pos++) = '{';
     pos = write_string(pos, KEY_JSON_CURVE25519);
@@ -363,7 +363,7 @@ std::size_t olm::Account::get_unpublished_fallback_key_json(
     std::uint8_t * pos = fallback_json;
     if (fallback_json_length < get_unpublished_fallback_key_json_length()) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     *(pos++) = '{';
     pos = write_string(pos, KEY_JSON_CURVE25519);

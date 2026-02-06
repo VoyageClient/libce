@@ -49,7 +49,7 @@ std::size_t olm::Session::new_outbound_session(
 ) {
     if (random_length < new_outbound_session_random_length()) {
         last_error = OlmErrorCode::OLM_NOT_ENOUGH_RANDOM;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     _olm_curve25519_key_pair base_key;
@@ -83,7 +83,7 @@ std::size_t olm::Session::new_outbound_session(
     olm::unset(ratchet_key);
     olm::unset(secret);
 
-    return std::size_t(0);
+    return 0;
 }
 
 namespace {
@@ -117,7 +117,7 @@ std::size_t olm::Session::new_inbound_session(
 
     if (!check_message_fields(reader, their_identity_key)) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     if (reader.identity_key && their_identity_key) {
@@ -126,7 +126,7 @@ std::size_t olm::Session::new_inbound_session(
         );
         if (!same) {
             last_error = OlmErrorCode::OLM_BAD_MESSAGE_KEY_ID;
-            return std::size_t(-1);
+            return SIZE_MAX;
         }
     }
 
@@ -143,7 +143,7 @@ std::size_t olm::Session::new_inbound_session(
     if (!message_reader.ratchet_key
             || message_reader.ratchet_key_length != CURVE25519_KEY_LENGTH) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     _olm_curve25519_public_key ratchet_key;
@@ -155,7 +155,7 @@ std::size_t olm::Session::new_inbound_session(
 
     if (!our_one_time_key) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_KEY_ID;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     _olm_curve25519_key_pair const & bob_identity_key = (
@@ -176,7 +176,7 @@ std::size_t olm::Session::new_inbound_session(
 
     olm::unset(secret);
 
-    return std::size_t(0);
+    return 0;
 }
 
 
@@ -190,7 +190,7 @@ std::size_t olm::Session::session_id(
 ) {
     if (id_length < session_id_length()) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     std::uint8_t tmp[CURVE25519_KEY_LENGTH * 3];
     std::uint8_t * pos = tmp;
@@ -276,7 +276,7 @@ std::size_t olm::Session::encrypt(
 ) {
     if (message_length < encrypt_message_length(plaintext_length)) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     std::uint8_t * message_body;
     std::size_t message_body_length = ratchet.encrypt_output_length(
@@ -308,7 +308,7 @@ std::size_t olm::Session::encrypt(
         message_body, message_body_length
     );
 
-    if (result == std::size_t(-1)) {
+    if (result == SIZE_MAX) {
         last_error = ratchet.last_error;
         ratchet.last_error = OlmErrorCode::OLM_SUCCESS;
         return result;
@@ -332,7 +332,7 @@ std::size_t olm::Session::decrypt_max_plaintext_length(
         decode_one_time_key_message(reader, message, message_length);
         if (!reader.message) {
             last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-            return std::size_t(-1);
+            return SIZE_MAX;
         }
         message_body = reader.message;
         message_body_length = reader.message_length;
@@ -342,7 +342,7 @@ std::size_t olm::Session::decrypt_max_plaintext_length(
         message_body, message_body_length
     );
 
-    if (result == std::size_t(-1)) {
+    if (result == SIZE_MAX) {
         last_error = ratchet.last_error;
         ratchet.last_error = OlmErrorCode::OLM_SUCCESS;
     }
@@ -365,7 +365,7 @@ std::size_t olm::Session::decrypt(
         decode_one_time_key_message(reader, message, message_length);
         if (!reader.message) {
             last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-            return std::size_t(-1);
+            return SIZE_MAX;
         }
         message_body = reader.message;
         message_body_length = reader.message_length;
@@ -375,7 +375,7 @@ std::size_t olm::Session::decrypt(
         message_body, message_body_length, plaintext, max_plaintext_length
     );
 
-    if (result == std::size_t(-1)) {
+    if (result == SIZE_MAX) {
         last_error = ratchet.last_error;
         ratchet.last_error = OlmErrorCode::OLM_SUCCESS;
         return result;

@@ -100,12 +100,12 @@ static std::size_t verify_mac_and_decrypt_for_existing_chain(
     std::uint8_t * plaintext, std::size_t max_plaintext_length
 ) {
     if (reader.counter < chain.index) {
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     /* Limit the number of hashes we're prepared to compute */
     if (reader.counter - chain.index > MAX_MESSAGE_GAP) {
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     olm::ChainKey new_chain = chain;
@@ -138,12 +138,12 @@ static std::size_t verify_mac_and_decrypt_for_new_chain(
     /* They shouldn't move to a new chain until we've sent them a message
      * acknowledging the last one */
     if (session.sender_chain.empty()) {
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     /* Limit the number of hashes we're prepared to compute */
     if (reader.counter > MAX_MESSAGE_GAP) {
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     olm::load_array(new_chain.ratchet_key.public_key, reader.ratchet_key);
 
@@ -414,11 +414,11 @@ std::size_t olm::Ratchet::encrypt(
 
     if (random_length < encrypt_random_length()) {
         last_error = OlmErrorCode::OLM_NOT_ENOUGH_RANDOM;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
     if (max_output_length < output_length) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     if (sender_chain.empty()) {
@@ -479,7 +479,7 @@ std::size_t olm::Ratchet::decrypt_max_plaintext_length(
 
     if (!reader.ciphertext) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     return ratchet_cipher->ops->decrypt_max_plaintext_length(
@@ -499,12 +499,12 @@ std::size_t olm::Ratchet::decrypt(
 
     if (reader.version != PROTOCOL_VERSION) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_VERSION;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     if (!reader.has_counter || !reader.ratchet_key || !reader.ciphertext) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     std::size_t max_length = ratchet_cipher->ops->decrypt_max_plaintext_length(
@@ -514,12 +514,12 @@ std::size_t olm::Ratchet::decrypt(
 
     if (max_plaintext_length < max_length) {
         last_error = OlmErrorCode::OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     if (reader.ratchet_key_length != CURVE25519_KEY_LENGTH) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     ReceiverChain * chain = nullptr;
@@ -534,7 +534,7 @@ std::size_t olm::Ratchet::decrypt(
         }
     }
 
-    std::size_t result = std::size_t(-1);
+    std::size_t result = SIZE_MAX;
 
     if (!chain) {
         result = verify_mac_and_decrypt_for_new_chain(
@@ -557,7 +557,7 @@ std::size_t olm::Ratchet::decrypt(
                     plaintext, max_plaintext_length
                 );
 
-                if (result != std::size_t(-1)) {
+                if (result != SIZE_MAX) {
                     /* Remove the key from the skipped keys now that we've
                      * decoded the message it corresponds to. */
                     olm::unset(skipped);
@@ -573,9 +573,9 @@ std::size_t olm::Ratchet::decrypt(
         );
     }
 
-    if (result == std::size_t(-1)) {
+    if (result == SIZE_MAX) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_MAC;
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     if (!chain) {

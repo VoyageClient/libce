@@ -58,7 +58,7 @@ std::vector<std::uint8_t> pickle2(pickle1);
 
 std::vector<std::uint8_t> account_buffer2(::olm_account_size());
 ::OlmAccount *account2 = ::olm_account(account_buffer2.data());
-CHECK_NE(std::size_t(-1), ::olm_unpickle_account(
+CHECK_NE(SIZE_MAX, ::olm_unpickle_account(
     account2, "secret_key", 10, pickle2.data(), pickle_length
 ));
 CHECK_EQ(pickle_length, ::olm_pickle_account_length(account2));
@@ -79,7 +79,7 @@ CHECK_EQ(pickle_length, res);
 const size_t junk_pickle_length = add_junk_suffix_to_pickle(
     "secret_key", 10, junk_pickle.data(), pickle_length, junk_length);
 
-CHECK_EQ(std::size_t(-1),
+CHECK_EQ(SIZE_MAX,
     ::olm_unpickle_account(account, "secret_key", 10,
         junk_pickle.data(), junk_pickle_length));
 CHECK_EQ(OLM_PICKLE_EXTRA_DATA, olm_account_last_error_code(account));
@@ -99,7 +99,7 @@ CHECK_EQ(OLM_PICKLE_EXTRA_DATA, olm_account_last_error_code(account));
     std::vector<std::uint8_t> account_buffer(::olm_account_size());
     ::OlmAccount *account = ::olm_account(account_buffer.data());
     CHECK_EQ(
-        std::size_t(-1),
+        SIZE_MAX,
         ::olm_unpickle_account(
             account, "", 0, pickle, sizeof(pickle)-1
         )
@@ -148,7 +148,7 @@ std::vector<std::uint8_t> pickle2(pickle1);
 
 std::vector<std::uint8_t> session_buffer2(::olm_session_size());
 ::OlmSession *session2 = ::olm_session(session_buffer2.data());
-CHECK_NE(std::size_t(-1), ::olm_unpickle_session(
+CHECK_NE(SIZE_MAX, ::olm_unpickle_session(
     session2, "secret_key", 10, pickle2.data(), pickle_length
 ));
 CHECK_EQ(pickle_length, ::olm_pickle_session_length(session2));
@@ -169,7 +169,7 @@ CHECK_EQ(pickle_length, res);
 const size_t junk_pickle_length = add_junk_suffix_to_pickle(
     "secret_key", 10, junk_pickle.data(), pickle_length, junk_length);
 
-CHECK_EQ(std::size_t(-1),
+CHECK_EQ(SIZE_MAX,
     ::olm_unpickle_session(session, "secret_key", 10,
         junk_pickle.data(), junk_pickle_length));
 CHECK_EQ(OLM_PICKLE_EXTRA_DATA, olm_session_last_error_code(session));
@@ -210,7 +210,7 @@ std::vector<std::uint8_t> a_session_buffer(::olm_session_size());
 ::OlmSession *a_session = ::olm_session(a_session_buffer.data());
 std::vector<std::uint8_t> a_rand(::olm_create_outbound_session_random_length(a_session));
 mock_random_a(a_rand.data(), a_rand.size());
-CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_outbound_session(
     a_session, a_account,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key
     b_ot_keys.data() + 25, 43, // B's curve25519 one time key
@@ -221,8 +221,8 @@ std::uint8_t plaintext[] = "Hello, World";
 std::vector<std::uint8_t> message_1(::olm_encrypt_message_length(a_session, 12));
 std::vector<std::uint8_t> a_message_random(::olm_encrypt_random_length(a_session));
 mock_random_a(a_message_random.data(), a_message_random.size());
-CHECK_EQ(std::size_t(0), ::olm_encrypt_message_type(a_session));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_EQ(0, ::olm_encrypt_message_type(a_session));
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     a_session,
     plaintext, 12,
     a_message_random.data(), a_message_random.size(),
@@ -255,7 +255,7 @@ CHECK_EQ(std::size_t(1), ::olm_matches_inbound_session_from(
 
 // Check that the inbound session isn't from a different user.
 std::memcpy(tmp_message_1.data(), message_1.data(), message_1.size());
-CHECK_EQ(std::size_t(0), ::olm_matches_inbound_session_from(
+CHECK_EQ(0, ::olm_matches_inbound_session_from(
     b_session,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key.
     tmp_message_1.data(), message_1.size()
@@ -279,7 +279,7 @@ std::vector<std::uint8_t> message_2(::olm_encrypt_message_length(b_session, 12))
 std::vector<std::uint8_t> b_message_random(::olm_encrypt_random_length(b_session));
 mock_random_b(b_message_random.data(), b_message_random.size());
 CHECK_EQ(std::size_t(1), ::olm_encrypt_message_type(b_session));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     b_session,
     plaintext, 12,
     b_message_random.data(), b_message_random.size(),
@@ -300,19 +300,19 @@ CHECK_EQ(std::size_t(12), ::olm_decrypt(
 CHECK_EQ_SIZE(plaintext, plaintext_2.data(), 12);
 
 std::memcpy(tmp_message_2.data(), message_2.data(), message_2.size());
-CHECK_EQ(std::size_t(-1), ::olm_decrypt(
+CHECK_EQ(SIZE_MAX, ::olm_decrypt(
     a_session, 1,
     tmp_message_2.data(), message_2.size(),
     plaintext_2.data(), plaintext_2.size()
 ));
 
 std::vector<std::uint8_t> a_session_id(::olm_session_id_length(a_session));
-CHECK_NE(std::size_t(-1), ::olm_session_id(
+CHECK_NE(SIZE_MAX, ::olm_session_id(
     a_session, a_session_id.data(), a_session_id.size()
 ));
 
 std::vector<std::uint8_t> b_session_id(::olm_session_id_length(b_session));
-CHECK_NE(std::size_t(-1), ::olm_session_id(
+CHECK_NE(SIZE_MAX, ::olm_session_id(
     b_session, b_session_id.data(), b_session_id.size()
 ));
 
@@ -353,7 +353,7 @@ std::vector<std::uint8_t> a_session_buffer(::olm_session_size());
 ::OlmSession *a_session = ::olm_session(a_session_buffer.data());
 std::vector<std::uint8_t> a_rand(::olm_create_outbound_session_random_length(a_session));
 mock_random_a(a_rand.data(), a_rand.size());
-CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_outbound_session(
     a_session, a_account,
     b_id_keys.data() + 15, 43,
     b_ot_keys.data() + 25, 43,
@@ -364,8 +364,8 @@ std::uint8_t plaintext[] = "Hello, World";
 std::vector<std::uint8_t> message_1(::olm_encrypt_message_length(a_session, 12));
 std::vector<std::uint8_t> a_message_random(::olm_encrypt_random_length(a_session));
 mock_random_a(a_message_random.data(), a_message_random.size());
-CHECK_EQ(std::size_t(0), ::olm_encrypt_message_type(a_session));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_EQ(0, ::olm_encrypt_message_type(a_session));
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     a_session,
     plaintext, 12,
     a_message_random.data(), a_message_random.size(),
@@ -396,7 +396,7 @@ for (unsigned i = 0; i < 8; ++i) {
     std::vector<std::uint8_t> rnd_a(::olm_encrypt_random_length(a_session));
     mock_random_a(rnd_a.data(), rnd_a.size());
     std::size_t type_a = ::olm_encrypt_message_type(a_session);
-    CHECK_NE(std::size_t(-1), ::olm_encrypt(
+    CHECK_NE(SIZE_MAX, ::olm_encrypt(
         a_session, plaintext, 12, rnd_a.data(), rnd_a.size(), msg_a.data(), msg_a.size()
     ));
 
@@ -414,7 +414,7 @@ for (unsigned i = 0; i < 8; ++i) {
     std::vector<std::uint8_t> rnd_b(::olm_encrypt_random_length(b_session));
     mock_random_b(rnd_b.data(), rnd_b.size());
     std::size_t type_b = ::olm_encrypt_message_type(b_session);
-    CHECK_NE(std::size_t(-1), ::olm_encrypt(
+    CHECK_NE(SIZE_MAX, ::olm_encrypt(
         b_session, plaintext, 12, rnd_b.data(), rnd_b.size(), msg_b.data(), msg_b.size()
     ));
 
@@ -467,7 +467,7 @@ std::vector<std::uint8_t> a_session1_buffer(::olm_session_size());
 ::OlmSession *a_session1 = ::olm_session(a_session1_buffer.data());
 std::vector<std::uint8_t> a_rand(::olm_create_outbound_session_random_length(a_session1));
 mock_random_a(a_rand.data(), a_rand.size());
-CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_outbound_session(
     a_session1, a_account,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key
     b_fb_key.data() + 25, 43, // B's curve25519 one time key
@@ -478,8 +478,8 @@ std::uint8_t plaintext[] = "Hello, World";
 std::vector<std::uint8_t> message_1(::olm_encrypt_message_length(a_session1, 12));
 std::vector<std::uint8_t> a_message_random(::olm_encrypt_random_length(a_session1));
 mock_random_a(a_message_random.data(), a_message_random.size());
-CHECK_EQ(std::size_t(0), ::olm_encrypt_message_type(a_session1));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_EQ(0, ::olm_encrypt_message_type(a_session1));
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     a_session1,
     plaintext, 12,
     a_message_random.data(), a_message_random.size(),
@@ -512,7 +512,7 @@ CHECK_EQ(std::size_t(1), ::olm_matches_inbound_session_from(
 
 // Check that the inbound session isn't from a different user.
 std::memcpy(tmp_message_1.data(), message_1.data(), message_1.size());
-CHECK_EQ(std::size_t(0), ::olm_matches_inbound_session_from(
+CHECK_EQ(0, ::olm_matches_inbound_session_from(
     b_session1,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key.
     tmp_message_1.data(), message_1.size()
@@ -541,7 +541,7 @@ mock_random_b(f_random.data(), f_random.size());
 std::vector<std::uint8_t> a_session2_buffer(::olm_session_size());
 ::OlmSession *a_session2 = ::olm_session(a_session2_buffer.data());
 mock_random_a(a_rand.data(), a_rand.size());
-CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_outbound_session(
     a_session2, a_account,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key
     b_fb_key.data() + 25, 43, // B's curve25519 one time key
@@ -549,8 +549,8 @@ CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
 ));
 std::vector<std::uint8_t> message_2(::olm_encrypt_message_length(a_session2, 12));
 mock_random_a(a_message_random.data(), a_message_random.size());
-CHECK_EQ(std::size_t(0), ::olm_encrypt_message_type(a_session2));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_EQ(0, ::olm_encrypt_message_type(a_session2));
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     a_session2,
     plaintext, 12,
     a_message_random.data(), a_message_random.size(),
@@ -561,7 +561,7 @@ CHECK_NE(std::size_t(-1), ::olm_encrypt(
 std::vector<std::uint8_t> tmp_message_2(message_2);
 std::vector<std::uint8_t> b_session2_buffer(::olm_session_size());
 ::OlmSession *b_session2 = ::olm_session(b_session2_buffer.data());
-CHECK_NE(std::size_t(-1), ::olm_create_inbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_inbound_session(
     b_session2, b_account, tmp_message_2.data(), message_2.size()
 ));
 
@@ -583,7 +583,7 @@ CHECK_EQ(std::size_t(1), ::olm_matches_inbound_session_from(
 
 // Check that the inbound session isn't from a different user.
 std::memcpy(tmp_message_2.data(), message_2.data(), message_2.size());
-CHECK_EQ(std::size_t(0), ::olm_matches_inbound_session_from(
+CHECK_EQ(0, ::olm_matches_inbound_session_from(
     b_session2,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key.
     tmp_message_2.data(), message_2.size()
@@ -609,7 +609,7 @@ CHECK_EQ_SIZE(plaintext, plaintext_2.data(), 12);
 std::vector<std::uint8_t> a_session3_buffer(::olm_session_size());
 ::OlmSession *a_session3 = ::olm_session(a_session3_buffer.data());
 mock_random_a(a_rand.data(), a_rand.size());
-CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
+CHECK_NE(SIZE_MAX, ::olm_create_outbound_session(
     a_session3, a_account,
     b_id_keys.data() + 15, 43, // B's curve25519 identity key
     b_fb_key.data() + 25, 43, // B's curve25519 one time key
@@ -618,8 +618,8 @@ CHECK_NE(std::size_t(-1), ::olm_create_outbound_session(
 
 std::vector<std::uint8_t> message_3(::olm_encrypt_message_length(a_session3, 12));
 mock_random_a(a_message_random.data(), a_message_random.size());
-CHECK_EQ(std::size_t(0), ::olm_encrypt_message_type(a_session3));
-CHECK_NE(std::size_t(-1), ::olm_encrypt(
+CHECK_EQ(0, ::olm_encrypt_message_type(a_session3));
+CHECK_NE(SIZE_MAX, ::olm_encrypt(
     a_session3,
     plaintext, 12,
     a_message_random.data(), a_message_random.size(),
@@ -630,7 +630,7 @@ CHECK_NE(std::size_t(-1), ::olm_encrypt(
 std::vector<std::uint8_t> tmp_message_3(message_3);
 std::vector<std::uint8_t> b_session3_buffer(::olm_session_size());
 ::OlmSession *b_session3 = ::olm_session(b_session3_buffer.data());
-CHECK_EQ(std::size_t(-1), ::olm_create_inbound_session(
+CHECK_EQ(SIZE_MAX, ::olm_create_inbound_session(
     b_session3, b_account, tmp_message_3.data(), message_3.size()
 ));
 CHECK_EQ(
@@ -657,7 +657,7 @@ TEST_CASE("Old account (v3) unpickle test") {
     std::vector<std::uint8_t> account_buffer(::olm_account_size());
     ::OlmAccount *account = ::olm_account(account_buffer.data());
     CHECK_NE(
-        std::size_t(-1),
+        SIZE_MAX,
         ::olm_unpickle_account(
             account, "", 0, pickle, sizeof(pickle)-1
         )

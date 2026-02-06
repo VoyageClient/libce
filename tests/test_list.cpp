@@ -9,7 +9,7 @@ TEST_CASE("List insert") {
 
 olm::List<int, 4> test_list;
 
-CHECK_EQ(std::size_t(0), test_list.size());
+CHECK_EQ(0, test_list.size());
 
 for (int i = 0; i < 4; ++i) {
     test_list.insert(test_list.end(), i);
@@ -36,7 +36,7 @@ TEST_CASE("List insert beginning") {
 
 olm::List<int, 4> test_list;
 
-CHECK_EQ(std::size_t(0), test_list.size());
+CHECK_EQ(0, test_list.size());
 
 for (int i = 0; i < 4; ++i) {
     test_list.insert(test_list.begin(), i);
@@ -56,7 +56,7 @@ for (auto item : test_list) {
 TEST_CASE("List erase") {
 
 olm::List<int, 4> test_list;
-CHECK_EQ(std::size_t(0), test_list.size());
+CHECK_EQ(0, test_list.size());
 
 for (int i = 0; i < 4; ++i) {
     test_list.insert(test_list.end(), i);

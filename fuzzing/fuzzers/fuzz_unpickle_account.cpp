@@ -13,7 +13,7 @@ size_t fuzz_unpickle_account(
         if (object.last_error == OlmErrorCode::OLM_SUCCESS) {
             object.last_error = OlmErrorCode::OLM_CORRUPTED_PICKLE;
         }
-        return std::size_t(-1);
+        return SIZE_MAX;
     }
 
     return pickled_length;

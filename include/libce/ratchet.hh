@@ -122,7 +122,7 @@ struct CE_EXPORT Ratchet {
     std::size_t encrypt_random_length() const;
 
     /** Encrypt some plain-text. Returns the length of the encrypted message
-     * or std::size_t(-1) on failure. On failure last_error will be set with
+     * or SIZE_MAX on failure. On failure last_error will be set with
      * an error code. The last_error will be NOT_ENOUGH_RANDOM if the number
      * of random bytes is too small. The last_error will be
      * OUTPUT_BUFFER_TOO_SMALL if the output buffer is too small. */
@@ -139,7 +139,7 @@ struct CE_EXPORT Ratchet {
     );
 
     /** Decrypt a message. Returns the length of the decrypted plain-text or
-     * std::size_t(-1) on failure. On failure last_error will be set with an
+     * SIZE_MAX on failure. On failure last_error will be set with an
      * error code. The last_error will be OUTPUT_BUFFER_TOO_SMALL if the
      * plain-text buffer is too small. The last_error will be
      * BAD_MESSAGE_VERSION if the message was encrypted with an unsupported

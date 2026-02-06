@@ -30,8 +30,8 @@ struct MockRandom {
 };
 
 std::uint8_t * check_malloc(std::size_t size) {
-    if (size == std::size_t(-1)) {
-        CHECK_NE(std::size_t(-1), size);
+    if (size == SIZE_MAX) {
+        CHECK_NE(SIZE_MAX, size);
     }
     return (std::uint8_t *)::malloc(size);
 }
@@ -58,13 +58,13 @@ void * message = check_malloc(message_size);
 
 std::size_t signature_size = ::olm_account_signature_length(account);
 void * signature = check_malloc(signature_size);
-CHECK_NE(std::size_t(-1), ::olm_account_sign(
+CHECK_NE(SIZE_MAX, ::olm_account_sign(
     account, message, message_size, signature, signature_size
 ));
 
 std::size_t id_keys_size = ::olm_account_identity_keys_length(account);
 std::uint8_t * id_keys = (std::uint8_t *) check_malloc(id_keys_size);
-CHECK_NE(std::size_t(-1), ::olm_account_identity_keys(
+CHECK_NE(SIZE_MAX, ::olm_account_identity_keys(
     account, id_keys, id_keys_size
 ));
 
@@ -74,7 +74,7 @@ free(account_buffer);
 void * utility_buffer = check_malloc(::olm_utility_size());
 ::OlmUtility * utility = ::olm_utility(utility_buffer);
 
-CHECK_NE(std::size_t(-1), ::olm_ed25519_verify(
+CHECK_NE(SIZE_MAX, ::olm_ed25519_verify(
     utility, id_keys + 71, 43, message, message_size, signature, signature_size
 ));
 

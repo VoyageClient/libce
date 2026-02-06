@@ -100,7 +100,7 @@ CE_EXPORT void _olm_crypto_aes_encrypt_cbc(
 
 /** Decrypts the input using AES256 in CBC mode. The output buffer must be at
  * least the same size as the input buffer. Returns the length of the plaintext
- * without padding on success or std::size_t(-1) if the padding is invalid.
+ * without padding on success or SIZE_MAX if the padding is invalid.
  */
 CE_EXPORT size_t _olm_crypto_aes_decrypt_cbc(
     const struct _olm_aes256_key *key,

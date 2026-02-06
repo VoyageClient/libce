@@ -40,7 +40,7 @@ CE_EXPORT size_t _olm_encode_base64(
 
 /**
  * The number of bytes of raw data a length of unpadded base64 will encode to.
- * Returns size_t(-1) if the length is not a valid length for base64.
+ * Returns SIZE_MAX if the length is not a valid length for base64.
  */
 CE_EXPORT size_t _olm_decode_base64_length(
     size_t input_length

@@ -47,12 +47,12 @@ void check_session(const olm::Session &session) {
     );
 
     CHECK_EQ(
-        std::size_t(0),
+        0,
         session.ratchet.receiver_chains.size()
     );
 
     CHECK_EQ(
-        std::size_t(0),
+        0,
         session.ratchet.skipped_message_keys.size()
     );
 

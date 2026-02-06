@@ -79,7 +79,7 @@ std::vector<std::uint8_t> output(buf_length, 0);
 std::vector<std::uint8_t> expected_output(buf_length, 0);
 
 std::size_t output_length = ::_olm_decode_base64(input, input_length, output.data());
-REQUIRE_EQ(std::size_t(-1), output_length);
+REQUIRE_EQ(SIZE_MAX, output_length);
 CHECK_EQ(output, expected_output);
 }
 

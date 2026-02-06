@@ -31,7 +31,7 @@ CE_EXPORT std::uint8_t * encode_base64(
 
 /**
  * The number of bytes of raw data a length of unpadded base64 will encode to.
- * Returns std::size_t(-1) if the length is not a valid length for base64.
+ * Returns SIZE_MAX if the length is not a valid length for base64.
  */
 CE_EXPORT std::size_t decode_base64_length(
     std::size_t input_length
@@ -45,7 +45,7 @@ CE_EXPORT std::size_t decode_base64_length(
  *
  * Returns the number of bytes of raw data the base64 input decoded to. If the
  * input length supplied is not a valid length for base64, returns
- * std::size_t(-1) and does not decode.
+ * SIZE_MAX and does not decode.
  */
 CE_EXPORT std::size_t decode_base64(
     std::uint8_t const * input, std::size_t input_length,
