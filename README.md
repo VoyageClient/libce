@@ -1,7 +1,7 @@
 # libce - Fast & Secure libolm fork
 lib**c**reek-**e**ncrypt is an implementation of the Double Ratchet cryptographic ratchet
-described by https://whispersystems.org/docs/specifications/doubleratchet/, written in C and
-C++11 and exposed as a C API.
+described by https://whispersystems.org/docs/specifications/doubleratchet/ for Linux and BSD.
+It is written in C & C++11; exposed as a C API.
 
 The specification of the Olm ratchet can be found in [docs/olm.md](docs/olm.md).
 
