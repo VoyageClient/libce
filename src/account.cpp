@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/account.hh"
-#include "libce/base64.hh"
+#include "libce/base64.h"
 #include "libce/pickle.h"
 #include "libce/pickle.hh"
 #include "libce/memory.hh"
@@ -108,13 +108,13 @@ std::size_t olm::Account::get_identity_json_length() const {
     length += 1; /* { */
     length += sizeof(KEY_JSON_CURVE25519) - 1;
     length += 1; /* " */
-    length += olm::encode_base64_length(
+    length += _olm_encode_base64_length(
         sizeof(identity_keys.curve25519_key.public_key)
     );
     length += 2; /* ", */
     length += sizeof(KEY_JSON_ED25519) - 1;
     length += 1; /* " */
-    length += olm::encode_base64_length(
+    length += _olm_encode_base64_length(
         sizeof(identity_keys.ed25519_key.public_key)
     );
     length += 2; /* "} */
@@ -136,7 +136,7 @@ std::size_t olm::Account::get_identity_json(
     *(pos++) = '{';
     pos = write_string(pos, KEY_JSON_CURVE25519);
     *(pos++) = '\"';
-    pos = olm::encode_base64(
+    pos += _olm_encode_base64(
         identity_keys.curve25519_key.public_key.public_key,
         sizeof(identity_keys.curve25519_key.public_key.public_key),
         pos
@@ -144,7 +144,7 @@ std::size_t olm::Account::get_identity_json(
     *(pos++) = '\"'; *(pos++) = ',';
     pos = write_string(pos, KEY_JSON_ED25519);
     *(pos++) = '\"';
-    pos = olm::encode_base64(
+    pos += _olm_encode_base64(
         identity_keys.ed25519_key.public_key.public_key,
         sizeof(identity_keys.ed25519_key.public_key.public_key),
         pos
@@ -185,9 +185,9 @@ std::size_t olm::Account::get_one_time_keys_json_length(
         }
         is_empty = false;
         length += 2; /* {" */
-        length += olm::encode_base64_length(_olm_pickle_uint32_length(key.id));
+        length += _olm_encode_base64_length(_olm_pickle_uint32_length(key.id));
         length += 3; /* ":" */
-        length += olm::encode_base64_length(sizeof(key.key.public_key));
+        length += _olm_encode_base64_length(sizeof(key.key.public_key));
         length += 1; /* " */
     }
     if (is_empty) {
@@ -218,9 +218,9 @@ std::size_t olm::Account::get_one_time_keys_json(
         *(pos++) = '\"';
         std::uint8_t key_id[_olm_pickle_uint32_length(key.id)];
         _olm_pickle_uint32(key_id, key.id);
-        pos = olm::encode_base64(key_id, sizeof(key_id), pos);
+        pos += _olm_encode_base64(key_id, sizeof(key_id), pos);
         *(pos++) = '\"'; *(pos++) = ':'; *(pos++) = '\"';
-        pos = olm::encode_base64(
+        pos += _olm_encode_base64(
             key.key.public_key.public_key, sizeof(key.key.public_key.public_key), pos
         );
         *(pos++) = '\"';
@@ -307,9 +307,9 @@ std::size_t olm::Account::get_fallback_key_json_length(
     if (num_fallback_keys >= 1) {
         const OneTimeKey & key = current_fallback_key;
         length += 1; /* " */
-        length += olm::encode_base64_length(_olm_pickle_uint32_length(key.id));
+        length += _olm_encode_base64_length(_olm_pickle_uint32_length(key.id));
         length += 3; /* ":" */
-        length += olm::encode_base64_length(sizeof(key.key.public_key));
+        length += _olm_encode_base64_length(sizeof(key.key.public_key));
         length += 1; /* " */
     }
     return length;
@@ -331,9 +331,9 @@ std::size_t olm::Account::get_fallback_key_json(
         *(pos++) = '\"';
         std::uint8_t key_id[_olm_pickle_uint32_length(key.id)];
         _olm_pickle_uint32(key_id, key.id);
-        pos = olm::encode_base64(key_id, sizeof(key_id), pos);
+        pos += _olm_encode_base64(key_id, sizeof(key_id), pos);
         *(pos++) = '\"'; *(pos++) = ':'; *(pos++) = '\"';
-        pos = olm::encode_base64(
+        pos += _olm_encode_base64(
             key.key.public_key.public_key, sizeof(key.key.public_key.public_key), pos
         );
         *(pos++) = '\"';
@@ -349,9 +349,9 @@ std::size_t olm::Account::get_unpublished_fallback_key_json_length(
     const OneTimeKey & key = current_fallback_key;
     if (num_fallback_keys >= 1 && !key.published) {
         length += 1; /* " */
-        length += olm::encode_base64_length(_olm_pickle_uint32_length(key.id));
+        length += _olm_encode_base64_length(_olm_pickle_uint32_length(key.id));
         length += 3; /* ":" */
-        length += olm::encode_base64_length(sizeof(key.key.public_key));
+        length += _olm_encode_base64_length(sizeof(key.key.public_key));
         length += 1; /* " */
     }
     return length;
@@ -373,9 +373,9 @@ std::size_t olm::Account::get_unpublished_fallback_key_json(
         *(pos++) = '\"';
         std::uint8_t key_id[_olm_pickle_uint32_length(key.id)];
         _olm_pickle_uint32(key_id, key.id);
-        pos = olm::encode_base64(key_id, sizeof(key_id), pos);
+        pos += _olm_encode_base64(key_id, sizeof(key_id), pos);
         *(pos++) = '\"'; *(pos++) = ':'; *(pos++) = '\"';
-        pos = olm::encode_base64(
+        pos += _olm_encode_base64(
             key.key.public_key.public_key, sizeof(key.key.public_key.public_key), pos
         );
         *(pos++) = '\"';
