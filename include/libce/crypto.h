@@ -48,40 +48,40 @@ extern "C" {
 /** length of an aes256 initialisation vector */
 #define AES256_IV_LENGTH 16
 
-struct _olm_aes256_key {
+typedef struct _olm_aes256_key {
     uint8_t key[AES256_KEY_LENGTH];
-};
+} _olm_aes256_key;
 
-struct _olm_aes256_iv {
+typedef struct _olm_aes256_iv {
     uint8_t iv[AES256_IV_LENGTH];
-};
+} _olm_aes256_iv;
 
 
-struct _olm_curve25519_public_key {
+typedef struct _olm_curve25519_public_key {
     uint8_t public_key[CURVE25519_KEY_LENGTH];
-};
+} _olm_curve25519_public_key;
 
-struct _olm_curve25519_private_key {
+typedef struct _olm_curve25519_private_key {
     uint8_t private_key[CURVE25519_KEY_LENGTH];
-};
+} _olm_curve25519_private_key;
 
-struct _olm_curve25519_key_pair {
+typedef struct _olm_curve25519_key_pair {
     struct _olm_curve25519_public_key public_key;
     struct _olm_curve25519_private_key private_key;
-};
+} _olm_curve25519_key_pair;
 
-struct _olm_ed25519_public_key {
+typedef struct _olm_ed25519_public_key {
     uint8_t public_key[ED25519_PUBLIC_KEY_LENGTH];
-};
+} _olm_ed25519_public_key;
 
-struct _olm_ed25519_private_key {
+typedef struct _olm_ed25519_private_key {
     uint8_t private_key[ED25519_PRIVATE_KEY_LENGTH];
-};
+} _olm_ed25519_private_key;
 
-struct _olm_ed25519_key_pair {
+typedef struct _olm_ed25519_key_pair {
     struct _olm_ed25519_public_key public_key;
     struct _olm_ed25519_private_key private_key;
-};
+} _olm_ed25519_key_pair;
 
 
 /** The length of output the aes_encrypt_cbc function will write */
