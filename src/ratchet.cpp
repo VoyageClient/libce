@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/ratchet.hh"
 #include "libce/message.hh"
-#include "libce/memory.hh"
+#include "libce/memory.h"
 #include "libce/cipher.h"
 #include "libce/pickle.hh"
 
@@ -44,11 +44,11 @@ static void create_chain_key(
         derived_secrets, sizeof(derived_secrets)
     );
     std::uint8_t const * pos = derived_secrets;
-    pos = olm::load_array(new_root_key, pos);
-    pos = olm::load_array(new_chain_key.key, pos);
+    pos = _OLM_LOAD_ARRAY(new_root_key, pos);
+    pos = _OLM_LOAD_ARRAY(new_chain_key.key, pos);
     new_chain_key.index = 0;
-    olm::unset(derived_secrets);
-    olm::unset(secret);
+    _OLM_UNSET_VALUE(derived_secrets);
+    _OLM_UNSET_VALUE(secret);
 }
 
 
@@ -122,7 +122,7 @@ static std::size_t verify_mac_and_decrypt_for_existing_chain(
         plaintext, max_plaintext_length
     );
 
-    olm::unset(new_chain);
+    _OLM_UNSET_VALUE(new_chain);
     return result;
 }
 
@@ -145,7 +145,7 @@ static std::size_t verify_mac_and_decrypt_for_new_chain(
     if (reader.counter > MAX_MESSAGE_GAP) {
         return SIZE_MAX;
     }
-    olm::load_array(new_chain.ratchet_key.public_key, reader.ratchet_key);
+    _OLM_LOAD_ARRAY(new_chain.ratchet_key.public_key, reader.ratchet_key);
 
     create_chain_key(
         session.root_key, session.sender_chain[0].ratchet_key,
@@ -156,8 +156,8 @@ static std::size_t verify_mac_and_decrypt_for_new_chain(
         session, new_chain.chain_key, reader,
         plaintext, max_plaintext_length
     );
-    olm::unset(new_root_key);
-    olm::unset(new_chain);
+    _OLM_UNSET_VALUE(new_root_key);
+    _OLM_UNSET_VALUE(new_chain);
     return result;
 }
 
@@ -187,10 +187,10 @@ void olm::Ratchet::initialise_as_bob(
     receiver_chains.insert();
     receiver_chains[0].chain_key.index = 0;
     std::uint8_t const * pos = derived_secrets;
-    pos = olm::load_array(root_key, pos);
-    pos = olm::load_array(receiver_chains[0].chain_key.key, pos);
+    pos = _OLM_LOAD_ARRAY(root_key, pos);
+    pos = _OLM_LOAD_ARRAY(receiver_chains[0].chain_key.key, pos);
     receiver_chains[0].ratchet_key = their_ratchet_key;
-    olm::unset(derived_secrets);
+    _OLM_UNSET_VALUE(derived_secrets);
 }
 
 
@@ -208,10 +208,10 @@ void olm::Ratchet::initialise_as_alice(
     sender_chain.insert();
     sender_chain[0].chain_key.index = 0;
     std::uint8_t const * pos = derived_secrets;
-    pos = olm::load_array(root_key, pos);
-    pos = olm::load_array(sender_chain[0].chain_key.key, pos);
+    pos = _OLM_LOAD_ARRAY(root_key, pos);
+    pos = _OLM_LOAD_ARRAY(sender_chain[0].chain_key.key, pos);
     sender_chain[0].ratchet_key = our_ratchet_key;
-    olm::unset(derived_secrets);
+    _OLM_UNSET_VALUE(derived_secrets);
 }
 
 namespace olm {
@@ -453,7 +453,7 @@ std::size_t olm::Ratchet::encrypt(
         output
     );
 
-    olm::store_array(writer.ratchet_key, ratchet_key.public_key);
+    _OLM_STORE_ARRAY(writer.ratchet_key, ratchet_key.public_key);
 
     ratchet_cipher->ops->encrypt(
         ratchet_cipher,
@@ -463,7 +463,7 @@ std::size_t olm::Ratchet::encrypt(
         output, output_length
     );
 
-    olm::unset(keys);
+    _OLM_UNSET_VALUE(keys);
     return output_length;
 }
 
@@ -560,7 +560,7 @@ std::size_t olm::Ratchet::decrypt(
                 if (result != SIZE_MAX) {
                     /* Remove the key from the skipped keys now that we've
                      * decoded the message it corresponds to. */
-                    olm::unset(skipped);
+                    _OLM_UNSET_VALUE(skipped);
                     skipped_message_keys.erase(&skipped);
                     return result;
                 }
@@ -585,7 +585,7 @@ std::size_t olm::Ratchet::decrypt(
          * We will generate a new key when we send the next message. */
 
         chain = receiver_chains.insert();
-        olm::load_array(chain->ratchet_key.public_key, reader.ratchet_key);
+        _OLM_LOAD_ARRAY(chain->ratchet_key.public_key, reader.ratchet_key);
 
         // TODO: we've already done this once, in
         // verify_mac_and_decrypt_for_new_chain(). we could reuse the result.
@@ -594,7 +594,7 @@ std::size_t olm::Ratchet::decrypt(
             kdf_info, root_key, chain->chain_key
         );
 
-        olm::unset(sender_chain[0]);
+        _OLM_UNSET_VALUE(sender_chain[0]);
         sender_chain.erase(sender_chain.begin());
     }
 

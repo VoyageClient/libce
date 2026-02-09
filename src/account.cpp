@@ -3,7 +3,7 @@
 #include "libce/base64.h"
 #include "libce/pickle.h"
 #include "libce/pickle.hh"
-#include "libce/memory.hh"
+#include "libce/memory.h"
 
 olm::Account::Account(
 ) : num_fallback_keys(0),
@@ -16,19 +16,19 @@ olm::OneTimeKey const * olm::Account::lookup_key(
     _olm_curve25519_public_key const & public_key
 ) {
     for (olm::OneTimeKey const & key : one_time_keys) {
-        if (olm::array_equal(key.key.public_key.public_key, public_key.public_key)) {
+        if (_OLM_ARRAY_EQUAL(key.key.public_key.public_key, public_key.public_key)) {
             return &key;
         }
     }
     if (num_fallback_keys >= 1
-            && olm::array_equal(
+            && _OLM_ARRAY_EQUAL(
                 current_fallback_key.key.public_key.public_key, public_key.public_key
             )
     ) {
         return &current_fallback_key;
     }
     if (num_fallback_keys >= 2
-            && olm::array_equal(
+            && _OLM_ARRAY_EQUAL(
                 prev_fallback_key.key.public_key.public_key, public_key.public_key
             )
     ) {
@@ -42,7 +42,7 @@ std::size_t olm::Account::remove_key(
 ) {
     OneTimeKey * i;
     for (i = one_time_keys.begin(); i != one_time_keys.end(); ++i) {
-        if (olm::array_equal(i->key.public_key.public_key, public_key.public_key)) {
+        if (_OLM_ARRAY_EQUAL(i->key.public_key.public_key, public_key.public_key)) {
             std::uint32_t id = i->id;
             one_time_keys.erase(i);
             return id;
@@ -51,14 +51,14 @@ std::size_t olm::Account::remove_key(
     // check if the key is a fallback key, to avoid returning an error, but
     // don't actually remove it
     if (num_fallback_keys >= 1
-            && olm::array_equal(
+            && _OLM_ARRAY_EQUAL(
                 current_fallback_key.key.public_key.public_key, public_key.public_key
             )
     ) {
         return current_fallback_key.id;
     }
     if (num_fallback_keys >= 2
-            && olm::array_equal(
+            && _OLM_ARRAY_EQUAL(
                 prev_fallback_key.key.public_key.public_key, public_key.public_key
             )
     ) {
@@ -389,7 +389,7 @@ void olm::Account::forget_old_fallback_key(
 ) {
     if (num_fallback_keys >= 2) {
         num_fallback_keys = 1;
-        olm::unset(&prev_fallback_key, sizeof(prev_fallback_key));
+        _olm_unset(&prev_fallback_key, sizeof(prev_fallback_key));
     }
 }
 

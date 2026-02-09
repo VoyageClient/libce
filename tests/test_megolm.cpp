@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/megolm.h"
-#include "libce/memory.hh"
+#include "libce/memory.h"
 
 #include "testing.hh"
 

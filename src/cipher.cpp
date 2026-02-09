@@ -1,8 +1,9 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/cipher.h"
 #include "libce/crypto.h"
-#include "libce/memory.hh"
+#include "libce/memory.h"
 #include <cstring>
+#include <cstdint>
 
 const std::size_t HMAC_KEY_LENGTH = 32;
 
@@ -30,10 +31,10 @@ static void derive_keys(
         derived_secrets, sizeof(derived_secrets)
     );
     std::uint8_t const * pos = derived_secrets;
-    pos = olm::load_array(keys.aes_key.key, pos);
-    pos = olm::load_array(keys.mac_key, pos);
-    pos = olm::load_array(keys.aes_iv.iv, pos);
-    olm::unset(derived_secrets);
+    pos = _OLM_LOAD_ARRAY(keys.aes_key.key, pos);
+    pos = _OLM_LOAD_ARRAY(keys.mac_key, pos);
+    pos = _OLM_LOAD_ARRAY(keys.aes_iv.iv, pos);
+    _OLM_UNSET_VALUE(derived_secrets);
 }
 
 static const std::size_t MAC_LENGTH = 8;
@@ -78,7 +79,7 @@ size_t aes_sha_256_cipher_encrypt(
 
     std::memcpy(output + output_length - MAC_LENGTH, mac, MAC_LENGTH);
 
-    olm::unset(keys);
+    _OLM_UNSET_VALUE(keys);
     return output_length;
 }
 
@@ -115,8 +116,8 @@ size_t aes_sha_256_cipher_decrypt(
     );
 
     std::uint8_t const * input_mac = input + input_length - MAC_LENGTH;
-    if (!olm::is_equal(input_mac, mac, MAC_LENGTH)) {
-        olm::unset(keys);
+    if (!_olm_is_equal(input_mac, mac, MAC_LENGTH)) {
+        _OLM_UNSET_VALUE(keys);
         return SIZE_MAX;
     }
 
@@ -124,7 +125,7 @@ size_t aes_sha_256_cipher_decrypt(
         &keys.aes_key, &keys.aes_iv, ciphertext, ciphertext_length, plaintext
     );
 
-    olm::unset(keys);
+    _OLM_UNSET_VALUE(keys);
     return plaintext_length;
 }
 

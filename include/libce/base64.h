@@ -64,5 +64,4 @@ CE_EXPORT size_t _olm_decode_base64(
 } // extern "C"
 #endif
 
-
 #endif /* OLM_BASE64_H_ */

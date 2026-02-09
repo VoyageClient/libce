@@ -1,7 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/message.hh"
 
-#include "libce/memory.hh"
+#include "libce/memory.h"
 
 namespace {
 

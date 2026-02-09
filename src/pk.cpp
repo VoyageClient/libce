@@ -4,10 +4,11 @@
 #include "libce/crypto.h"
 #include "libce/ratchet.hh"
 #include "libce/error.h"
-#include "libce/memory.hh"
+#include "libce/memory.h"
 #include "libce/base64.h"
 #include "libce/pickle_encoding.h"
 #include "libce/pickle.hh"
+#include <new>
 
 static const std::size_t MAC_LENGTH = 8;
 
@@ -43,7 +44,7 @@ size_t olm_pk_encryption_size(void) {
 OlmPkEncryption *olm_pk_encryption(
     void * memory
 ) {
-    olm::unset(memory, sizeof(OlmPkEncryption));
+    _olm_unset(memory, sizeof(OlmPkEncryption));
     return new(memory) OlmPkEncryption;
 }
 
@@ -51,7 +52,7 @@ size_t olm_clear_pk_encryption(
     OlmPkEncryption *encryption
 ) {
     /* Clear the memory backing the encryption */
-    olm::unset(encryption, sizeof(OlmPkEncryption));
+    _olm_unset(encryption, sizeof(OlmPkEncryption));
     /* Initialise a fresh encryption object in case someone tries to use it */
     new(encryption) OlmPkEncryption();
     return sizeof(OlmPkEncryption);
@@ -169,7 +170,7 @@ size_t olm_pk_decryption_size(void) {
 OlmPkDecryption *olm_pk_decryption(
     void * memory
 ) {
-    olm::unset(memory, sizeof(OlmPkDecryption));
+    _olm_unset(memory, sizeof(OlmPkDecryption));
     return new(memory) OlmPkDecryption;
 }
 
@@ -177,7 +178,7 @@ size_t olm_clear_pk_decryption(
     OlmPkDecryption *decryption
 ) {
     /* Clear the memory backing the decryption */
-    olm::unset(decryption, sizeof(OlmPkDecryption));
+    _olm_unset(decryption, sizeof(OlmPkDecryption));
     /* Initialise a fresh decryption object in case someone tries to use it */
     new(decryption) OlmPkDecryption();
     return sizeof(OlmPkDecryption);
@@ -444,7 +445,7 @@ size_t olm_pk_signing_size(void) {
 }
 
 OlmPkSigning *olm_pk_signing(void * memory) {
-    olm::unset(memory, sizeof(OlmPkSigning));
+    _olm_unset(memory, sizeof(OlmPkSigning));
     return new(memory) OlmPkSigning;
 }
 
@@ -459,7 +460,7 @@ OlmErrorCode olm_pk_signing_last_error_code(const OlmPkSigning * sign) {
 
 size_t olm_clear_pk_signing(OlmPkSigning *sign) {
     /* Clear the memory backing the signing */
-    olm::unset(sign, sizeof(OlmPkSigning));
+    _olm_unset(sign, sizeof(OlmPkSigning));
     /* Initialise a fresh signing object in case someone tries to use it */
     new(sign) OlmPkSigning();
     return sizeof(OlmPkSigning);

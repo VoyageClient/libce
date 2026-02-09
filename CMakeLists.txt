@@ -29,7 +29,7 @@ add_library(ce
     src/base64.c
     src/cipher.cpp
     src/crypto.cpp
-    src/memory.cpp
+    src/memory.c
     src/message.cpp
     src/pickle.cpp
     src/ratchet.cpp

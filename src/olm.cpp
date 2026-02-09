@@ -6,7 +6,7 @@
 #include "libce/pickle_encoding.h"
 #include "libce/utility.hh"
 #include "libce/base64.h"
-#include "libce/memory.hh"
+#include "libce/memory.h"
 
 #include <new>
 #include <cstring>
@@ -163,7 +163,7 @@ size_t olm_utility_size(void) {
 OlmAccount * olm_account(
     void * memory
 ) {
-    olm::unset(memory, sizeof(olm::Account));
+    _olm_unset(memory, sizeof(olm::Account));
     return to_c(new(memory) olm::Account());
 }
 
@@ -171,7 +171,7 @@ OlmAccount * olm_account(
 OlmSession * olm_session(
     void * memory
 ) {
-    olm::unset(memory, sizeof(olm::Session));
+    _olm_unset(memory, sizeof(olm::Session));
     return to_c(new(memory) olm::Session());
 }
 
@@ -179,7 +179,7 @@ OlmSession * olm_session(
 OlmUtility * olm_utility(
     void * memory
 ) {
-    olm::unset(memory, sizeof(olm::Utility));
+    _olm_unset(memory, sizeof(olm::Utility));
     return to_c(new(memory) olm::Utility());
 }
 
@@ -188,7 +188,7 @@ size_t olm_clear_account(
     OlmAccount * account
 ) {
     /* Clear the memory backing the account  */
-    olm::unset(account, sizeof(olm::Account));
+    _olm_unset(account, sizeof(olm::Account));
     /* Initialise a fresh account object in case someone tries to use it */
     new(account) olm::Account();
     return sizeof(olm::Account);
@@ -199,7 +199,7 @@ size_t olm_clear_session(
     OlmSession * session
 ) {
     /* Clear the memory backing the session */
-    olm::unset(session, sizeof(olm::Session));
+    _olm_unset(session, sizeof(olm::Session));
     /* Initialise a fresh session object in case someone tries to use it */
     new(session) olm::Session();
     return sizeof(olm::Session);
@@ -210,7 +210,7 @@ size_t olm_clear_utility(
     OlmUtility * utility
 ) {
     /* Clear the memory backing the session */
-    olm::unset(utility, sizeof(olm::Utility));
+    _olm_unset(utility, sizeof(olm::Utility));
     /* Initialise a fresh session object in case someone tries to use it */
     new(utility) olm::Utility();
     return sizeof(olm::Utility);
@@ -345,7 +345,7 @@ size_t olm_create_account(
     void * random, size_t random_length
 ) {
     size_t result = from_c(account)->new_account(from_c(random), random_length);
-    olm::unset(random, random_length);
+    _olm_unset(random, random_length);
     return result;
 }
 
@@ -441,7 +441,7 @@ size_t olm_account_generate_one_time_keys(
         number_of_keys,
         from_c(random), random_length
     );
-    olm::unset(random, random_length);
+    _olm_unset(random, random_length);
     return result;
 }
 
@@ -460,7 +460,7 @@ size_t olm_account_generate_fallback_key(
     size_t result = from_c(account)->generate_fallback_key(
         from_c(random), random_length
     );
-    olm::unset(random, random_length);
+    _olm_unset(random, random_length);
     return result;
 }
 
@@ -541,7 +541,7 @@ size_t olm_create_outbound_session(
         *from_c(account), identity_key, one_time_key,
         from_c(random), random_length
     );
-    olm::unset(random, random_length);
+    _olm_unset(random, random_length);
     return result;
 }
 
@@ -732,7 +732,7 @@ size_t olm_encrypt(
         from_c(random), random_length,
         b64_output_pos(from_c(message), raw_length), raw_length
     );
-    olm::unset(random, random_length);
+    _olm_unset(random, random_length);
     if (result == SIZE_MAX) {
         return result;
     }
