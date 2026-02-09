@@ -15,7 +15,7 @@ extern "C" {
 
 struct _olm_cipher;
 
-struct _olm_cipher_ops {
+typedef struct _olm_cipher_ops {
     /**
      * Returns the length of the message authentication code that will be
      * appended to the output.
@@ -82,14 +82,14 @@ struct _olm_cipher_ops {
         uint8_t const * ciphertext, size_t ciphertext_length,
         uint8_t * plaintext, size_t max_plaintext_length
     );
-};
+} _olm_cipher_ops;
 
-struct _olm_cipher {
+typedef struct _olm_cipher {
     const struct _olm_cipher_ops *ops;
     /* cipher-specific fields follow */
-};
+} _olm_cipher;
 
-struct _olm_cipher_aes_sha_256 {
+typedef struct _olm_cipher_aes_sha_256 {
     struct _olm_cipher base_cipher;
 
     /** context string for the HKDF used for deriving the AES256 key, HMAC key,
@@ -99,7 +99,7 @@ struct _olm_cipher_aes_sha_256 {
 
     /** length of context string kdf_info */
     size_t kdf_info_length;
-};
+} _olm_cipher_aes_sha_256;
 
 CE_EXPORT extern const struct _olm_cipher_ops _olm_cipher_aes_sha_256_ops;
 

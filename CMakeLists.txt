@@ -27,7 +27,7 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 add_library(ce
     src/account.cpp
     src/base64.c
-    src/cipher.cpp
+    src/cipher.c
     src/crypto.cpp
     src/memory.c
     src/message.cpp
