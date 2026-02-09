@@ -1,4 +1,4 @@
-#include "libce/message.hh"
+#include "libce/message.h"
 #include "fuzzing.hh"
 
 int main(int argc, const char *argv[]) {
@@ -7,8 +7,8 @@ int main(int argc, const char *argv[]) {
     ssize_t message_length = check_errno(
         "Error reading message file", read_file(message_fd, &message_buffer)
     );
-    olm::MessageReader * reader = new olm::MessageReader;
-    decode_message(*reader, message_buffer, message_length, 8);
+    _OlmMessageReader * reader = new _OlmMessageReader;
+    _olm_decode_message(&*reader, message_buffer, message_length, 8);
     free(message_buffer);
     delete reader;
 

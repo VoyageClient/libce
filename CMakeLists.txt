@@ -30,7 +30,7 @@ add_library(ce
     src/cipher.c
     src/crypto.cpp
     src/memory.c
-    src/message.cpp
+    src/message.c
     src/pickle.cpp
     src/ratchet.cpp
     src/session.cpp

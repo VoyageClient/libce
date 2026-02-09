@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/ratchet.hh"
-#include "libce/message.hh"
+#include "libce/message.h"
 #include "libce/memory.h"
 #include "libce/cipher.h"
 #include "libce/pickle.hh"
@@ -80,7 +80,7 @@ static void create_message_keys(
 static std::size_t verify_mac_and_decrypt(
     _olm_cipher const *cipher,
     olm::MessageKey const & message_key,
-    olm::MessageReader const & reader,
+    _OlmMessageReader const & reader,
     std::uint8_t * plaintext, std::size_t max_plaintext_length
 ) {
     return cipher->ops->decrypt(
@@ -96,7 +96,7 @@ static std::size_t verify_mac_and_decrypt(
 static std::size_t verify_mac_and_decrypt_for_existing_chain(
     olm::Ratchet const & session,
     olm::ChainKey const & chain,
-    olm::MessageReader const & reader,
+    _OlmMessageReader const & reader,
     std::uint8_t * plaintext, std::size_t max_plaintext_length
 ) {
     if (reader.counter < chain.index) {
@@ -129,7 +129,7 @@ static std::size_t verify_mac_and_decrypt_for_existing_chain(
 
 static std::size_t verify_mac_and_decrypt_for_new_chain(
     olm::Ratchet const & session,
-    olm::MessageReader const & reader,
+    _OlmMessageReader const & reader,
     std::uint8_t * plaintext, std::size_t max_plaintext_length
 ) {
     olm::SharedKey new_root_key;
@@ -394,7 +394,7 @@ std::size_t olm::Ratchet::encrypt_output_length(
         ratchet_cipher,
         plaintext_length
     );
-    return olm::encode_message_length(
+    return _olm_encode_message_length(
         counter, CURVE25519_KEY_LENGTH, padded, ratchet_cipher->ops->mac_length(ratchet_cipher)
     );
 }
@@ -445,10 +445,10 @@ std::size_t olm::Ratchet::encrypt(
     _olm_curve25519_public_key const & ratchet_key =
         sender_chain[0].ratchet_key.public_key;
 
-    olm::MessageWriter writer;
+    _OlmMessageWriter writer;
 
-    olm::encode_message(
-        writer, PROTOCOL_VERSION, counter, CURVE25519_KEY_LENGTH,
+    _olm_encode_message(
+        &writer, PROTOCOL_VERSION, counter, CURVE25519_KEY_LENGTH,
         ciphertext_length,
         output
     );
@@ -471,9 +471,9 @@ std::size_t olm::Ratchet::encrypt(
 std::size_t olm::Ratchet::decrypt_max_plaintext_length(
     std::uint8_t const * input, std::size_t input_length
 ) {
-    olm::MessageReader reader;
-    olm::decode_message(
-        reader, input, input_length,
+    _OlmMessageReader reader;
+    _olm_decode_message(
+        &reader, input, input_length,
         ratchet_cipher->ops->mac_length(ratchet_cipher)
     );
 
@@ -491,9 +491,9 @@ std::size_t olm::Ratchet::decrypt(
     std::uint8_t const * input, std::size_t input_length,
     std::uint8_t * plaintext, std::size_t max_plaintext_length
 ) {
-    olm::MessageReader reader;
-    olm::decode_message(
-        reader, input, input_length,
+    _OlmMessageReader reader;
+    _olm_decode_message(
+        &reader, input, input_length,
         ratchet_cipher->ops->mac_length(ratchet_cipher)
     );
 

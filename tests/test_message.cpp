@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "libce/message.hh"
+#include "libce/message.h"
 #include "testing.hh"
 
 std::uint8_t message1[36] = "\x03\x10\x01\n\nratchetkey\"\nciphertexthmacsha2";
@@ -12,8 +12,8 @@ std::uint8_t hmacsha2[9] = "hmacsha2";
 
 TEST_CASE("Message decode test") {
 
-olm::MessageReader reader;
-olm::decode_message(reader, message1, 35, 8);
+_OlmMessageReader reader;
+_olm_decode_message(&reader, message1, 35, 8);
 
 CHECK_EQ(std::uint8_t(3), reader.version);
 CHECK_EQ(true, reader.has_counter);
@@ -31,13 +31,13 @@ CHECK_EQ_SIZE(ciphertext, reader.ciphertext, 10);
 
 TEST_CASE("Message encode test") {
 
-std::size_t length = olm::encode_message_length(1, 10, 10, 8);
+std::size_t length = _olm_encode_message_length(1, 10, 10, 8);
 CHECK_EQ(std::size_t(35), length);
 
 std::uint8_t output[35];
 
-olm::MessageWriter writer;
-olm::encode_message(writer, 3, 1, 10, 10, output);
+_OlmMessageWriter writer;
+_olm_encode_message(&writer, 3, 1, 10, 10, output);
 
 std::memcpy(writer.ratchet_key, ratchetkey, 10);
 std::memcpy(writer.ciphertext, ciphertext, 10);

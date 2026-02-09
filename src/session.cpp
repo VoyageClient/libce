@@ -4,7 +4,7 @@
 #include "libce/crypto.h"
 #include "libce/account.hh"
 #include "libce/memory.h"
-#include "libce/message.hh"
+#include "libce/message.h"
 #include "libce/pickle.hh"
 
 #include <cstring>
@@ -89,7 +89,7 @@ std::size_t olm::Session::new_outbound_session(
 namespace {
 
 static bool check_message_fields(
-    olm::PreKeyMessageReader & reader, bool have_their_identity_key
+    _OlmPreKeyMessageReader & reader, bool have_their_identity_key
 ) {
     bool ok = true;
     ok = ok && (have_their_identity_key || reader.identity_key);
@@ -112,8 +112,8 @@ std::size_t olm::Session::new_inbound_session(
     _olm_curve25519_public_key const * their_identity_key,
     std::uint8_t const * one_time_key_message, std::size_t message_length
 ) {
-    olm::PreKeyMessageReader reader;
-    decode_one_time_key_message(reader, one_time_key_message, message_length);
+    _OlmPreKeyMessageReader reader;
+    _olm_decode_one_time_key_message(&reader, one_time_key_message, message_length);
 
     if (!check_message_fields(reader, their_identity_key)) {
         last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
@@ -134,9 +134,9 @@ std::size_t olm::Session::new_inbound_session(
     _OLM_LOAD_ARRAY(alice_base_key.public_key, reader.base_key);
     _OLM_LOAD_ARRAY(bob_one_time_key.public_key, reader.one_time_key);
 
-    olm::MessageReader message_reader;
-    decode_message(
-        message_reader, reader.message, reader.message_length,
+    _OlmMessageReader message_reader;
+    _olm_decode_message(
+        &message_reader, reader.message, reader.message_length,
         ratchet.ratchet_cipher->ops->mac_length(ratchet.ratchet_cipher)
     );
 
@@ -206,8 +206,8 @@ bool olm::Session::matches_inbound_session(
     _olm_curve25519_public_key const * their_identity_key,
     std::uint8_t const * one_time_key_message, std::size_t message_length
 ) const {
-    olm::PreKeyMessageReader reader;
-    decode_one_time_key_message(reader, one_time_key_message, message_length);
+    _OlmPreKeyMessageReader reader;
+    _olm_decode_one_time_key_message(&reader, one_time_key_message, message_length);
 
     if (!check_message_fields(reader, their_identity_key)) {
         return false;
@@ -255,7 +255,7 @@ std::size_t olm::Session::encrypt_message_length(
         return message_length;
     }
 
-    return encode_one_time_key_message_length(
+    return _olm_encode_one_time_key_message_length(
         CURVE25519_KEY_LENGTH,
         CURVE25519_KEY_LENGTH,
         CURVE25519_KEY_LENGTH,
@@ -286,9 +286,9 @@ std::size_t olm::Session::encrypt(
     if (received_message) {
         message_body = message;
     } else {
-        olm::PreKeyMessageWriter writer;
-        encode_one_time_key_message(
-            writer,
+        _OlmPreKeyMessageWriter writer;
+        _olm_encode_one_time_key_message(
+            &writer,
             PROTOCOL_VERSION,
             CURVE25519_KEY_LENGTH,
             CURVE25519_KEY_LENGTH,
@@ -328,8 +328,8 @@ std::size_t olm::Session::decrypt_max_plaintext_length(
         message_body = message;
         message_body_length = message_length;
     } else {
-        olm::PreKeyMessageReader reader;
-        decode_one_time_key_message(reader, message, message_length);
+        _OlmPreKeyMessageReader reader;
+        _olm_decode_one_time_key_message(&reader, message, message_length);
         if (!reader.message) {
             last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
             return SIZE_MAX;
@@ -361,8 +361,8 @@ std::size_t olm::Session::decrypt(
         message_body = message;
         message_body_length = message_length;
     } else {
-        olm::PreKeyMessageReader reader;
-        decode_one_time_key_message(reader, message, message_length);
+        _OlmPreKeyMessageReader reader;
+        _olm_decode_one_time_key_message(&reader, message, message_length);
         if (!reader.message) {
             last_error = OlmErrorCode::OLM_BAD_MESSAGE_FORMAT;
             return SIZE_MAX;
