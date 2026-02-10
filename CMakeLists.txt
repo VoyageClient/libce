@@ -28,7 +28,7 @@ add_library(ce
     src/account.cpp
     src/base64.c
     src/cipher.c
-    src/crypto.cpp
+    src/crypto.c
     src/memory.c
     src/message.c
     src/pickle.cpp
