@@ -72,6 +72,8 @@ set_target_properties(ce PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+target_link_libraries(ce PUBLIC sodium)
+
 include(GNUInstallDirs)
 
 # Make a pkg-config file

@@ -12,6 +12,7 @@ AR = ar
 SO := so
 LIBCE_LDFLAGS := -Wl,-soname,libce.so.$(MAJOR) \
                    -Wl,--version-script,version_script.ver
+LIBCE_LIBS := -lsodium
 
 RELEASE_TARGET := $(BUILD_DIR)/libce.$(SO).$(VERSION)
 STATIC_RELEASE_TARGET := $(BUILD_DIR)/libce.a
@@ -55,6 +56,7 @@ CPPFLAGS += -Iinclude -Ilib \
 CFLAGS += -Wall -Werror -std=c99
 CXXFLAGS += -Wall -Werror -std=c++11
 LDFLAGS += -Wall -Werror
+LDLIBS += $(LIBCE_LIBS)
 
 CFLAGS_NATIVE = -fPIC
 CXXFLAGS_NATIVE = -fPIC
@@ -124,8 +126,8 @@ $(RELEASE_TARGET): $(RELEASE_OBJECTS)
 	@echo
 
 	$(CXX) $(LDFLAGS) --shared -fPIC \
-            $(LIBCE_LDFLAGS) \
-            $(OUTPUT_OPTION) $(RELEASE_OBJECTS)
+	    $(LIBCE_LDFLAGS) \
+	    $(OUTPUT_OPTION) $(RELEASE_OBJECTS) $(LIBCE_LIBS)
 	ln -sf libce.$(SO).$(VERSION) $(BUILD_DIR)/libce.$(SO).$(MAJOR)
 	ln -sf libce.$(SO).$(VERSION) $(BUILD_DIR)/libce.$(SO)
 
@@ -134,8 +136,8 @@ debug: $(DEBUG_TARGET)
 
 $(DEBUG_TARGET): $(DEBUG_OBJECTS)
 	$(CXX) $(LDFLAGS) --shared -fPIC \
-            $(LIBCE_LDFLAGS) \
-            $(OUTPUT_OPTION) $(DEBUG_OBJECTS)
+	    $(LIBCE_LDFLAGS) \
+	    $(OUTPUT_OPTION) $(DEBUG_OBJECTS) $(LIBCE_LIBS)
 	ln -sf libce_debug.$(SO).$(VERSION) $(BUILD_DIR)/libce_debug.$(SO).$(MAJOR)
 
 static: $(STATIC_RELEASE_TARGET)
