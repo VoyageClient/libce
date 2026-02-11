@@ -2,7 +2,6 @@
 #ifndef OLM_PICKLE_HH_
 #define OLM_PICKLE_HH_
 
-#include "libce/list.hh"
 #include "libce/crypto.h"
 
 #include <cstring>
@@ -65,56 +64,6 @@ std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     bool & value
 );
-
-
-template<typename T, std::size_t max_size>
-std::size_t pickle_length(
-    olm::List<T, max_size> const & list
-) {
-    std::size_t length = pickle_length(std::uint32_t(list.size()));
-    for (auto const & value : list) {
-        length += pickle_length(value);
-    }
-    return length;
-}
-
-
-template<typename T, std::size_t max_size>
-std::uint8_t * pickle(
-    std::uint8_t * pos,
-    olm::List<T, max_size> const & list
-) {
-    pos = pickle(pos, std::uint32_t(list.size()));
-    for (auto const & value : list) {
-        pos = pickle(pos, value);
-    }
-    return pos;
-}
-
-
-template<typename T, std::size_t max_size>
-std::uint8_t const * unpickle(
-    std::uint8_t const * pos, std::uint8_t const * end,
-    olm::List<T, max_size> & list
-) {
-    std::uint32_t size;
-
-    pos = unpickle(pos, end, size);
-    if (!pos) {
-        return nullptr;
-    }
-
-    while (size-- && pos != end) {
-        T * value = list.insert(list.end());
-        pos = unpickle(pos, end, *value);
-
-        if (!pos) {
-            return nullptr;
-        }
-    }
-
-    return pos;
-}
 
 
 std::uint8_t * pickle_bytes(

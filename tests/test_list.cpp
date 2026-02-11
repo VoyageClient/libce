@@ -1,5 +1,5 @@
 /* See LICENSE file for copyright and license details. */
-#include "libce/list.hh"
+#include "libce/list.h"
 #include "testing.hh"
 
 
@@ -7,26 +7,29 @@
 
 TEST_CASE("List insert") {
 
-olm::List<int, 4> test_list;
+typedef OLM_LIST(int, 4) IntList;
+IntList test_list;
+_olm_list_init(&test_list);
 
-CHECK_EQ(0, test_list.size());
+CHECK_EQ(0, _olm_list_size(&test_list));
 
 for (int i = 0; i < 4; ++i) {
-    test_list.insert(test_list.end(), i);
+    int * item = _olm_list_insert(&test_list, _olm_list_end(&test_list));
+    *item = i;
 }
 
-CHECK_EQ(std::size_t(4), test_list.size());
+CHECK_EQ(std::size_t(4), _olm_list_size(&test_list));
 
 int i = 0;
-for (auto item : test_list) {
-    CHECK_EQ(i++, item);
+for (int const * item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
+    CHECK_EQ(i++, *item);
 }
 
 CHECK_EQ(4, i);
 
-test_list.insert(test_list.end(), 4);
+*_olm_list_insert(&test_list, _olm_list_end(&test_list)) = 4;
 
-CHECK_EQ(4, test_list[3]);
+CHECK_EQ(4, _olm_list_get(&test_list, 3));
 
 } /** List insert test **/
 
@@ -34,19 +37,21 @@ CHECK_EQ(4, test_list[3]);
 
 TEST_CASE("List insert beginning") {
 
-olm::List<int, 4> test_list;
+typedef OLM_LIST(int, 4) IntList;
+IntList test_list;
+_olm_list_init(&test_list);
 
-CHECK_EQ(0, test_list.size());
+CHECK_EQ(0, _olm_list_size(&test_list));
 
 for (int i = 0; i < 4; ++i) {
-    test_list.insert(test_list.begin(), i);
+    *_olm_list_insert_front(&test_list) = i;
 }
 
-CHECK_EQ(std::size_t(4), test_list.size());
+CHECK_EQ(std::size_t(4), _olm_list_size(&test_list));
 
 int i = 4;
-for (auto item : test_list) {
-    CHECK_EQ(--i, item);
+for (int const * item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
+    CHECK_EQ(--i, *item);
 }
 
 } /** List insert test **/
@@ -55,20 +60,22 @@ for (auto item : test_list) {
 /** List erase test **/
 TEST_CASE("List erase") {
 
-olm::List<int, 4> test_list;
-CHECK_EQ(0, test_list.size());
+typedef OLM_LIST(int, 4) IntList;
+IntList test_list;
+_olm_list_init(&test_list);
+CHECK_EQ(0, _olm_list_size(&test_list));
 
 for (int i = 0; i < 4; ++i) {
-    test_list.insert(test_list.end(), i);
+    *_olm_list_insert(&test_list, _olm_list_end(&test_list)) = i;
 }
-CHECK_EQ(std::size_t(4), test_list.size());
+CHECK_EQ(std::size_t(4), _olm_list_size(&test_list));
 
-test_list.erase(test_list.begin());
-CHECK_EQ(std::size_t(3), test_list.size());
+_olm_list_erase(&test_list, _olm_list_begin(&test_list));
+CHECK_EQ(std::size_t(3), _olm_list_size(&test_list));
 
 int i = 0;
-for (auto item : test_list) {
-    CHECK_EQ(i + 1, item);
+for (int const * item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
+    CHECK_EQ(i + 1, *item);
     ++i;
 }
 CHECK_EQ(3, i);

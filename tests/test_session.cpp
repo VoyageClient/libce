@@ -28,32 +28,32 @@ void check_session(const olm::Session &session) {
 
     CHECK_EQ(
         std::size_t(1),
-        session.ratchet.sender_chain.size()
+        _olm_list_size(&session.ratchet.sender_chain)
     );
 
     CHECK_EQ_SIZE(
         decode_hex("f77a03eaa9b301fa7d2a5aa6b50286906de12cc96044f526dbbcb12839ad7003"),
-        session.ratchet.sender_chain[0].ratchet_key.public_key.public_key, 32
+        _olm_list_get(&session.ratchet.sender_chain, 0).ratchet_key.public_key.public_key, 32
     );
 
     CHECK_EQ_SIZE(
         decode_hex("d945c6ed4c7c277117adf11fb133a7936d287afe97c0b3ac989644b4490d4f31"),
-        session.ratchet.sender_chain[0].ratchet_key.private_key.private_key, 32
+        _olm_list_get(&session.ratchet.sender_chain, 0).ratchet_key.private_key.private_key, 32
     );
 
     CHECK_EQ(
         std::uint32_t(0),
-        session.ratchet.sender_chain[0].chain_key.index
+        _olm_list_get(&session.ratchet.sender_chain, 0).chain_key.index
     );
 
     CHECK_EQ(
         0,
-        session.ratchet.receiver_chains.size()
+        _olm_list_size(&session.ratchet.receiver_chains)
     );
 
     CHECK_EQ(
         0,
-        session.ratchet.skipped_message_keys.size()
+        _olm_list_size(&session.ratchet.skipped_message_keys)
     );
 
     CHECK_EQ(OLM_SUCCESS, session.last_error);

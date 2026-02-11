@@ -2,7 +2,7 @@
 #ifndef OLM_ACCOUNT_HH_
 #define OLM_ACCOUNT_HH_
 
-#include "libce/list.hh"
+#include "libce/list.h"
 #include "libce/crypto.h"
 #include "libce/error.h"
 
@@ -25,11 +25,13 @@ struct OneTimeKey {
 
 static std::size_t const MAX_ONE_TIME_KEYS = 100;
 
+typedef OLM_LIST(OneTimeKey, MAX_ONE_TIME_KEYS) OneTimeKeyList;
+
 
 struct Account {
     Account();
     IdentityKeys identity_keys;
-    List<OneTimeKey, MAX_ONE_TIME_KEYS> one_time_keys;
+    OneTimeKeyList one_time_keys;
     std::uint8_t num_fallback_keys;
     OneTimeKey current_fallback_key;
     OneTimeKey prev_fallback_key;

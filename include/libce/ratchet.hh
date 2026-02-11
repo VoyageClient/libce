@@ -2,7 +2,7 @@
 #include <cstdint>
 
 #include "libce/crypto.h"
-#include "libce/list.hh"
+#include "libce/list.h"
 #include "libce/error.h"
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
@@ -53,6 +53,12 @@ struct SkippedMessageKey {
 static std::size_t const MAX_RECEIVER_CHAINS = 5;
 static std::size_t const MAX_SKIPPED_MESSAGE_KEYS = 40;
 
+typedef OLM_LIST(SenderChain, 1) SenderChainList;
+typedef OLM_LIST(ReceiverChain, MAX_RECEIVER_CHAINS) ReceiverChainList;
+typedef OLM_LIST(
+    SkippedMessageKey, MAX_SKIPPED_MESSAGE_KEYS
+) SkippedMessageKeyList;
+
 
 struct KdfInfo {
     std::uint8_t const * root_info;
@@ -85,16 +91,16 @@ struct CE_EXPORT Ratchet {
     /** The sender chain is used to send messages. Each time a new ephemeral
      * key is received from the remote server we generate a new sender chain
      * with a new ephemeral key when we next send a message. */
-    List<SenderChain, 1> sender_chain;
+    SenderChainList sender_chain;
 
     /** The receiver chain is used to decrypt received messages. We store the
      * last few chains so we can decrypt any out of order messages we haven't
      * received yet. */
-    List<ReceiverChain, MAX_RECEIVER_CHAINS> receiver_chains;
+    ReceiverChainList receiver_chains;
 
     /** List of message keys we've skipped over when advancing the receiver
      * chain. */
-    List<SkippedMessageKey, MAX_SKIPPED_MESSAGE_KEYS> skipped_message_keys;
+    SkippedMessageKeyList skipped_message_keys;
 
     /** Initialise the session using a shared secret and the public part of the
      * remote's first ratchet key */
