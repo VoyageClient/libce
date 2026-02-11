@@ -483,9 +483,7 @@ CE_EXPORT size_t olm_decrypt(
 );
 
 /** The length of the buffer needed to hold the SHA-256 hash. */
-CE_EXPORT size_t olm_sha256_length(
-   OlmUtility const * utility
-);
+CE_EXPORT size_t olm_sha256_length(void);
 
 /** Calculates the SHA-256 hash of the input and encodes it as base64. If the
  * output buffer is smaller than olm_sha256_length() then

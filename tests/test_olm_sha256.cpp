@@ -9,7 +9,7 @@ TEST_CASE("Olm sha256 test") {
 std::vector<std::uint8_t> utility_buffer(::olm_utility_size());
 ::OlmUtility * utility = ::olm_utility(utility_buffer.data());
 
-CHECK_EQ(std::size_t(43), ::olm_sha256_length(utility));
+CHECK_EQ(std::size_t(43), ::olm_sha256_length());
 std::uint8_t output[43];
 ::olm_sha256(utility, "Hello, World", 12, output, 43);
 

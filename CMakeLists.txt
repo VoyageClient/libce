@@ -34,7 +34,7 @@ add_library(ce
     src/pickle.cpp
     src/ratchet.cpp
     src/session.cpp
-    src/utility.cpp
+    src/utility.c
     src/pk.cpp
     src/sas.c
 
