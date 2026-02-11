@@ -3,7 +3,7 @@
 #include "libce/message.h"
 #include "libce/memory.h"
 #include "libce/cipher.h"
-#include "libce/pickle.hh"
+#include "libce/pickle.h"
 
 #include <cstring>
 
@@ -231,7 +231,7 @@ static std::uint8_t * pickle(
     std::uint8_t * pos,
     const olm::SharedKey & value
 ) {
-    return olm::pickle_bytes(pos, value, olm::OLM_SHARED_KEY_LENGTH);
+    return _olm_pickle_bytes(pos, value, olm::OLM_SHARED_KEY_LENGTH);
 }
 
 
@@ -239,7 +239,7 @@ static std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     olm::SharedKey & value
 ) {
-    return olm::unpickle_bytes(pos, end, value, olm::OLM_SHARED_KEY_LENGTH);
+    return _olm_unpickle_bytes(pos, end, value, olm::OLM_SHARED_KEY_LENGTH);
 }
 
 
@@ -247,9 +247,9 @@ static std::size_t pickle_length(
     const olm::SenderChain & value
 ) {
     std::size_t length = 0;
-    length += olm::pickle_length(value.ratchet_key);
-    length += olm::pickle_length(value.chain_key.key);
-    length += olm::pickle_length(value.chain_key.index);
+    length += _olm_pickle_curve25519_key_pair_length(&value.ratchet_key);
+    length += pickle_length(value.chain_key.key);
+    length += _OLM_PICKLE_UINT32_LENGTH(value.chain_key.index);
     return length;
 }
 
@@ -258,9 +258,9 @@ static std::uint8_t * pickle(
     std::uint8_t * pos,
     const olm::SenderChain & value
 ) {
-    pos = olm::pickle(pos, value.ratchet_key);
-    pos = olm::pickle(pos, value.chain_key.key);
-    pos = olm::pickle(pos, value.chain_key.index);
+    pos = _olm_pickle_curve25519_key_pair(pos, &value.ratchet_key);
+    pos = pickle(pos, value.chain_key.key);
+    pos = _olm_pickle_uint32(pos, value.chain_key.index);
     return pos;
 }
 
@@ -269,9 +269,9 @@ static std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     olm::SenderChain & value
 ) {
-    pos = olm::unpickle(pos, end, value.ratchet_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.chain_key.key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.chain_key.index); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_key_pair(pos, end, &value.ratchet_key); UNPICKLE_OK(pos);
+    pos = unpickle(pos, end, value.chain_key.key); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_uint32(pos, end, &value.chain_key.index); UNPICKLE_OK(pos);
     return pos;
 }
 
@@ -282,7 +282,7 @@ static std::size_t pickle_length(
     std::size_t length = 0;
     SenderChain const * chain;
 
-    length += olm::pickle_length(std::uint32_t(_olm_list_size(&value)));
+    length += _OLM_PICKLE_UINT32_LENGTH(std::uint32_t(_olm_list_size(&value)));
     for (chain = _olm_list_begin(&value); chain != _olm_list_end(&value); ++chain) {
         length += olm::pickle_length(*chain);
     }
@@ -296,7 +296,7 @@ static std::uint8_t * pickle(
 ) {
     SenderChain const * chain;
 
-    pos = olm::pickle(pos, std::uint32_t(_olm_list_size(&value)));
+    pos = _olm_pickle_uint32(pos, std::uint32_t(_olm_list_size(&value)));
     for (chain = _olm_list_begin(&value); chain != _olm_list_end(&value); ++chain) {
         pos = olm::pickle(pos, *chain);
     }
@@ -310,7 +310,7 @@ static std::uint8_t const * unpickle(
 ) {
     std::uint32_t size;
 
-    pos = olm::unpickle(pos, end, size);
+    pos = _olm_unpickle_uint32(pos, end, &size);
     if (!pos) {
         return nullptr;
     }
@@ -328,9 +328,9 @@ static std::size_t pickle_length(
     const olm::ReceiverChain & value
 ) {
     std::size_t length = 0;
-    length += olm::pickle_length(value.ratchet_key);
-    length += olm::pickle_length(value.chain_key.key);
-    length += olm::pickle_length(value.chain_key.index);
+    length += _olm_pickle_curve25519_public_key_length(&value.ratchet_key);
+    length += pickle_length(value.chain_key.key);
+    length += _OLM_PICKLE_UINT32_LENGTH(value.chain_key.index);
     return length;
 }
 
@@ -339,9 +339,9 @@ static std::uint8_t * pickle(
     std::uint8_t * pos,
     const olm::ReceiverChain & value
 ) {
-    pos = olm::pickle(pos, value.ratchet_key);
-    pos = olm::pickle(pos, value.chain_key.key);
-    pos = olm::pickle(pos, value.chain_key.index);
+    pos = _olm_pickle_curve25519_public_key(pos, &value.ratchet_key);
+    pos = pickle(pos, value.chain_key.key);
+    pos = _olm_pickle_uint32(pos, value.chain_key.index);
     return pos;
 }
 
@@ -350,9 +350,9 @@ static std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     olm::ReceiverChain & value
 ) {
-    pos = olm::unpickle(pos, end, value.ratchet_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.chain_key.key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.chain_key.index); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_public_key(pos, end, &value.ratchet_key); UNPICKLE_OK(pos);
+    pos = unpickle(pos, end, value.chain_key.key); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_uint32(pos, end, &value.chain_key.index); UNPICKLE_OK(pos);
     return pos;
 }
 
@@ -363,7 +363,7 @@ static std::size_t pickle_length(
     std::size_t length = 0;
     ReceiverChain const * chain;
 
-    length += olm::pickle_length(std::uint32_t(_olm_list_size(&value)));
+    length += _OLM_PICKLE_UINT32_LENGTH(std::uint32_t(_olm_list_size(&value)));
     for (chain = _olm_list_begin(&value); chain != _olm_list_end(&value); ++chain) {
         length += olm::pickle_length(*chain);
     }
@@ -377,7 +377,7 @@ static std::uint8_t * pickle(
 ) {
     ReceiverChain const * chain;
 
-    pos = olm::pickle(pos, std::uint32_t(_olm_list_size(&value)));
+    pos = _olm_pickle_uint32(pos, std::uint32_t(_olm_list_size(&value)));
     for (chain = _olm_list_begin(&value); chain != _olm_list_end(&value); ++chain) {
         pos = olm::pickle(pos, *chain);
     }
@@ -391,7 +391,7 @@ static std::uint8_t const * unpickle(
 ) {
     std::uint32_t size;
 
-    pos = olm::unpickle(pos, end, size);
+    pos = _olm_unpickle_uint32(pos, end, &size);
     if (!pos) {
         return nullptr;
     }
@@ -410,9 +410,9 @@ static std::size_t pickle_length(
     const olm::SkippedMessageKey & value
 ) {
     std::size_t length = 0;
-    length += olm::pickle_length(value.ratchet_key);
-    length += olm::pickle_length(value.message_key.key);
-    length += olm::pickle_length(value.message_key.index);
+    length += _olm_pickle_curve25519_public_key_length(&value.ratchet_key);
+    length += pickle_length(value.message_key.key);
+    length += _OLM_PICKLE_UINT32_LENGTH(value.message_key.index);
     return length;
 }
 
@@ -421,9 +421,9 @@ static std::uint8_t * pickle(
     std::uint8_t * pos,
     const olm::SkippedMessageKey & value
 ) {
-    pos = olm::pickle(pos, value.ratchet_key);
-    pos = olm::pickle(pos, value.message_key.key);
-    pos = olm::pickle(pos, value.message_key.index);
+    pos = _olm_pickle_curve25519_public_key(pos, &value.ratchet_key);
+    pos = pickle(pos, value.message_key.key);
+    pos = _olm_pickle_uint32(pos, value.message_key.index);
     return pos;
 }
 
@@ -432,9 +432,9 @@ static std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     olm::SkippedMessageKey & value
 ) {
-    pos = olm::unpickle(pos, end, value.ratchet_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.message_key.key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.message_key.index); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_public_key(pos, end, &value.ratchet_key); UNPICKLE_OK(pos);
+    pos = unpickle(pos, end, value.message_key.key); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_uint32(pos, end, &value.message_key.index); UNPICKLE_OK(pos);
     return pos;
 }
 
@@ -445,7 +445,7 @@ static std::size_t pickle_length(
     std::size_t length = 0;
     SkippedMessageKey const * key;
 
-    length += olm::pickle_length(std::uint32_t(_olm_list_size(&value)));
+    length += _OLM_PICKLE_UINT32_LENGTH(std::uint32_t(_olm_list_size(&value)));
     for (key = _olm_list_begin(&value); key != _olm_list_end(&value); ++key) {
         length += olm::pickle_length(*key);
     }
@@ -459,7 +459,7 @@ static std::uint8_t * pickle(
 ) {
     SkippedMessageKey const * key;
 
-    pos = olm::pickle(pos, std::uint32_t(_olm_list_size(&value)));
+    pos = _olm_pickle_uint32(pos, std::uint32_t(_olm_list_size(&value)));
     for (key = _olm_list_begin(&value); key != _olm_list_end(&value); ++key) {
         pos = olm::pickle(pos, *key);
     }
@@ -473,7 +473,7 @@ static std::uint8_t const * unpickle(
 ) {
     std::uint32_t size;
 
-    pos = olm::unpickle(pos, end, size);
+    pos = _olm_unpickle_uint32(pos, end, &size);
     if (!pos) {
         return nullptr;
     }
@@ -527,7 +527,7 @@ std::uint8_t const * olm::unpickle(
     // pickle v 0x80000001 includes a chain index; pickle v1 does not.
     if (includes_chain_index) {
         std::uint32_t dummy;
-        pos = unpickle(pos, end, dummy); UNPICKLE_OK(pos);
+        pos = _olm_unpickle_uint32(pos, end, &dummy); UNPICKLE_OK(pos);
     }
     return pos;
 }

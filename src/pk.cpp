@@ -7,8 +7,9 @@
 #include "libce/memory.h"
 #include "libce/base64.h"
 #include "libce/pickle_encoding.h"
-#include "libce/pickle.hh"
+#include "libce/pickle.h"
 #include <new>
+#include <cstring>
 
 static const std::size_t MAC_LENGTH = 8;
 
@@ -236,8 +237,8 @@ namespace {
         OlmPkDecryption const & value
     ) {
         std::size_t length = 0;
-        length += olm::pickle_length(PK_DECRYPTION_PICKLE_VERSION);
-        length += olm::pickle_length(value.key_pair);
+        length += _OLM_PICKLE_UINT32_LENGTH(PK_DECRYPTION_PICKLE_VERSION);
+        length += _olm_pickle_curve25519_key_pair_length(&value.key_pair);
         return length;
     }
 
@@ -246,8 +247,8 @@ namespace {
         std::uint8_t * pos,
         OlmPkDecryption const & value
     ) {
-        pos = olm::pickle(pos, PK_DECRYPTION_PICKLE_VERSION);
-        pos = olm::pickle(pos, value.key_pair);
+        pos = _olm_pickle_uint32(pos, PK_DECRYPTION_PICKLE_VERSION);
+        pos = _olm_pickle_curve25519_key_pair(pos, &value.key_pair);
         return pos;
     }
 
@@ -257,7 +258,7 @@ namespace {
         OlmPkDecryption & value
     ) {
         uint32_t pickle_version;
-        pos = olm::unpickle(pos, end, pickle_version); UNPICKLE_OK(pos);
+        pos = _olm_unpickle_uint32(pos, end, &pickle_version); UNPICKLE_OK(pos);
 
         switch (pickle_version) {
         case 1:
@@ -268,7 +269,7 @@ namespace {
             return nullptr;
         }
 
-        pos = olm::unpickle(pos, end, value.key_pair); UNPICKLE_OK(pos);
+        pos = _olm_unpickle_curve25519_key_pair(pos, end, &value.key_pair); UNPICKLE_OK(pos);
 
         return pos;
     }

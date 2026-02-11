@@ -2,8 +2,9 @@
 #include "libce/account.hh"
 #include "libce/base64.h"
 #include "libce/pickle.h"
-#include "libce/pickle.hh"
 #include "libce/memory.h"
+
+#include <cstring>
 
 olm::Account::Account(
 ) : num_fallback_keys(0),
@@ -198,7 +199,7 @@ std::size_t olm::Account::get_one_time_keys_json_length(
         }
         is_empty = false;
         length += 2; /* {" */
-        length += _olm_encode_base64_length(_olm_pickle_uint32_length(key->id));
+        length += _olm_encode_base64_length(_OLM_PICKLE_UINT32_LENGTH(key->id));
         length += 3; /* ":" */
         length += _olm_encode_base64_length(sizeof(key->key.public_key));
         length += 1; /* " */
@@ -231,7 +232,7 @@ std::size_t olm::Account::get_one_time_keys_json(
         }
         *(pos++) = sep;
         *(pos++) = '\"';
-        std::uint8_t key_id[_olm_pickle_uint32_length(key->id)];
+        std::uint8_t key_id[_OLM_PICKLE_UINT32_LENGTH(key->id)];
         _olm_pickle_uint32(key_id, key->id);
         pos += _olm_encode_base64(key_id, sizeof(key_id), pos);
         *(pos++) = '\"'; *(pos++) = ':'; *(pos++) = '\"';
@@ -324,7 +325,7 @@ std::size_t olm::Account::get_fallback_key_json_length(
     if (num_fallback_keys >= 1) {
         const OneTimeKey & key = current_fallback_key;
         length += 1; /* " */
-        length += _olm_encode_base64_length(_olm_pickle_uint32_length(key.id));
+        length += _olm_encode_base64_length(_OLM_PICKLE_UINT32_LENGTH(key.id));
         length += 3; /* ":" */
         length += _olm_encode_base64_length(sizeof(key.key.public_key));
         length += 1; /* " */
@@ -346,7 +347,7 @@ std::size_t olm::Account::get_fallback_key_json(
     OneTimeKey & key = current_fallback_key;
     if (num_fallback_keys >= 1) {
         *(pos++) = '\"';
-        std::uint8_t key_id[_olm_pickle_uint32_length(key.id)];
+        std::uint8_t key_id[_OLM_PICKLE_UINT32_LENGTH(key.id)];
         _olm_pickle_uint32(key_id, key.id);
         pos += _olm_encode_base64(key_id, sizeof(key_id), pos);
         *(pos++) = '\"'; *(pos++) = ':'; *(pos++) = '\"';
@@ -366,7 +367,7 @@ std::size_t olm::Account::get_unpublished_fallback_key_json_length(
     const OneTimeKey & key = current_fallback_key;
     if (num_fallback_keys >= 1 && !key.published) {
         length += 1; /* " */
-        length += _olm_encode_base64_length(_olm_pickle_uint32_length(key.id));
+        length += _olm_encode_base64_length(_OLM_PICKLE_UINT32_LENGTH(key.id));
         length += 3; /* ":" */
         length += _olm_encode_base64_length(sizeof(key.key.public_key));
         length += 1; /* " */
@@ -388,7 +389,7 @@ std::size_t olm::Account::get_unpublished_fallback_key_json(
     OneTimeKey & key = current_fallback_key;
     if (num_fallback_keys >= 1 && !key.published) {
         *(pos++) = '\"';
-        std::uint8_t key_id[_olm_pickle_uint32_length(key.id)];
+        std::uint8_t key_id[_OLM_PICKLE_UINT32_LENGTH(key.id)];
         _olm_pickle_uint32(key_id, key.id);
         pos += _olm_encode_base64(key_id, sizeof(key_id), pos);
         *(pos++) = '\"'; *(pos++) = ':'; *(pos++) = '\"';
@@ -417,7 +418,7 @@ static std::size_t pickle_length(
 ) {
     size_t length = 0;
     length += _olm_pickle_ed25519_key_pair_length(&value.ed25519_key);
-    length += olm::pickle_length(value.curve25519_key);
+    length += _olm_pickle_curve25519_key_pair_length(&value.curve25519_key);
     return length;
 }
 
@@ -427,7 +428,7 @@ static std::uint8_t * pickle(
     olm::IdentityKeys const & value
 ) {
     pos = _olm_pickle_ed25519_key_pair(pos, &value.ed25519_key);
-    pos = olm::pickle(pos, value.curve25519_key);
+    pos = _olm_pickle_curve25519_key_pair(pos, &value.curve25519_key);
     return pos;
 }
 
@@ -437,7 +438,7 @@ static std::uint8_t const * unpickle(
     olm::IdentityKeys & value
 ) {
     pos = _olm_unpickle_ed25519_key_pair(pos, end, &value.ed25519_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.curve25519_key); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_key_pair(pos, end, &value.curve25519_key); UNPICKLE_OK(pos);
     return pos;
 }
 
@@ -446,9 +447,9 @@ static std::size_t pickle_length(
     olm::OneTimeKey const & value
 ) {
     std::size_t length = 0;
-    length += olm::pickle_length(value.id);
-    length += olm::pickle_length(value.published);
-    length += olm::pickle_length(value.key);
+    length += _OLM_PICKLE_UINT32_LENGTH(value.id);
+    length += _OLM_PICKLE_BOOL_LENGTH(value.published);
+    length += _olm_pickle_curve25519_key_pair_length(&value.key);
     return length;
 }
 
@@ -457,9 +458,9 @@ static std::uint8_t * pickle(
     std::uint8_t * pos,
     olm::OneTimeKey const & value
 ) {
-    pos = olm::pickle(pos, value.id);
-    pos = olm::pickle(pos, value.published);
-    pos = olm::pickle(pos, value.key);
+    pos = _olm_pickle_uint32(pos, value.id);
+    pos = _olm_pickle_bool(pos, value.published ? 1 : 0);
+    pos = _olm_pickle_curve25519_key_pair(pos, &value.key);
     return pos;
 }
 
@@ -468,9 +469,13 @@ static std::uint8_t const * unpickle(
     std::uint8_t const * pos, std::uint8_t const * end,
     olm::OneTimeKey & value
 ) {
-    pos = olm::unpickle(pos, end, value.id); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.published); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.key); UNPICKLE_OK(pos);
+    int published;
+
+    pos = _olm_unpickle_uint32(pos, end, &value.id); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_bool(pos, end, &published); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_key_pair(pos, end, &value.key); UNPICKLE_OK(pos);
+
+    value.published = published ? true : false;
     return pos;
 }
 
@@ -481,7 +486,7 @@ static std::size_t pickle_length(
     std::size_t length = 0;
     OneTimeKey const * key;
 
-    length += olm::pickle_length(std::uint32_t(_olm_list_size(&value)));
+    length += _OLM_PICKLE_UINT32_LENGTH(std::uint32_t(_olm_list_size(&value)));
     for (key = _olm_list_begin(&value); key != _olm_list_end(&value); ++key) {
         length += olm::pickle_length(*key);
     }
@@ -495,7 +500,7 @@ static std::uint8_t * pickle(
 ) {
     OneTimeKey const * key;
 
-    pos = olm::pickle(pos, std::uint32_t(_olm_list_size(&value)));
+    pos = _olm_pickle_uint32(pos, std::uint32_t(_olm_list_size(&value)));
     for (key = _olm_list_begin(&value); key != _olm_list_end(&value); ++key) {
         pos = olm::pickle(pos, *key);
     }
@@ -509,7 +514,7 @@ static std::uint8_t const * unpickle(
 ) {
     std::uint32_t size;
 
-    pos = olm::unpickle(pos, end, size);
+    pos = _olm_unpickle_uint32(pos, end, &size);
     if (!pos) {
         return nullptr;
     }
@@ -538,17 +543,17 @@ std::size_t olm::pickle_length(
     olm::Account const & value
 ) {
     std::size_t length = 0;
-    length += olm::pickle_length(ACCOUNT_PICKLE_VERSION);
+    length += _OLM_PICKLE_UINT32_LENGTH(ACCOUNT_PICKLE_VERSION);
     length += olm::pickle_length(value.identity_keys);
     length += olm::pickle_length(value.one_time_keys);
-    length += olm::pickle_length(value.num_fallback_keys);
+    length += _OLM_PICKLE_UINT8_LENGTH(value.num_fallback_keys);
     if (value.num_fallback_keys >= 1) {
         length += olm::pickle_length(value.current_fallback_key);
         if (value.num_fallback_keys >= 2) {
             length += olm::pickle_length(value.prev_fallback_key);
         }
     }
-    length += olm::pickle_length(value.next_one_time_key_id);
+    length += _OLM_PICKLE_UINT32_LENGTH(value.next_one_time_key_id);
     return length;
 }
 
@@ -557,17 +562,17 @@ std::uint8_t * olm::pickle(
     std::uint8_t * pos,
     olm::Account const & value
 ) {
-    pos = olm::pickle(pos, ACCOUNT_PICKLE_VERSION);
+    pos = _olm_pickle_uint32(pos, ACCOUNT_PICKLE_VERSION);
     pos = olm::pickle(pos, value.identity_keys);
     pos = olm::pickle(pos, value.one_time_keys);
-    pos = olm::pickle(pos, value.num_fallback_keys);
+    pos = _olm_pickle_uint8(pos, value.num_fallback_keys);
     if (value.num_fallback_keys >= 1) {
         pos = olm::pickle(pos, value.current_fallback_key);
         if (value.num_fallback_keys >= 2) {
             pos = olm::pickle(pos, value.prev_fallback_key);
         }
     }
-    pos = olm::pickle(pos, value.next_one_time_key_id);
+    pos = _olm_pickle_uint32(pos, value.next_one_time_key_id);
     return pos;
 }
 
@@ -578,7 +583,7 @@ std::uint8_t const * olm::unpickle(
 ) {
     uint32_t pickle_version;
 
-    pos = olm::unpickle(pos, end, pickle_version); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_uint32(pos, end, &pickle_version); UNPICKLE_OK(pos);
 
     switch (pickle_version) {
         case ACCOUNT_PICKLE_VERSION:
@@ -614,7 +619,7 @@ std::uint8_t const * olm::unpickle(
             value.num_fallback_keys = 0;
         }
     } else {
-        pos = olm::unpickle(pos, end, value.num_fallback_keys); UNPICKLE_OK(pos);
+        pos = _olm_unpickle_uint8(pos, end, &value.num_fallback_keys); UNPICKLE_OK(pos);
         if (value.num_fallback_keys >= 1) {
             pos = olm::unpickle(pos, end, value.current_fallback_key); UNPICKLE_OK(pos);
             if (value.num_fallback_keys >= 2) {
@@ -627,7 +632,7 @@ std::uint8_t const * olm::unpickle(
         }
     }
 
-    pos = olm::unpickle(pos, end, value.next_one_time_key_id); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_uint32(pos, end, &value.next_one_time_key_id); UNPICKLE_OK(pos);
 
     return pos;
 }

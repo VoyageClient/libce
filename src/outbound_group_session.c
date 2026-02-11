@@ -64,7 +64,7 @@ static size_t raw_pickle_length(
     const OlmOutboundGroupSession *session
 ) {
     size_t length = 0;
-    length += _olm_pickle_uint32_length(PICKLE_VERSION);
+    length += _OLM_PICKLE_UINT32_LENGTH(PICKLE_VERSION);
     length += megolm_pickle_length(&(session->ratchet));
     length += _olm_pickle_ed25519_key_pair_length(&(session->signing_key));
     return length;

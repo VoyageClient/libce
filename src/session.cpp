@@ -5,7 +5,7 @@
 #include "libce/account.hh"
 #include "libce/memory.h"
 #include "libce/message.h"
-#include "libce/pickle.hh"
+#include "libce/pickle.h"
 
 #include <cstring>
 #include <stdio.h>
@@ -463,11 +463,11 @@ std::size_t olm::pickle_length(
     Session const & value
 ) {
     std::size_t length = 0;
-    length += olm::pickle_length(SESSION_PICKLE_VERSION);
-    length += olm::pickle_length(value.received_message);
-    length += olm::pickle_length(value.alice_identity_key);
-    length += olm::pickle_length(value.alice_base_key);
-    length += olm::pickle_length(value.bob_one_time_key);
+    length += _OLM_PICKLE_UINT32_LENGTH(SESSION_PICKLE_VERSION);
+    length += _OLM_PICKLE_BOOL_LENGTH(value.received_message);
+    length += _olm_pickle_curve25519_public_key_length(&value.alice_identity_key);
+    length += _olm_pickle_curve25519_public_key_length(&value.alice_base_key);
+    length += _olm_pickle_curve25519_public_key_length(&value.bob_one_time_key);
     length += olm::pickle_length(value.ratchet);
     return length;
 }
@@ -477,11 +477,11 @@ std::uint8_t * olm::pickle(
     std::uint8_t * pos,
     Session const & value
 ) {
-    pos = olm::pickle(pos, SESSION_PICKLE_VERSION);
-    pos = olm::pickle(pos, value.received_message);
-    pos = olm::pickle(pos, value.alice_identity_key);
-    pos = olm::pickle(pos, value.alice_base_key);
-    pos = olm::pickle(pos, value.bob_one_time_key);
+    pos = _olm_pickle_uint32(pos, SESSION_PICKLE_VERSION);
+    pos = _olm_pickle_bool(pos, value.received_message ? 1 : 0);
+    pos = _olm_pickle_curve25519_public_key(pos, &value.alice_identity_key);
+    pos = _olm_pickle_curve25519_public_key(pos, &value.alice_base_key);
+    pos = _olm_pickle_curve25519_public_key(pos, &value.bob_one_time_key);
     pos = olm::pickle(pos, value.ratchet);
     return pos;
 }
@@ -492,7 +492,7 @@ std::uint8_t const * olm::unpickle(
     Session & value
 ) {
     uint32_t pickle_version;
-    pos = olm::unpickle(pos, end, pickle_version); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_uint32(pos, end, &pickle_version); UNPICKLE_OK(pos);
 
     bool includes_chain_index;
     switch (pickle_version) {
@@ -509,10 +509,14 @@ std::uint8_t const * olm::unpickle(
             return nullptr;
     }
 
-    pos = olm::unpickle(pos, end, value.received_message); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.alice_identity_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.alice_base_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.bob_one_time_key); UNPICKLE_OK(pos);
+    {
+        int received_message;
+        pos = _olm_unpickle_bool(pos, end, &received_message); UNPICKLE_OK(pos);
+        value.received_message = received_message ? true : false;
+    }
+    pos = _olm_unpickle_curve25519_public_key(pos, end, &value.alice_identity_key); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_public_key(pos, end, &value.alice_base_key); UNPICKLE_OK(pos);
+    pos = _olm_unpickle_curve25519_public_key(pos, end, &value.bob_one_time_key); UNPICKLE_OK(pos);
     pos = olm::unpickle(pos, end, value.ratchet, includes_chain_index); UNPICKLE_OK(pos);
 
     return pos;

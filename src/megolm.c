@@ -42,8 +42,8 @@ void megolm_init(Megolm *megolm, uint8_t const *random_data, uint32_t counter) {
 
 size_t megolm_pickle_length(const Megolm *megolm) {
     size_t length = 0;
-    length += _olm_pickle_bytes_length(megolm_get_data(megolm), MEGOLM_RATCHET_LENGTH);
-    length += _olm_pickle_uint32_length(megolm->counter);
+    length += _OLM_PICKLE_BYTES_LENGTH(megolm_get_data(megolm), MEGOLM_RATCHET_LENGTH);
+    length += _OLM_PICKLE_UINT32_LENGTH(megolm->counter);
     return length;
 
 }
