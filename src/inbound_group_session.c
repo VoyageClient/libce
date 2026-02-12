@@ -94,7 +94,7 @@ static size_t _init_group_session_keys(
 
     if (version != expected_version) {
         session->last_error = OLM_BAD_SESSION_KEY;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     uint32_t counter = 0;
@@ -116,7 +116,7 @@ static size_t _init_group_session_keys(
         if (!_olm_crypto_ed25519_verify(&session->signing_key, key_buf,
                                         ptr - key_buf, ptr)) {
             session->last_error = OLM_BAD_SIGNATURE;
-            return (size_t)-1;
+            return SIZE_MAX;
         }
 
         /* signed keyshare */
@@ -133,14 +133,14 @@ size_t olm_init_inbound_group_session(
     size_t raw_length = _olm_decode_base64_length(session_key_length);
     size_t result;
 
-    if (raw_length == (size_t)-1) {
+    if (raw_length == SIZE_MAX) {
         session->last_error = OLM_INVALID_BASE64;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (raw_length != SESSION_KEY_RAW_LENGTH) {
         session->last_error = OLM_BAD_SESSION_KEY;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_decode_base64(session_key, session_key_length, key_buf);
@@ -157,14 +157,14 @@ size_t olm_import_inbound_group_session(
     size_t raw_length = _olm_decode_base64_length(session_key_length);
     size_t result;
 
-    if (raw_length == (size_t)-1) {
+    if (raw_length == SIZE_MAX) {
         session->last_error = OLM_INVALID_BASE64;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (raw_length != SESSION_EXPORT_RAW_LENGTH) {
         session->last_error = OLM_BAD_SESSION_KEY;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_decode_base64(session_key, session_key_length, key_buf);
@@ -201,7 +201,7 @@ size_t olm_pickle_inbound_group_session(
 
     if (pickled_length < _olm_enc_output_length(raw_length)) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     pos = _olm_enc_output_pos(pickled, raw_length);
@@ -226,7 +226,7 @@ size_t olm_unpickle_inbound_group_session(
     size_t raw_length = _olm_enc_input(
         key, key_length, pickled, pickled_length, &(session->last_error)
     );
-    if (raw_length == (size_t)-1) {
+    if (raw_length == SIZE_MAX) {
         return raw_length;
     }
 
@@ -238,7 +238,7 @@ size_t olm_unpickle_inbound_group_session(
 
     if (pickle_version < 1 || pickle_version > PICKLE_VERSION) {
         session->last_error = OLM_UNKNOWN_PICKLE_VERSION;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     pos = megolm_unpickle(&session->initial_ratchet, pos, end);
@@ -262,7 +262,7 @@ size_t olm_unpickle_inbound_group_session(
     if (pos != end) {
         /* Input was longer than expected. */
         session->last_error = OLM_PICKLE_EXTRA_DATA;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return pickled_length;
@@ -285,12 +285,12 @@ static size_t _decrypt_max_plaintext_length(
 
     if (decoded_results.version != OLM_PROTOCOL_VERSION) {
         session->last_error = OLM_BAD_MESSAGE_VERSION;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (!decoded_results.ciphertext) {
         session->last_error = OLM_BAD_MESSAGE_FORMAT;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return megolm_cipher->ops->decrypt_max_plaintext_length(
@@ -304,9 +304,9 @@ size_t olm_group_decrypt_max_plaintext_length(
     size_t raw_length;
 
     raw_length = _olm_decode_base64(message, message_length, message);
-    if (raw_length == (size_t)-1) {
+    if (raw_length == SIZE_MAX) {
         session->last_error = OLM_INVALID_BASE64;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return _decrypt_max_plaintext_length(
@@ -330,7 +330,7 @@ static size_t _get_megolm(
     } else if ((message_index - session->initial_ratchet.counter) >= (1U << 31)) {
         /* the counter is before our intial ratchet - we can't decode this. */
         session->last_error = OLM_UNKNOWN_MESSAGE_INDEX;
-        return (size_t)-1;
+        return SIZE_MAX;
     } else {
         /* otherwise, start from the initial megolm. Take a copy so that we
          * don't overwrite the initial megolm */
@@ -361,12 +361,12 @@ static size_t _decrypt(
 
     if (decoded_results.version != OLM_PROTOCOL_VERSION) {
         session->last_error = OLM_BAD_MESSAGE_VERSION;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (!decoded_results.has_message_index || !decoded_results.ciphertext) {
         session->last_error = OLM_BAD_MESSAGE_FORMAT;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (message_index != NULL) {
@@ -386,7 +386,7 @@ static size_t _decrypt(
     );
     if (!r) {
         session->last_error = OLM_BAD_SIGNATURE;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     max_length = megolm_cipher->ops->decrypt_max_plaintext_length(
@@ -395,11 +395,11 @@ static size_t _decrypt(
     );
     if (max_plaintext_length < max_length) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     r = _get_megolm(session, decoded_results.message_index, &megolm);
-    if (r == (size_t)-1) {
+    if (r == SIZE_MAX) {
         return r;
     }
 
@@ -413,7 +413,7 @@ static size_t _decrypt(
     );
 
     _olm_unset(&megolm, sizeof(megolm));
-    if (r == (size_t)-1) {
+    if (r == SIZE_MAX) {
         session->last_error = OLM_BAD_MESSAGE_MAC;
         return r;
     }
@@ -434,9 +434,9 @@ size_t olm_group_decrypt(
     size_t raw_message_length;
 
     raw_message_length = _olm_decode_base64(message, message_length, message);
-    if (raw_message_length == (size_t)-1) {
+    if (raw_message_length == SIZE_MAX) {
         session->last_error = OLM_INVALID_BASE64;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return _decrypt(
@@ -458,7 +458,7 @@ size_t olm_inbound_group_session_id(
 ) {
     if (id_length < olm_inbound_group_session_id_length(session)) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return _olm_encode_base64(
@@ -496,11 +496,11 @@ size_t olm_export_inbound_group_session(
 
     if (key_length < encoded_length) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     r = _get_megolm(session, message_index, &megolm);
-    if (r == (size_t)-1) {
+    if (r == SIZE_MAX) {
         return r;
     }
 

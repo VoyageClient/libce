@@ -52,7 +52,7 @@ size_t olm_create_sas(
 ) {
     if (random_length < olm_create_sas_random_length(sas)) {
         sas->last_error = OLM_NOT_ENOUGH_RANDOM;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     _olm_crypto_curve25519_generate_key((uint8_t *) random, &sas->curve25519_key);
     sas->their_key_set = 0;
@@ -69,7 +69,7 @@ size_t olm_sas_get_pubkey(
 ) {
     if (pubkey_length < olm_sas_pubkey_length(sas)) {
         sas->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     _olm_encode_base64(
         (const uint8_t *)sas->curve25519_key.public_key.public_key,
@@ -85,13 +85,13 @@ size_t olm_sas_set_their_key(
 ) {
     if (their_key_length < olm_sas_pubkey_length(sas)) {
         sas->last_error = OLM_INPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     size_t ret = _olm_decode_base64(their_key, their_key_length, their_key);
-    if (ret == (size_t)-1) {
+    if (ret == SIZE_MAX) {
         sas->last_error = OLM_INVALID_BASE64;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_crypto_curve25519_shared_secret(&sas->curve25519_key, their_key, sas->secret);
@@ -112,7 +112,7 @@ size_t olm_sas_generate_bytes(
 ) {
     if (!sas->their_key_set) {
         sas->last_error = OLM_SAS_THEIR_KEY_NOT_SET;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     _olm_crypto_hkdf_sha256(
         sas->secret, sizeof(sas->secret),
@@ -139,11 +139,11 @@ size_t olm_sas_calculate_mac_fixed_base64(
 ) {
     if (mac_length < olm_sas_mac_length(sas)) {
         sas->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     if (!sas->their_key_set) {
         sas->last_error = OLM_SAS_THEIR_KEY_NOT_SET;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     uint8_t key[32];
     _olm_crypto_hkdf_sha256(
@@ -169,11 +169,11 @@ size_t olm_sas_calculate_mac(
 ) {
     if (mac_length < olm_sas_mac_length(sas)) {
         sas->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     if (!sas->their_key_set) {
         sas->last_error = OLM_SAS_THEIR_KEY_NOT_SET;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     uint8_t key[32];
     _olm_crypto_hkdf_sha256(
@@ -196,11 +196,11 @@ size_t olm_sas_calculate_mac_long_kdf(
 ) {
     if (mac_length < olm_sas_mac_length(sas)) {
         sas->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     if (!sas->their_key_set) {
         sas->last_error = OLM_SAS_THEIR_KEY_NOT_SET;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     uint8_t key[256];
     _olm_crypto_hkdf_sha256(

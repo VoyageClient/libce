@@ -26,7 +26,7 @@ TEST_CASE("Pickle outbound group session") {
     res = olm_unpickle_outbound_group_session(
         session2, "secret_key", 10, pickle2.data(), pickle_length
     );
-    CHECK_NE((size_t)-1, res);
+    CHECK_NE(SIZE_MAX, res);
     CHECK_EQ(pickle_length,
                   olm_pickle_outbound_group_session_length(session2));
     res = olm_pickle_outbound_group_session(
@@ -81,7 +81,7 @@ TEST_CASE("Pickle inbound group session") {
     res = olm_unpickle_inbound_group_session(
         session2, "secret_key", 10, pickle2.data(), pickle_length
     );
-    CHECK_NE((size_t)-1, res);
+    CHECK_NE(SIZE_MAX, res);
     CHECK_EQ(pickle_length,
                   olm_pickle_inbound_group_session_length(session2));
     res = olm_pickle_inbound_group_session(
@@ -344,7 +344,7 @@ TEST_CASE("Invalid signature group message") {
         inbound_session, msgcopy.data(), msglen,
         plaintext_buf.data(), size, &message_index
     );
-    CHECK_EQ((size_t)-1, res);
+    CHECK_EQ(SIZE_MAX, res);
     CHECK_EQ(
         std::string("BAD_SIGNATURE"),
         std::string(olm_inbound_group_session_last_error(inbound_session))

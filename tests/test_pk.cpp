@@ -249,7 +249,7 @@ result = ::olm_ed25519_verify(
     sig_buffer, olm_pk_signature_length()
 );
 
-CHECK_EQ((size_t)-1, result);
+CHECK_EQ(SIZE_MAX, result);
 
 olm_clear_utility(utility);
 free(utility_buffer);

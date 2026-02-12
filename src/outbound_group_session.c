@@ -86,7 +86,7 @@ size_t olm_pickle_outbound_group_session(
 
     if (pickled_length < _olm_enc_output_length(raw_length)) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
 #ifndef LIBCE_FUZZING
@@ -123,7 +123,7 @@ size_t olm_unpickle_outbound_group_session(
     size_t raw_length = pickled_length;
 #endif
 
-    if (raw_length == (size_t)-1) {
+    if (raw_length == SIZE_MAX) {
         return raw_length;
     }
 
@@ -135,7 +135,7 @@ size_t olm_unpickle_outbound_group_session(
 
     if (pickle_version != PICKLE_VERSION) {
         session->last_error = OLM_UNKNOWN_PICKLE_VERSION;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     pos = megolm_unpickle(&(session->ratchet), pos, end);
@@ -147,7 +147,7 @@ size_t olm_unpickle_outbound_group_session(
     if (pos != end) {
         /* Input was longer than expected. */
         session->last_error = OLM_PICKLE_EXTRA_DATA;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return pickled_length;
@@ -173,7 +173,7 @@ size_t olm_init_outbound_group_session(
     if (random_length < olm_init_outbound_group_session_random_length(session)) {
         /* Insufficient random data for new session */
         session->last_error = OLM_NOT_ENOUGH_RANDOM;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     megolm_init(&(session->ratchet), random_ptr, 0);
@@ -248,7 +248,7 @@ static size_t _encrypt(
         buffer, message_length
     );
 
-    if (result == (size_t)-1) {
+    if (result == SIZE_MAX) {
         return result;
     }
 
@@ -277,7 +277,7 @@ size_t olm_group_encrypt(
 
     if (max_message_length < _olm_encode_base64_length(rawmsglen)) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     /* we construct the message at the end of the buffer, so that
@@ -287,7 +287,7 @@ size_t olm_group_encrypt(
 
     /* write the message, and encrypt it, at message_pos */
     result = _encrypt(session, plaintext, plaintext_length, message_pos);
-    if (result == (size_t)-1) {
+    if (result == SIZE_MAX) {
         return result;
     }
 
@@ -310,7 +310,7 @@ size_t olm_outbound_group_session_id(
 ) {
     if (id_length < olm_outbound_group_session_id_length(session)) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     return _olm_encode_base64(
@@ -344,7 +344,7 @@ size_t olm_outbound_group_session_key(
 
     if (key_length < encoded_length) {
         session->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     /* put the raw data at the end of the output buffer. */

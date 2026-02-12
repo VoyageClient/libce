@@ -69,7 +69,7 @@ size_t olm_pk_encryption_set_recipient_key(
 ) {
     if (key_length < olm_pk_key_length()) {
         encryption->last_error = OLM_INPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_decode_base64(
@@ -118,12 +118,12 @@ size_t olm_pk_encrypt(
             || mac_length < olm_pk_mac_length()
             || ephemeral_key_size < olm_pk_key_length()) {
         encryption->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (random_length < olm_pk_encrypt_random_length()) {
         encryption->last_error = OLM_NOT_ENOUGH_RANDOM;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_curve25519_key_pair ephemeral_keypair;
@@ -163,7 +163,7 @@ size_t olm_pk_encrypt(
         PK_MAC_LENGTH
     );
 
-    if (result != (size_t)-1) {
+    if (result != SIZE_MAX) {
         _olm_encode_base64(raw_mac, PK_MAC_LENGTH, (uint8_t *)mac);
         _olm_encode_base64(ciphertext_pos, raw_ciphertext_length, (uint8_t *)ciphertext);
     }
@@ -237,12 +237,12 @@ size_t olm_pk_key_from_private(
 ) {
     if (pubkey_length < olm_pk_key_length()) {
         decryption->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (privkey_length < olm_pk_private_key_length()) {
         decryption->last_error = OLM_INPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_crypto_curve25519_generate_key(
@@ -341,7 +341,7 @@ size_t olm_pickle_pk_decryption(
 
     if (pickled_length < _olm_enc_output_length(raw_length)) {
         decryption->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     pickle_pk_decryption(
@@ -374,7 +374,7 @@ size_t olm_unpickle_pk_decryption(
 
     if (pubkey != NULL && pubkey_length < olm_pk_key_length()) {
         decryption->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     input = (uint8_t *) pickled;
@@ -387,8 +387,8 @@ size_t olm_unpickle_pk_decryption(
         &decryption->last_error
     );
 
-    if (raw_length == (size_t)-1) {
-        return (size_t)-1;
+    if (raw_length == SIZE_MAX) {
+        return SIZE_MAX;
     }
 
     pos = input;
@@ -400,12 +400,12 @@ size_t olm_unpickle_pk_decryption(
         if (decryption->last_error == OLM_SUCCESS) {
             decryption->last_error = OLM_CORRUPTED_PICKLE;
         }
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (pos != end) {
         decryption->last_error = OLM_PICKLE_EXTRA_DATA;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (pubkey != NULL) {
@@ -449,16 +449,16 @@ size_t olm_pk_decrypt(
 
     if (max_plaintext_length < olm_pk_max_plaintext_length(ciphertext_length)) {
         decryption->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     raw_ciphertext_length = _olm_decode_base64_length(ciphertext_length);
 
     if (ephemeral_key_length != _olm_encode_base64_length(CURVE25519_KEY_LENGTH)
             || mac_length != _olm_encode_base64_length(PK_MAC_LENGTH)
-            || raw_ciphertext_length == (size_t)-1) {
+            || raw_ciphertext_length == SIZE_MAX) {
         decryption->last_error = OLM_INVALID_BASE64;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_decode_base64(
@@ -493,7 +493,7 @@ size_t olm_pk_decrypt(
         max_plaintext_length
     );
 
-    if (result == (size_t)-1) {
+    if (result == SIZE_MAX) {
         decryption->last_error = OLM_BAD_MESSAGE_MAC;
     }
 
@@ -508,7 +508,7 @@ size_t olm_pk_get_private_key(
 ) {
     if (private_key_length < olm_pk_private_key_length()) {
         decryption->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     memcpy(
@@ -581,12 +581,12 @@ size_t olm_pk_signing_key_from_seed(
 ) {
     if (pubkey_length < olm_pk_signing_public_key_length()) {
         signing->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     if (seed_length < olm_pk_signing_seed_length()) {
         signing->last_error = OLM_INPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     _olm_crypto_ed25519_generate_key((const uint8_t *) seed, &signing->key_pair);
@@ -617,7 +617,7 @@ size_t olm_pk_sign(
 
     if (signature_length < olm_pk_signature_length()) {
         signing->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
-        return (size_t)-1;
+        return SIZE_MAX;
     }
 
     raw_sig = signature + olm_pk_signature_length() - ED25519_SIGNATURE_LENGTH;

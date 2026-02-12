@@ -17,7 +17,7 @@
     do { \
         if (!pos) { \
           session->last_error = OLM_CORRUPTED_PICKLE;  \
-          return (size_t)-1; \
+          return SIZE_MAX; \
         } \
     } while(0)
 

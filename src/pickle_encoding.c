@@ -55,11 +55,11 @@ size_t _olm_enc_input(uint8_t const * key, size_t key_length,
                       enum OlmErrorCode * last_error
 ) {
     size_t enc_length = _olm_decode_base64_length(b64_length);
-    if (enc_length == (size_t)-1) {
+    if (enc_length == SIZE_MAX) {
         if (last_error) {
             *last_error = OLM_INVALID_BASE64;
         }
-        return (size_t)-1;
+        return SIZE_MAX;
     }
     _olm_decode_base64(input, b64_length, input);
     const struct _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
@@ -71,7 +71,7 @@ size_t _olm_enc_input(uint8_t const * key, size_t key_length,
         input, raw_length,
         input, raw_length
     );
-    if (result == (size_t)-1 && last_error) {
+    if (result == SIZE_MAX && last_error) {
         *last_error = OLM_BAD_ACCOUNT_KEY;
     }
     return result;
