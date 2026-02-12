@@ -32,7 +32,7 @@ CE_EXPORT const char * olm_pk_encryption_last_error(
 
 /** An error code describing the most recent error to happen to an encryption
  * object */
-CE_EXPORT enum OlmErrorCode olm_pk_encryption_last_error_code(
+CE_EXPORT OlmErrorCode olm_pk_encryption_last_error_code(
     const OlmPkEncryption * encryption
 );
 
@@ -100,7 +100,7 @@ CE_EXPORT const char * olm_pk_decryption_last_error(
 
 /** An error code describing the most recent error to happen to a decription
  * object */
-CE_EXPORT enum OlmErrorCode olm_pk_decryption_last_error_code(
+CE_EXPORT OlmErrorCode olm_pk_decryption_last_error_code(
     const OlmPkDecryption * decryption
 );
 
@@ -222,7 +222,7 @@ CE_EXPORT const char * olm_pk_signing_last_error(
 
 /** A null terminated string describing the most recent error to happen to a
  * signing object */
-CE_EXPORT enum OlmErrorCode olm_pk_signing_last_error_code(
+CE_EXPORT OlmErrorCode olm_pk_signing_last_error_code(
     const OlmPkSigning * sign
 );
 

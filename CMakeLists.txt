@@ -35,7 +35,7 @@ add_library(ce
     src/ratchet.c
     src/session.cpp
     src/utility.c
-    src/pk.cpp
+    src/pk.c
     src/sas.c
 
     src/ed25519.c
