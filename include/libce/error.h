@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-enum OlmErrorCode {
+typedef enum OlmErrorCode {
     OLM_SUCCESS = 0, /*!< There wasn't an error */
     OLM_NOT_ENOUGH_RANDOM = 1,  /*!< Not enough entropy was supplied */
     OLM_OUTPUT_BUFFER_TOO_SMALL = 2, /*!< Supplied output buffer is too small */
@@ -55,10 +55,10 @@ enum OlmErrorCode {
 
     /* remember to update the list of string constants in error.c when updating
      * this list. */
-};
+} OlmErrorCode;
 
 /** get a string representation of the given error code. */
-CE_EXPORT const char * _olm_error_to_string(enum OlmErrorCode error);
+CE_EXPORT const char * _olm_error_to_string(OlmErrorCode error);
 
 #ifdef __cplusplus
 } // extern "C"

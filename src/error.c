@@ -22,7 +22,7 @@ static const char * ERRORS[] = {
     "OLM_PICKLE_EXTRA_DATA"
 };
 
-const char * _olm_error_to_string(enum OlmErrorCode error)
+const char * _olm_error_to_string(OlmErrorCode error)
 {
     if (error < (sizeof(ERRORS)/sizeof(ERRORS[0]))) {
         return ERRORS[error];
