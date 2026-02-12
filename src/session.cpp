@@ -18,7 +18,7 @@ static const std::uint8_t ROOT_KDF_INFO[] = "OLM_ROOT";
 static const std::uint8_t RATCHET_KDF_INFO[] = "OLM_RATCHET";
 static const std::uint8_t CIPHER_KDF_INFO[] = "OLM_KEYS";
 
-static const olm::KdfInfo OLM_KDF_INFO = {
+static const _OlmKdfInfo OLM_KDF_INFO = {
     ROOT_KDF_INFO, sizeof(ROOT_KDF_INFO) - 1,
     RATCHET_KDF_INFO, sizeof(RATCHET_KDF_INFO) - 1
 };
@@ -29,10 +29,9 @@ static const struct _olm_cipher_aes_sha_256 OLM_CIPHER =
 } // namespace
 
 olm::Session::Session(
-) : ratchet(OLM_KDF_INFO, OLM_CIPHER_BASE(&OLM_CIPHER)),
-    last_error(OlmErrorCode::OLM_SUCCESS),
+) : last_error(OlmErrorCode::OLM_SUCCESS),
     received_message(false) {
-
+    _olm_ratchet_init(&ratchet, &OLM_KDF_INFO, OLM_CIPHER_BASE(&OLM_CIPHER));
 }
 
 
@@ -77,7 +76,7 @@ std::size_t olm::Session::new_outbound_session(
     pos += CURVE25519_SHARED_SECRET_LENGTH;
     _olm_crypto_curve25519_shared_secret(&base_key, &one_time_key, pos);
 
-    ratchet.initialise_as_alice(secret, sizeof(secret), ratchet_key);
+    _olm_ratchet_initialise_as_alice(&ratchet, secret, sizeof(secret), &ratchet_key);
 
     _OLM_UNSET_VALUE(base_key);
     _OLM_UNSET_VALUE(ratchet_key);
@@ -172,7 +171,7 @@ std::size_t olm::Session::new_inbound_session(
     pos += CURVE25519_SHARED_SECRET_LENGTH;
     _olm_crypto_curve25519_shared_secret(&bob_one_time_key, &alice_base_key, pos);
 
-    ratchet.initialise_as_bob(secret, sizeof(secret), ratchet_key);
+    _olm_ratchet_initialise_as_bob(&ratchet, secret, sizeof(secret), &ratchet_key);
 
     _OLM_UNSET_VALUE(secret);
 
@@ -247,8 +246,8 @@ olm::MessageType olm::Session::encrypt_message_type() const {
 std::size_t olm::Session::encrypt_message_length(
     std::size_t plaintext_length
 ) const {
-    std::size_t message_length = ratchet.encrypt_output_length(
-        plaintext_length
+    std::size_t message_length = _olm_ratchet_encrypt_output_length(
+        &ratchet, plaintext_length
     );
 
     if (received_message) {
@@ -265,7 +264,7 @@ std::size_t olm::Session::encrypt_message_length(
 
 
 std::size_t olm::Session::encrypt_random_length() const {
-    return ratchet.encrypt_random_length();
+    return _olm_ratchet_encrypt_random_length(&ratchet);
 }
 
 
@@ -279,8 +278,8 @@ std::size_t olm::Session::encrypt(
         return SIZE_MAX;
     }
     std::uint8_t * message_body;
-    std::size_t message_body_length = ratchet.encrypt_output_length(
-        plaintext_length
+    std::size_t message_body_length = _olm_ratchet_encrypt_output_length(
+        &ratchet, plaintext_length
     );
 
     if (received_message) {
@@ -302,7 +301,8 @@ std::size_t olm::Session::encrypt(
         message_body = writer.message;
     }
 
-    std::size_t result = ratchet.encrypt(
+    std::size_t result = _olm_ratchet_encrypt(
+        &ratchet,
         plaintext, plaintext_length,
         random, random_length,
         message_body, message_body_length
@@ -338,8 +338,8 @@ std::size_t olm::Session::decrypt_max_plaintext_length(
         message_body_length = reader.message_length;
     }
 
-    std::size_t result = ratchet.decrypt_max_plaintext_length(
-        message_body, message_body_length
+    std::size_t result = _olm_ratchet_decrypt_max_plaintext_length(
+        &ratchet, message_body, message_body_length
     );
 
     if (result == SIZE_MAX) {
@@ -371,8 +371,10 @@ std::size_t olm::Session::decrypt(
         message_body_length = reader.message_length;
     }
 
-    std::size_t result = ratchet.decrypt(
-        message_body, message_body_length, plaintext, max_plaintext_length
+    std::size_t result = _olm_ratchet_decrypt(
+        &ratchet,
+        message_body, message_body_length,
+        plaintext, max_plaintext_length
     );
 
     if (result == SIZE_MAX) {
@@ -468,7 +470,7 @@ std::size_t olm::pickle_length(
     length += _olm_pickle_curve25519_public_key_length(&value.alice_identity_key);
     length += _olm_pickle_curve25519_public_key_length(&value.alice_base_key);
     length += _olm_pickle_curve25519_public_key_length(&value.bob_one_time_key);
-    length += olm::pickle_length(value.ratchet);
+    length += _olm_ratchet_pickle_length(&value.ratchet);
     return length;
 }
 
@@ -482,7 +484,7 @@ std::uint8_t * olm::pickle(
     pos = _olm_pickle_curve25519_public_key(pos, &value.alice_identity_key);
     pos = _olm_pickle_curve25519_public_key(pos, &value.alice_base_key);
     pos = _olm_pickle_curve25519_public_key(pos, &value.bob_one_time_key);
-    pos = olm::pickle(pos, value.ratchet);
+    pos = _olm_ratchet_pickle(pos, &value.ratchet);
     return pos;
 }
 
@@ -517,7 +519,9 @@ std::uint8_t const * olm::unpickle(
     pos = _olm_unpickle_curve25519_public_key(pos, end, &value.alice_identity_key); UNPICKLE_OK(pos);
     pos = _olm_unpickle_curve25519_public_key(pos, end, &value.alice_base_key); UNPICKLE_OK(pos);
     pos = _olm_unpickle_curve25519_public_key(pos, end, &value.bob_one_time_key); UNPICKLE_OK(pos);
-    pos = olm::unpickle(pos, end, value.ratchet, includes_chain_index); UNPICKLE_OK(pos);
+    pos = _olm_ratchet_unpickle(
+        pos, end, &value.ratchet, includes_chain_index
+    ); UNPICKLE_OK(pos);
 
     return pos;
 }

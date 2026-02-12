@@ -2,7 +2,10 @@
 #ifndef OLM_SESSION_HH_
 #define OLM_SESSION_HH_
 
-#include "libce/ratchet.hh"
+#include <cstddef>
+#include <cstdint>
+
+#include "libce/ratchet.h"
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
@@ -21,7 +24,7 @@ struct CE_EXPORT Session {
 
     Session();
 
-    Ratchet ratchet;
+    _OlmRatchet ratchet;
     OlmErrorCode last_error;
 
     bool received_message;

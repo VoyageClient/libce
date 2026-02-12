@@ -32,7 +32,7 @@ add_library(ce
     src/memory.c
     src/message.c
     src/pickle.c
-    src/ratchet.cpp
+    src/ratchet.c
     src/session.cpp
     src/utility.c
     src/pk.cpp

@@ -2,12 +2,13 @@
 #include "libce/pk.h"
 #include "libce/cipher.h"
 #include "libce/crypto.h"
-#include "libce/ratchet.hh"
+#include "libce/ratchet.h"
 #include "libce/error.h"
 #include "libce/memory.h"
 #include "libce/base64.h"
 #include "libce/pickle_encoding.h"
 #include "libce/pickle.h"
+#include <cstdint>
 #include <new>
 #include <cstring>
 
@@ -126,7 +127,7 @@ size_t olm_pk_encrypt(
         (uint8_t *)ephemeral_key
     );
 
-    olm::SharedKey secret;
+    _OlmSharedKey secret;
     _olm_crypto_curve25519_shared_secret(&ephemeral_keypair, &encryption->recipient_key, secret);
     size_t raw_ciphertext_length =
         _olm_cipher_aes_sha_256_ops.encrypt_ciphertext_length(olm_pk_cipher, plaintext_length);
@@ -385,7 +386,7 @@ size_t olm_pk_decrypt(
         (uint8_t *)ephemeral.public_key
     );
 
-    olm::SharedKey secret;
+    _OlmSharedKey secret;
     _olm_crypto_curve25519_shared_secret(&decryption->key_pair, &ephemeral, secret);
 
     uint8_t raw_mac[MAC_LENGTH];
