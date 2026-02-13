@@ -13,7 +13,7 @@
 
 namespace olm {
 
-struct Account;
+typedef struct OlmAccount OlmAccount;
 
 enum struct MessageType {
     PRE_KEY = 0,
@@ -41,7 +41,7 @@ struct CE_EXPORT Session {
      * failure last_error will be set with an error code. The last_error will be
      * NOT_ENOUGH_RANDOM if the number of random bytes was too small. */
     std::size_t new_outbound_session(
-        Account const & local_account,
+        OlmAccount const & local_account,
         _olm_curve25519_public_key const & identity_key,
         _olm_curve25519_public_key const & one_time_key,
         std::uint8_t const * random, std::size_t random_length
@@ -52,7 +52,7 @@ struct CE_EXPORT Session {
      * with an error code. The last_error will be BAD_MESSAGE_FORMAT if
      * the message headers could not be decoded. */
     std::size_t new_inbound_session(
-        Account & local_account,
+        OlmAccount & local_account,
         _olm_curve25519_public_key const * their_identity_key,
         std::uint8_t const * pre_key_message, std::size_t message_length
     );

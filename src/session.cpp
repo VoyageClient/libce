@@ -1,8 +1,8 @@
 /* See LICENSE file for copyright and license details. */
+#include "libce/account.h"
 #include "libce/session.hh"
 #include "libce/cipher.h"
 #include "libce/crypto.h"
-#include "libce/account.hh"
 #include "libce/memory.h"
 #include "libce/message.h"
 #include "libce/pickle.h"
@@ -41,7 +41,7 @@ std::size_t olm::Session::new_outbound_session_random_length() const {
 
 
 std::size_t olm::Session::new_outbound_session(
-    olm::Account const & local_account,
+    OlmAccount const & local_account,
     _olm_curve25519_public_key const & identity_key,
     _olm_curve25519_public_key const & one_time_key,
     std::uint8_t const * random, std::size_t random_length
@@ -107,7 +107,7 @@ static bool check_message_fields(
 
 
 std::size_t olm::Session::new_inbound_session(
-    olm::Account & local_account,
+    OlmAccount & local_account,
     _olm_curve25519_public_key const * their_identity_key,
     std::uint8_t const * one_time_key_message, std::size_t message_length
 ) {
@@ -148,8 +148,8 @@ std::size_t olm::Session::new_inbound_session(
     _olm_curve25519_public_key ratchet_key;
     _OLM_LOAD_ARRAY(ratchet_key.public_key, message_reader.ratchet_key);
 
-    olm::OneTimeKey const * our_one_time_key = local_account.lookup_key(
-        bob_one_time_key
+    _OlmOneTimeKey const * our_one_time_key = _olm_account_lookup_key(
+        &local_account, &bob_one_time_key
     );
 
     if (!our_one_time_key) {

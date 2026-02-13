@@ -176,7 +176,7 @@ CE_EXPORT size_t olm_create_account(
 
 /** The size of the output buffer needed to hold the identity keys */
 CE_EXPORT size_t olm_account_identity_keys_length(
-    OlmAccount const * account
+    OlmAccount * account
 );
 
 /** Writes the public parts of the identity keys for the account into the
@@ -205,7 +205,7 @@ CE_EXPORT size_t olm_account_sign(
 
 /** The size of the output buffer needed to hold the one time keys */
 CE_EXPORT size_t olm_account_one_time_keys_length(
-    OlmAccount const * account
+    OlmAccount * account
 );
 
 /** Writes the public parts of the unpublished one time keys for the account
@@ -280,7 +280,7 @@ CE_EXPORT size_t olm_account_generate_fallback_key(
 /** The number of bytes needed to hold the fallback key as returned by
  * olm_account_fallback_key. */
 CE_EXPORT size_t olm_account_fallback_key_length(
-    OlmAccount const * account
+    OlmAccount * account
 );
 
 /** Deprecated: use olm_account_unpublished_fallback_key instead */
@@ -292,7 +292,7 @@ CE_EXPORT size_t olm_account_fallback_key(
 /** The number of bytes needed to hold the unpublished fallback key as returned
  * by olm_account_unpublished fallback_key. */
 CE_EXPORT size_t olm_account_unpublished_fallback_key_length(
-    OlmAccount const * account
+    OlmAccount * account
 );
 
 /** Returns the fallback key (if present, and if unpublished) into the
