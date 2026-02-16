@@ -42,7 +42,7 @@ add_library(ce
     src/error.c
     src/inbound_group_session.c
     src/megolm.c
-    src/olm.cpp
+    src/olm.c
     src/outbound_group_session.c
     src/pickle_encoding.c
 
