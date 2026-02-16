@@ -37,7 +37,7 @@ CE_EXPORT const char *olm_inbound_group_session_last_error(
 /**
  * An error code describing the most recent error to happen to a group
  * session */
-CE_EXPORT enum OlmErrorCode olm_inbound_group_session_last_error_code(
+CE_EXPORT OlmErrorCode olm_inbound_group_session_last_error_code(
     const OlmInboundGroupSession *session
 );
 

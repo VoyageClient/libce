@@ -80,7 +80,7 @@ static void test_group_message_decode(void **state)
 {
     (void)state;
 
-    struct _OlmDecodeGroupMessageResults results;
+    _OlmDecodeGroupMessageResults results;
     uint8_t message[] =
         "\x03"
         "\x08\xC8\x01"

@@ -83,7 +83,7 @@ inline static void hmac_sha256_final(
 
 void _olm_crypto_curve25519_generate_key(
     uint8_t const * random_32_bytes,
-    struct _olm_curve25519_key_pair *key_pair
+    _olm_curve25519_key_pair *key_pair
 ) {
     memcpy(
         key_pair->private_key.private_key, random_32_bytes,
@@ -98,8 +98,8 @@ void _olm_crypto_curve25519_generate_key(
 
 
 void _olm_crypto_curve25519_shared_secret(
-    const struct _olm_curve25519_key_pair *our_key,
-    const struct _olm_curve25519_public_key * their_key,
+    const _olm_curve25519_key_pair *our_key,
+    const _olm_curve25519_public_key * their_key,
     uint8_t * output
 ) {
     curve25519_donna(output, our_key->private_key.private_key, their_key->public_key);
@@ -108,7 +108,7 @@ void _olm_crypto_curve25519_shared_secret(
 
 void _olm_crypto_ed25519_generate_key(
     uint8_t const * random_32_bytes,
-    struct _olm_ed25519_key_pair *key_pair
+    _olm_ed25519_key_pair *key_pair
 ) {
     ed25519_create_keypair(
         key_pair->public_key.public_key, key_pair->private_key.private_key,
@@ -118,7 +118,7 @@ void _olm_crypto_ed25519_generate_key(
 
 
 void _olm_crypto_ed25519_sign(
-    const struct _olm_ed25519_key_pair *our_key,
+    const _olm_ed25519_key_pair *our_key,
     uint8_t const * message, size_t message_length,
     uint8_t * output
 ) {
@@ -132,7 +132,7 @@ void _olm_crypto_ed25519_sign(
 
 
 int _olm_crypto_ed25519_verify(
-    const struct _olm_ed25519_public_key *their_key,
+    const _olm_ed25519_public_key *their_key,
     uint8_t const * message, size_t message_length,
     uint8_t const * signature
 ) {

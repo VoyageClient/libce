@@ -75,7 +75,7 @@ typedef struct _OlmRatchet {
     _olm_cipher const *ratchet_cipher;
 
     /** The last error that happened encrypting or decrypting a message. */
-    enum OlmErrorCode last_error;
+    OlmErrorCode last_error;
 
     /** The root key is used to generate chain keys from ephemeral keys. */
     _OlmSharedKey root_key;

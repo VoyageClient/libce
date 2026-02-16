@@ -7,9 +7,9 @@
 #include "libce/crypto.h"
 #include "libce/pickle.h"
 
-static const struct _olm_cipher_aes_sha_256 MEGOLM_CIPHER =
+static const _olm_cipher_aes_sha_256 MEGOLM_CIPHER =
     OLM_CIPHER_INIT_AES_SHA_256("MEGOLM_KEYS");
-const struct _olm_cipher *megolm_cipher = OLM_CIPHER_BASE(&MEGOLM_CIPHER);
+const _olm_cipher *megolm_cipher = OLM_CIPHER_BASE(&MEGOLM_CIPHER);
 
 /* the seeds used in the HMAC-SHA-256 functions for each part of the ratchet.
  */

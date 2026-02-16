@@ -5,12 +5,12 @@
 #include "libce/error.h"
 #include "libce/memory.h"
 
-struct OlmSAS {
-    enum OlmErrorCode last_error;
-    struct _olm_curve25519_key_pair curve25519_key;
+typedef struct OlmSAS {
+    OlmErrorCode last_error;
+    _olm_curve25519_key_pair curve25519_key;
     uint8_t secret[CURVE25519_SHARED_SECRET_LENGTH];
     int their_key_set;
-};
+} OlmSAS;
 
 const char * olm_sas_last_error(
     const OlmSAS * sas
@@ -18,7 +18,7 @@ const char * olm_sas_last_error(
     return _olm_error_to_string(sas->last_error);
 }
 
-enum OlmErrorCode olm_sas_last_error_code(
+OlmErrorCode olm_sas_last_error_code(
     const OlmSAS * sas
 ) {
     return sas->last_error;

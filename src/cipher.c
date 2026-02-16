@@ -37,24 +37,24 @@ static void derive_keys(
 
 static const size_t MAC_LENGTH = 8;
 
-size_t aes_sha_256_cipher_mac_length(const struct _olm_cipher *cipher) {
+size_t aes_sha_256_cipher_mac_length(const _olm_cipher *cipher) {
     return MAC_LENGTH;
 }
 
 size_t aes_sha_256_cipher_encrypt_ciphertext_length(
-        const struct _olm_cipher *cipher, size_t plaintext_length
+        const _olm_cipher *cipher, size_t plaintext_length
 ) {
     return _olm_crypto_aes_encrypt_cbc_length(plaintext_length);
 }
 
 size_t aes_sha_256_cipher_encrypt(
-    const struct _olm_cipher *cipher,
+    const _olm_cipher *cipher,
     uint8_t const * key, size_t key_length,
     uint8_t const * plaintext, size_t plaintext_length,
     uint8_t * ciphertext, size_t ciphertext_length,
     uint8_t * output, size_t output_length
 ) {
-    const struct _olm_cipher_aes_sha_256 * c = (const struct _olm_cipher_aes_sha_256 *)cipher;
+    const _olm_cipher_aes_sha_256 * c = (const _olm_cipher_aes_sha_256 *)cipher;
 
     if (ciphertext_length
             < aes_sha_256_cipher_encrypt_ciphertext_length(cipher, plaintext_length)
@@ -62,7 +62,7 @@ size_t aes_sha_256_cipher_encrypt(
         return SIZE_MAX;
     }
 
-    struct DerivedKeys keys;
+    DerivedKeys keys;
     uint8_t mac[SHA256_OUTPUT_LENGTH];
 
     derive_keys(c->kdf_info, c->kdf_info_length, key, key_length, &keys);
@@ -83,14 +83,14 @@ size_t aes_sha_256_cipher_encrypt(
 
 
 size_t aes_sha_256_cipher_decrypt_max_plaintext_length(
-    const struct _olm_cipher *cipher,
+    const _olm_cipher *cipher,
     size_t ciphertext_length
 ) {
     return ciphertext_length;
 }
 
 size_t aes_sha_256_cipher_decrypt(
-    const struct _olm_cipher *cipher,
+    const _olm_cipher *cipher,
     uint8_t const * key, size_t key_length,
     uint8_t const * input, size_t input_length,
     uint8_t const * ciphertext, size_t ciphertext_length,
@@ -102,7 +102,7 @@ size_t aes_sha_256_cipher_decrypt(
         return SIZE_MAX;
     }
 
-    const struct _olm_cipher_aes_sha_256 *c = (const struct _olm_cipher_aes_sha_256 *)cipher;
+    const _olm_cipher_aes_sha_256 *c = (const _olm_cipher_aes_sha_256 *)cipher;
 
     DerivedKeys keys;
     uint8_t mac[SHA256_OUTPUT_LENGTH];

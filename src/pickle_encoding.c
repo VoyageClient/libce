@@ -5,13 +5,13 @@
 #include "libce/cipher.h"
 #include "libce/olm.h"
 
-static const struct _olm_cipher_aes_sha_256 PICKLE_CIPHER =
+static const _olm_cipher_aes_sha_256 PICKLE_CIPHER =
     OLM_CIPHER_INIT_AES_SHA_256("Pickle");
 
 size_t _olm_enc_output_length(
     size_t raw_length
 ) {
-    const struct _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
+    const _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
     size_t length = cipher->ops->encrypt_ciphertext_length(cipher, raw_length);
     length += cipher->ops->mac_length(cipher);
     return _olm_encode_base64_length(length);
@@ -21,7 +21,7 @@ uint8_t * _olm_enc_output_pos(
     uint8_t * output,
     size_t raw_length
 ) {
-    const struct _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
+    const _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
     size_t length = cipher->ops->encrypt_ciphertext_length(cipher, raw_length);
     length += cipher->ops->mac_length(cipher);
     return output + _olm_encode_base64_length(length) - length;
@@ -31,7 +31,7 @@ size_t _olm_enc_output(
     uint8_t const * key, size_t key_length,
     uint8_t * output, size_t raw_length
 ) {
-    const struct _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
+    const _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
     size_t ciphertext_length = cipher->ops->encrypt_ciphertext_length(
         cipher, raw_length
     );
@@ -52,7 +52,7 @@ size_t _olm_enc_output(
 
 size_t _olm_enc_input(uint8_t const * key, size_t key_length,
                       uint8_t * input, size_t b64_length,
-                      enum OlmErrorCode * last_error
+                      OlmErrorCode * last_error
 ) {
     size_t enc_length = _olm_decode_base64_length(b64_length);
     if (enc_length == SIZE_MAX) {
@@ -62,7 +62,7 @@ size_t _olm_enc_input(uint8_t const * key, size_t key_length,
         return SIZE_MAX;
     }
     _olm_decode_base64(input, b64_length, input);
-    const struct _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
+    const _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
     size_t raw_length = enc_length - cipher->ops->mac_length(cipher);
     size_t result = cipher->ops->decrypt(
         cipher,

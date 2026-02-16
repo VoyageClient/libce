@@ -98,7 +98,7 @@ CE_EXPORT void _olm_decode_group_message(
     size_t mac_length, size_t signature_length,
 
     /* output structure: updated with results */
-    struct _OlmDecodeGroupMessageResults *results
+    _OlmDecodeGroupMessageResults *results
 );
 
 /**

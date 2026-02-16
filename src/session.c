@@ -24,7 +24,7 @@ static const _OlmKdfInfo OLM_KDF_INFO = {
     RATCHET_KDF_INFO, sizeof(RATCHET_KDF_INFO) - 1
 };
 
-static const struct _olm_cipher_aes_sha_256 OLM_CIPHER =
+static const _olm_cipher_aes_sha_256 OLM_CIPHER =
     OLM_CIPHER_INIT_AES_SHA_256(CIPHER_KDF_INFO);
 
 static bool check_message_fields(

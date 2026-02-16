@@ -56,7 +56,7 @@ CE_EXPORT size_t _olm_enc_output(
 CE_EXPORT size_t _olm_enc_input(
     uint8_t const * key, size_t key_length,
     uint8_t * input, size_t b64_length,
-    enum OlmErrorCode * last_error
+    OlmErrorCode * last_error
 );
 
 

@@ -18,15 +18,15 @@
 #define PICKLE_VERSION           1
 #define SESSION_KEY_VERSION      2
 
-struct OlmOutboundGroupSession {
+typedef struct OlmOutboundGroupSession {
     /** the Megolm ratchet providing the encryption keys */
     Megolm ratchet;
 
     /** The ed25519 keypair used for signing the messages */
-    struct _olm_ed25519_key_pair signing_key;
+    _olm_ed25519_key_pair signing_key;
 
-    enum OlmErrorCode last_error;
-};
+    OlmErrorCode last_error;
+} OlmOutboundGroupSession;
 
 
 size_t olm_outbound_group_session_size(void) {
@@ -47,7 +47,7 @@ const char *olm_outbound_group_session_last_error(
     return _olm_error_to_string(session->last_error);
 }
 
-enum OlmErrorCode olm_outbound_group_session_last_error_code(
+OlmErrorCode olm_outbound_group_session_last_error_code(
     const OlmOutboundGroupSession *session
 ) {
     return session->last_error;

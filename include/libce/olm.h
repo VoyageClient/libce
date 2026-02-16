@@ -64,7 +64,7 @@ CE_EXPORT const char * olm_account_last_error(
 );
 
 /** An error code describing the most recent error to happen to an account */
-CE_EXPORT enum OlmErrorCode olm_account_last_error_code(
+CE_EXPORT OlmErrorCode olm_account_last_error_code(
     OlmAccount const * account
 );
 
@@ -75,7 +75,7 @@ CE_EXPORT const char * olm_session_last_error(
 );
 
 /** An error code describing the most recent error to happen to a session */
-CE_EXPORT enum OlmErrorCode olm_session_last_error_code(
+CE_EXPORT OlmErrorCode olm_session_last_error_code(
     OlmSession const * session
 );
 
@@ -86,7 +86,7 @@ CE_EXPORT const char * olm_utility_last_error(
 );
 
 /** An error code describing the most recent error to happen to a utility */
-CE_EXPORT enum OlmErrorCode olm_utility_last_error_code(
+CE_EXPORT OlmErrorCode olm_utility_last_error_code(
     OlmUtility const * utility
 );
 

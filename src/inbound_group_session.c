@@ -20,7 +20,7 @@
 #define SESSION_KEY_VERSION      2
 #define SESSION_EXPORT_VERSION   1
 
-struct OlmInboundGroupSession {
+typedef struct OlmInboundGroupSession {
     /** our earliest known ratchet value */
     Megolm initial_ratchet;
 
@@ -28,7 +28,7 @@ struct OlmInboundGroupSession {
     Megolm latest_ratchet;
 
     /** The ed25519 signing key */
-    struct _olm_ed25519_public_key signing_key;
+    _olm_ed25519_public_key signing_key;
 
     /**
      * Have we ever seen any evidence that this is a valid session?
@@ -41,8 +41,8 @@ struct OlmInboundGroupSession {
      */
     int signing_key_verified;
 
-    enum OlmErrorCode last_error;
-};
+    OlmErrorCode last_error;
+} OlmInboundGroupSession;
 
 size_t olm_inbound_group_session_size(void) {
     return sizeof(OlmInboundGroupSession);
@@ -62,7 +62,7 @@ const char *olm_inbound_group_session_last_error(
     return _olm_error_to_string(session->last_error);
 }
 
-enum OlmErrorCode olm_inbound_group_session_last_error_code(
+OlmErrorCode olm_inbound_group_session_last_error_code(
     const OlmInboundGroupSession *session
 ) {
     return session->last_error;

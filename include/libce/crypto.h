@@ -66,8 +66,8 @@ typedef struct _olm_curve25519_private_key {
 } _olm_curve25519_private_key;
 
 typedef struct _olm_curve25519_key_pair {
-    struct _olm_curve25519_public_key public_key;
-    struct _olm_curve25519_private_key private_key;
+    _olm_curve25519_public_key public_key;
+    _olm_curve25519_private_key private_key;
 } _olm_curve25519_key_pair;
 
 typedef struct _olm_ed25519_public_key {
@@ -79,8 +79,8 @@ typedef struct _olm_ed25519_private_key {
 } _olm_ed25519_private_key;
 
 typedef struct _olm_ed25519_key_pair {
-    struct _olm_ed25519_public_key public_key;
-    struct _olm_ed25519_private_key private_key;
+    _olm_ed25519_public_key public_key;
+    _olm_ed25519_private_key private_key;
 } _olm_ed25519_key_pair;
 
 
@@ -92,8 +92,8 @@ CE_EXPORT size_t _olm_crypto_aes_encrypt_cbc_length(
 /** Encrypts the input using AES256 in CBC mode with PKCS#7 padding.
  * The output buffer must be big enough to hold the output including padding */
 CE_EXPORT void _olm_crypto_aes_encrypt_cbc(
-    const struct _olm_aes256_key *key,
-    const struct _olm_aes256_iv *iv,
+    const _olm_aes256_key *key,
+    const _olm_aes256_iv *iv,
     const uint8_t *input, size_t input_length,
     uint8_t *output
 );
@@ -103,8 +103,8 @@ CE_EXPORT void _olm_crypto_aes_encrypt_cbc(
  * without padding on success or SIZE_MAX if the padding is invalid.
  */
 CE_EXPORT size_t _olm_crypto_aes_decrypt_cbc(
-    const struct _olm_aes256_key *key,
-    const struct _olm_aes256_iv *iv,
+    const _olm_aes256_key *key,
+    const _olm_aes256_iv *iv,
     uint8_t const * input, size_t input_length,
     uint8_t * output
 );
@@ -144,7 +144,7 @@ CE_EXPORT void _olm_crypto_hkdf_sha256(
  */
 CE_EXPORT void _olm_crypto_curve25519_generate_key(
     uint8_t const * random_32_bytes,
-    struct _olm_curve25519_key_pair *output
+    _olm_curve25519_key_pair *output
 );
 
 
@@ -152,8 +152,8 @@ CE_EXPORT void _olm_crypto_curve25519_generate_key(
  * The output buffer must be at least CURVE25519_SHARED_SECRET_LENGTH (32) bytes long.
  */
 CE_EXPORT void _olm_crypto_curve25519_shared_secret(
-    const struct _olm_curve25519_key_pair *our_key,
-    const struct _olm_curve25519_public_key *their_key,
+    const _olm_curve25519_key_pair *our_key,
+    const _olm_curve25519_public_key *their_key,
     uint8_t * output
 );
 
@@ -162,7 +162,7 @@ CE_EXPORT void _olm_crypto_curve25519_shared_secret(
  */
 CE_EXPORT void _olm_crypto_ed25519_generate_key(
     uint8_t const * random_bytes,
-    struct _olm_ed25519_key_pair *output
+    _olm_ed25519_key_pair *output
 );
 
 /** Signs the message using our private key.
@@ -170,7 +170,7 @@ CE_EXPORT void _olm_crypto_ed25519_generate_key(
  * The output buffer must be at least ED25519_SIGNATURE_LENGTH (64) bytes
  * long. */
 CE_EXPORT void _olm_crypto_ed25519_sign(
-    const struct _olm_ed25519_key_pair *our_key,
+    const _olm_ed25519_key_pair *our_key,
     const uint8_t * message, size_t message_length,
     uint8_t * output
 );
@@ -179,7 +179,7 @@ CE_EXPORT void _olm_crypto_ed25519_sign(
  * The signature input buffer must be ED25519_SIGNATURE_LENGTH (64) bytes long.
  * Returns non-zero if the signature is valid. */
 CE_EXPORT int _olm_crypto_ed25519_verify(
-    const struct _olm_ed25519_public_key *their_key,
+    const _olm_ed25519_public_key *their_key,
     const uint8_t * message, size_t message_length,
     const uint8_t * signature
 );

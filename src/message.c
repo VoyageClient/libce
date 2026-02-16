@@ -385,7 +385,7 @@ size_t _olm_encode_group_message(
 void _olm_decode_group_message(
     const uint8_t *input, size_t input_length,
     size_t mac_length, size_t signature_length,
-    struct _OlmDecodeGroupMessageResults *results
+    _OlmDecodeGroupMessageResults *results
 ) {
     uint8_t const * pos = input;
     size_t trailer_length = mac_length + signature_length;

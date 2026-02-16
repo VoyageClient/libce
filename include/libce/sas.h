@@ -28,7 +28,7 @@ CE_EXPORT const char * olm_sas_last_error(
 
 /** An error code describing the most recent error to happen to an SAS
  * object. */
-CE_EXPORT enum OlmErrorCode olm_sas_last_error_code(
+CE_EXPORT OlmErrorCode olm_sas_last_error_code(
     const OlmSAS * sas
 );
 

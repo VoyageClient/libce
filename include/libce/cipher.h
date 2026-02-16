@@ -13,20 +13,20 @@
 extern "C" {
 #endif
 
-struct _olm_cipher;
+typedef struct _olm_cipher _olm_cipher;
 
 typedef struct _olm_cipher_ops {
     /**
      * Returns the length of the message authentication code that will be
      * appended to the output.
      */
-    size_t (*mac_length)(const struct _olm_cipher *cipher);
+    size_t (*mac_length)(const _olm_cipher *cipher);
 
     /**
      * Returns the length of cipher-text for a given length of plain-text.
      */
     size_t (*encrypt_ciphertext_length)(
-        const struct _olm_cipher *cipher,
+        const _olm_cipher *cipher,
         size_t plaintext_length
     );
 
@@ -45,7 +45,7 @@ typedef struct _olm_cipher_ops {
      * buffer is too small. Otherwise returns the length of the output buffer.
      */
     size_t (*encrypt)(
-        const struct _olm_cipher *cipher,
+        const _olm_cipher *cipher,
         uint8_t const * key, size_t key_length,
         uint8_t const * plaintext, size_t plaintext_length,
         uint8_t * ciphertext, size_t ciphertext_length,
@@ -57,7 +57,7 @@ typedef struct _olm_cipher_ops {
      * cipher-text can contain.
      */
     size_t (*decrypt_max_plaintext_length)(
-        const struct _olm_cipher *cipher,
+        const _olm_cipher *cipher,
         size_t ciphertext_length
     );
 
@@ -76,7 +76,7 @@ typedef struct _olm_cipher_ops {
      *  of the plain text.
      */
     size_t (*decrypt)(
-        const struct _olm_cipher *cipher,
+        const _olm_cipher *cipher,
         uint8_t const * key, size_t key_length,
         uint8_t const * input, size_t input_length,
         uint8_t const * ciphertext, size_t ciphertext_length,
@@ -85,12 +85,12 @@ typedef struct _olm_cipher_ops {
 } _olm_cipher_ops;
 
 typedef struct _olm_cipher {
-    const struct _olm_cipher_ops *ops;
+    const _olm_cipher_ops *ops;
     /* cipher-specific fields follow */
 } _olm_cipher;
 
 typedef struct _olm_cipher_aes_sha_256 {
-    struct _olm_cipher base_cipher;
+    _olm_cipher base_cipher;
 
     /** context string for the HKDF used for deriving the AES256 key, HMAC key,
      * and AES IV, from the key material passed to encrypt/decrypt.

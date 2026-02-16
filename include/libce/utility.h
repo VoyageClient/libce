@@ -12,13 +12,13 @@
 extern "C" {
 #endif
 
-struct OlmUtility {
-    enum OlmErrorCode last_error;
-};
+typedef struct OlmUtility {
+    OlmErrorCode last_error;
+} OlmUtility;
 
 /** Initialise an Olm utility object. */
 void _olm_utility_init(
-    struct OlmUtility * utility
+    OlmUtility * utility
 );
 
 /** The length of a SHA-256 hash in bytes. */
@@ -30,7 +30,7 @@ size_t _olm_utility_sha256_length(void);
  * Returns SIZE_MAX on failure and sets utility->last_error.
  */
 size_t _olm_utility_sha256(
-    struct OlmUtility * utility,
+    OlmUtility * utility,
     uint8_t const * input, size_t input_length,
     uint8_t * output, size_t output_length
 );
@@ -41,8 +41,8 @@ size_t _olm_utility_sha256(
  * Returns SIZE_MAX on failure and sets utility->last_error.
  */
 size_t _olm_utility_ed25519_verify(
-    struct OlmUtility * utility,
-    struct _olm_ed25519_public_key const * key,
+    OlmUtility * utility,
+    _olm_ed25519_public_key const * key,
     uint8_t const * message, size_t message_length,
     uint8_t const * signature, size_t signature_length
 );
