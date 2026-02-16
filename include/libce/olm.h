@@ -427,13 +427,13 @@ CE_EXPORT size_t olm_encrypt_message_type(
 
 /** The number of random bytes needed to encrypt the next message. */
 CE_EXPORT size_t olm_encrypt_random_length(
-    OlmSession const * session
+    OlmSession * session
 );
 
 /** The size of the next message in bytes for the given number of plain-text
  * bytes. */
 CE_EXPORT size_t olm_encrypt_message_length(
-    OlmSession const * session,
+    OlmSession * session,
     size_t plaintext_length
 );
 

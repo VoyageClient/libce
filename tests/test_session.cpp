@@ -1,4 +1,4 @@
-#include "libce/session.hh"
+#include "libce/session.h"
 #include "libce/pickle_encoding.h"
 
 #include "testing.hh"
@@ -20,7 +20,7 @@ const std::uint8_t *decode_hex(
     return buf;
 }
 
-void check_session(const olm::Session &session) {
+void check_session(const OlmSession &session) {
     CHECK_EQ_SIZE(
         decode_hex("49d640dc96b80176694af69fc4b8ca9fac49aecbd697d01fd8bee1ed2693b6c9"),
         session.ratchet.root_key, 32
@@ -90,8 +90,8 @@ TEST_CASE("V1 session pickle") {
         pickled, strlen((char *)pickled), NULL
     );
 
-    olm::Session session;
-    const uint8_t *unpickle_res = olm::unpickle(pickled, pickled+sizeof(pickled), session);
+    OlmSession session;
+    const uint8_t *unpickle_res = _olm_unpickle_session(pickled, pickled+sizeof(pickled), &session);
     CHECK_EQ(
         pickle_len, (size_t)(unpickle_res - pickled)
     );
@@ -99,9 +99,9 @@ TEST_CASE("V1 session pickle") {
     check_session(session);
 
 #if 0
-    size_t rawlen = olm::pickle_length(session);
+    size_t rawlen = _olm_pickle_session_length(session);
     uint8_t *r1 = _olm_enc_output_pos(pickled, rawlen);
-    olm::pickle(r1, session);
+    _olm_pickle_session(r1, session);
     _olm_enc_output(
         PICKLE_KEY, strlen((char *)PICKLE_KEY),
         pickled, rawlen);
@@ -125,8 +125,8 @@ TEST_CASE("V2 session pickle") {
         pickled, strlen((char *)pickled), NULL
     );
 
-    olm::Session session;
-    const uint8_t *unpickle_res = olm::unpickle(pickled, pickled+sizeof(pickled), session);
+    OlmSession session;
+    const uint8_t *unpickle_res = _olm_unpickle_session(pickled, pickled+sizeof(pickled), &session);
     CHECK_EQ(
         pickle_len, (size_t)(unpickle_res - pickled)
     );

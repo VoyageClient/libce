@@ -33,7 +33,7 @@ add_library(ce
     src/message.c
     src/pickle.c
     src/ratchet.c
-    src/session.cpp
+    src/session.c
     src/utility.c
     src/pk.c
     src/sas.c
