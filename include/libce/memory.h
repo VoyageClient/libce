@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -26,17 +27,35 @@ bool _olm_is_equal(
     size_t length
 );
 
+static inline const uint8_t * _olm_load_array_impl(
+    void * dest,
+    const void * src,
+    size_t array_size
+) {
+    memcpy(dest, src, array_size);
+    return ((const uint8_t *)src) + array_size;
+}
+
+static inline uint8_t * _olm_store_array_impl(
+    void * dst,
+    const void * src,
+    size_t array_size
+) {
+    memcpy(dst, src, array_size);
+    return ((uint8_t *)dst) + array_size;
+}
+
 /** Check if two fixed size arrays are equals */
 #define _OLM_ARRAY_EQUAL(a, b) \
     _olm_is_equal((const uint8_t *)(a), (const uint8_t *)(b), sizeof(a))
 
 /** Copy into a fixed size array */
 #define _OLM_LOAD_ARRAY(dest, src) \
-    (memcpy((dest), (src), sizeof(dest)), ((const uint8_t *)(src)) + sizeof(dest))
+    _olm_load_array_impl((dest), (src), sizeof(dest))
 
 /** Copy from a fixed size array */
 #define _OLM_STORE_ARRAY(dst, src) \
-    (memcpy((dst), (src), sizeof(src)), (dst) + sizeof(src))
+    _olm_store_array_impl((dst), (src), sizeof(src))
 
 /** Clear the memory backing an object */
 #define _OLM_UNSET_VALUE(v) \

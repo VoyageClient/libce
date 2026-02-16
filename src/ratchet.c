@@ -182,6 +182,7 @@ void _olm_ratchet_initialise_as_bob(
 ) {
     uint8_t derived_secrets[2 * OLM_SHARED_KEY_LENGTH];
     uint8_t const *pos = derived_secrets;
+    _OlmReceiverChain *receiver_chain;
 
     _olm_crypto_hkdf_sha256(
         shared_secret, shared_secret_length,
@@ -190,16 +191,13 @@ void _olm_ratchet_initialise_as_bob(
         derived_secrets, sizeof(derived_secrets)
     );
 
-    _olm_list_insert_front(&ratchet->receiver_chains);
-    _olm_list_get(&ratchet->receiver_chains, 0).chain_key.index = 0;
+    receiver_chain = _olm_list_insert_front(&ratchet->receiver_chains);
+    receiver_chain->chain_key.index = 0;
 
     pos = _OLM_LOAD_ARRAY(ratchet->root_key, pos);
-    pos = _OLM_LOAD_ARRAY(
-        _olm_list_get(&ratchet->receiver_chains, 0).chain_key.key,
-        pos
-    );
+    pos = _OLM_LOAD_ARRAY(receiver_chain->chain_key.key, pos);
 
-    _olm_list_get(&ratchet->receiver_chains, 0).ratchet_key = *their_ratchet_key;
+    receiver_chain->ratchet_key = *their_ratchet_key;
     _OLM_UNSET_VALUE(derived_secrets);
 }
 
@@ -210,6 +208,7 @@ void _olm_ratchet_initialise_as_alice(
 ) {
     uint8_t derived_secrets[2 * OLM_SHARED_KEY_LENGTH];
     uint8_t const *pos = derived_secrets;
+    _OlmSenderChain *sender_chain;
 
     _olm_crypto_hkdf_sha256(
         shared_secret, shared_secret_length,
@@ -218,16 +217,13 @@ void _olm_ratchet_initialise_as_alice(
         derived_secrets, sizeof(derived_secrets)
     );
 
-    _olm_list_insert_front(&ratchet->sender_chain);
-    _olm_list_get(&ratchet->sender_chain, 0).chain_key.index = 0;
+    sender_chain = _olm_list_insert_front(&ratchet->sender_chain);
+    sender_chain->chain_key.index = 0;
 
     pos = _OLM_LOAD_ARRAY(ratchet->root_key, pos);
-    pos = _OLM_LOAD_ARRAY(
-        _olm_list_get(&ratchet->sender_chain, 0).chain_key.key,
-        pos
-    );
+    pos = _OLM_LOAD_ARRAY(sender_chain->chain_key.key, pos);
 
-    _olm_list_get(&ratchet->sender_chain, 0).ratchet_key = *our_ratchet_key;
+    sender_chain->ratchet_key = *our_ratchet_key;
     _OLM_UNSET_VALUE(derived_secrets);
 }
 
@@ -597,6 +593,7 @@ size_t _olm_ratchet_encrypt(
     uint32_t counter;
     _olm_curve25519_public_key const *ratchet_key;
     _OlmMessageWriter writer;
+    _OlmSenderChain *sender_chain;
 
     if (random_length < _olm_ratchet_encrypt_random_length(ratchet)) {
         ratchet->last_error = OLM_NOT_ENOUGH_RANDOM;
@@ -609,18 +606,18 @@ size_t _olm_ratchet_encrypt(
     }
 
     if (_olm_list_empty(&ratchet->sender_chain)) {
-        _olm_list_insert_front(&ratchet->sender_chain);
+        sender_chain = _olm_list_insert_front(&ratchet->sender_chain);
         _olm_crypto_curve25519_generate_key(
             random,
-            &_olm_list_get(&ratchet->sender_chain, 0).ratchet_key
+            &sender_chain->ratchet_key
         );
         create_chain_key(
             ratchet->root_key,
-            &_olm_list_get(&ratchet->sender_chain, 0).ratchet_key,
+            &sender_chain->ratchet_key,
             &_olm_list_get(&ratchet->receiver_chains, 0).ratchet_key,
             ratchet->kdf_info,
             &ratchet->root_key,
-            &_olm_list_get(&ratchet->sender_chain, 0).chain_key
+            &sender_chain->chain_key
         );
     }
 
