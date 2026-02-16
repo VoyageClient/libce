@@ -4,7 +4,7 @@ includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
 libdir=@CMAKE_INSTALL_FULL_LIBDIR@
 
 Name: libce
-Description: implementation of the Double Ratchet cryptographic ratchet in C++
+Description: Implementation of the Double Ratchet cryptographic ratchet in C99
 Version: @PROJECT_VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} -lce

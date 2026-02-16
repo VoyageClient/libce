@@ -1,7 +1,7 @@
 # libce - Fast & Secure libolm fork
 lib**c**reek-**e**ncrypt is an implementation of the Double Ratchet cryptographic ratchet
 described by https://whispersystems.org/docs/specifications/doubleratchet/ for Linux and BSD.
-It is written in C & C++11; exposed as a C API.
+It is written in C99 & designed to be **highly** portable.
 
 The specification of the Olm ratchet can be found in [docs/olm.md](docs/olm.md).
 
@@ -32,7 +32,7 @@ cd build/tests
 ctest .
 ```
 
-To build libce as a static library (which still needs libstdc++ dynamically) run:
+To build libce as a static library, run:
 
 ```bash
 cmake . -Bbuild -DBUILD_SHARED_LIBS=NO
@@ -94,9 +94,8 @@ git push --tags
 ## Design
 
 libce was originally implemented in C++, with a plain-C layer providing the public
-API. As development has progressed, it has become clear that C++ gives little
-advantage, and new functionality is being added in C, with C++ parts being
-rewritten as the need ariases.
+API. However, this was entirely rewritten in plain C99 with libce. There is no
+dependence on C++ anymore.
 
 ### Error Handling
 

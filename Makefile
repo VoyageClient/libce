@@ -19,14 +19,14 @@ DEBUG_TARGET := $(BUILD_DIR)/libce_debug.$(SO).$(VERSION)
 
 PUBLIC_HEADERS := include/libce/olm.h include/libce/outbound_group_session.h include/libce/inbound_group_session.h include/libce/pk.h include/libce/sas.h include/libce/error.h include/libce/olm_export.h
 
-SOURCES := $(wildcard src/*.cpp) $(wildcard src/*.c) \
+SOURCES := $(wildcard src/*.c) \
     lib/crypto-algorithms/sha256.c \
     lib/crypto-algorithms/aes.c \
     lib/curve25519-donna/curve25519-donna.c
 
-TEST_SOURCES := $(wildcard tests/test_*.cpp) $(wildcard tests/test_*.c)
+TEST_SOURCES := $(wildcard tests/test_*.c)
 
-OBJECTS := $(patsubst %.c,%.o,$(patsubst %.cpp,%.o,$(SOURCES)))
+OBJECTS := $(patsubst %.c,%.o,$(SOURCES))
 RELEASE_OBJECTS := $(addprefix $(BUILD_DIR)/release/,$(OBJECTS))
 DEBUG_OBJECTS := $(addprefix $(BUILD_DIR)/debug/,$(OBJECTS))
 TEST_BINARIES := $(patsubst tests/%,$(BUILD_DIR)/tests/%,$(basename $(TEST_SOURCES)))
@@ -44,12 +44,10 @@ CPPFLAGS += -Iinclude -Ilib \
 
 # we rely on <stdint.h>, which was introduced in C99
 CFLAGS += -Wall -Werror -std=c99
-CXXFLAGS += -Wall -Werror -std=c++11
 LDFLAGS += -Wall -Werror
 LDLIBS += $(LIBCE_LIBS)
 
 CFLAGS_NATIVE = -fPIC
-CXXFLAGS_NATIVE = -fPIC
 
 # generate .d files when compiling
 CPPFLAGS += -MMD
@@ -57,11 +55,9 @@ CPPFLAGS += -MMD
 ### per-target variables
 
 $(RELEASE_OBJECTS): CFLAGS += $(RELEASE_OPTIMIZE_FLAGS) $(CFLAGS_NATIVE)
-$(RELEASE_OBJECTS): CXXFLAGS += $(RELEASE_OPTIMIZE_FLAGS) $(CXXFLAGS_NATIVE)
 $(RELEASE_TARGET): LDFLAGS += $(RELEASE_OPTIMIZE_FLAGS)
 
 $(DEBUG_OBJECTS): CFLAGS += $(DEBUG_OPTIMIZE_FLAGS) $(CFLAGS_NATIVE)
-$(DEBUG_OBJECTS): CXXFLAGS += $(DEBUG_OPTIMIZE_FLAGS) $(CXXFLAGS_NATIVE)
 $(DEBUG_TARGET): LDFLAGS += $(DEBUG_OPTIMIZE_FLAGS)
 
 $(TEST_BINARIES): CPPFLAGS += -Itests/include
@@ -150,25 +146,13 @@ $(BUILD_DIR)/release/%.o: %.c
 	$(call mkdir,$(dir $@))
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
-$(BUILD_DIR)/release/%.o: %.cpp
-	$(call mkdir,$(dir $@))
-	$(COMPILE.cc) $(OUTPUT_OPTION) $<
-
 $(BUILD_DIR)/debug/%.o: %.c
 	$(call mkdir,$(dir $@))
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
-$(BUILD_DIR)/debug/%.o: %.cpp
-	$(call mkdir,$(dir $@))
-	$(COMPILE.cc) $(OUTPUT_OPTION) $<
-
 $(BUILD_DIR)/tests/%: tests/%.c $(DEBUG_OBJECTS)
 	$(call mkdir,$(dir $@))
 	$(LINK.c) -o $@ $< $(DEBUG_OBJECTS) $(LOADLIBES) $(LDLIBS)
-
-$(BUILD_DIR)/tests/%: tests/%.cpp $(DEBUG_OBJECTS)
-	$(call mkdir,$(dir $@))
-	$(LINK.cc) -o $@ $< $(DEBUG_OBJECTS) $(LOADLIBES) $(LDLIBS)
 
 %.html: %.rst
 	rst2html $< $@
