@@ -139,5 +139,6 @@ export(EXPORT ce-targets
 export(PACKAGE LibCE)
 
 if (CE_TESTS)
+   enable_testing()
    add_subdirectory(tests)
 endif()

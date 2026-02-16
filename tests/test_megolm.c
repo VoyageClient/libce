@@ -2,23 +2,25 @@
 #include "libce/megolm.h"
 #include "libce/memory.h"
 
-#include "testing.hh"
+#include <stdint.h>
 
+#include "testing.h"
 
-std::uint8_t random_bytes[] =
+static uint8_t random_bytes[] =
     "0123456789ABCDEF0123456789ABCDEF"
     "0123456789ABCDEF0123456789ABCDEF"
     "0123456789ABCDEF0123456789ABCDEF"
     "0123456789ABCDEF0123456789ABCDEF";
 
-TEST_CASE("Megolm::advance") {
+static void test_megolm_advance(void **state)
+{
+    (void)state;
 
     Megolm mr;
 
     megolm_init(&mr, random_bytes, 0);
-    // single-step advance
     megolm_advance(&mr);
-    const std::uint8_t expected1[] = {
+    const uint8_t expected1[] = {
         0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
         0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
         0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
@@ -31,14 +33,13 @@ TEST_CASE("Megolm::advance") {
     CHECK_EQ(1U, mr.counter);
     CHECK_EQ_SIZE(expected1, megolm_get_data(&mr), MEGOLM_RATCHET_LENGTH);
 
-    // repeat with complex advance
     megolm_init(&mr, random_bytes, 0);
     megolm_advance_to(&mr, 1);
     CHECK_EQ(1U, mr.counter);
     CHECK_EQ_SIZE(expected1, megolm_get_data(&mr), MEGOLM_RATCHET_LENGTH);
 
-    megolm_advance_to(&mr, 0x1000000);
-    const std::uint8_t expected2[] = {
+    megolm_advance_to(&mr, 0x1000000U);
+    const uint8_t expected2[] = {
         0x54, 0x02, 0x2d, 0x7d, 0xc0, 0x29, 0x8e, 0x16, 0x37, 0xe2, 0x1c, 0x97, 0x15, 0x30, 0x92, 0xf9,
         0x33, 0xc0, 0x56, 0xff, 0x74, 0xfe, 0x1b, 0x92, 0x2d, 0x97, 0x1f, 0x24, 0x82, 0xc2, 0x85, 0x9c,
         0x70, 0x04, 0xc0, 0x1e, 0xe4, 0x9b, 0xd6, 0xef, 0xe0, 0x07, 0x35, 0x25, 0xaf, 0x9b, 0x16, 0x32,
@@ -51,8 +52,8 @@ TEST_CASE("Megolm::advance") {
     CHECK_EQ(0x1000000U, mr.counter);
     CHECK_EQ_SIZE(expected2, megolm_get_data(&mr), MEGOLM_RATCHET_LENGTH);
 
-    megolm_advance_to(&mr, 0x1041506);
-    const std::uint8_t expected3[] = {
+    megolm_advance_to(&mr, 0x1041506U);
+    const uint8_t expected3[] = {
         0x54, 0x02, 0x2d, 0x7d, 0xc0, 0x29, 0x8e, 0x16, 0x37, 0xe2, 0x1c, 0x97, 0x15, 0x30, 0x92, 0xf9,
         0x33, 0xc0, 0x56, 0xff, 0x74, 0xfe, 0x1b, 0x92, 0x2d, 0x97, 0x1f, 0x24, 0x82, 0xc2, 0x85, 0x9c,
         0x55, 0x58, 0x8d, 0xf5, 0xb7, 0xa4, 0x88, 0x78, 0x42, 0x89, 0x27, 0x86, 0x81, 0x64, 0x58, 0x9f,
@@ -66,27 +67,33 @@ TEST_CASE("Megolm::advance") {
     CHECK_EQ_SIZE(expected3, megolm_get_data(&mr), MEGOLM_RATCHET_LENGTH);
 }
 
-TEST_CASE("Megolm::advance wraparound") {
+static void test_megolm_advance_wraparound(void **state)
+{
+    (void)state;
 
-    Megolm mr1, mr2;
+    Megolm mr1;
+    Megolm mr2;
 
     megolm_init(&mr1, random_bytes, 0xffffffffUL);
-    megolm_advance_to(&mr1, 0x1000000);
+    megolm_advance_to(&mr1, 0x1000000U);
     CHECK_EQ(0x1000000U, mr1.counter);
 
-    megolm_init(&mr2, random_bytes, 0);
-    megolm_advance_to(&mr2, 0x2000000);
+    megolm_init(&mr2, random_bytes, 0U);
+    megolm_advance_to(&mr2, 0x2000000U);
     CHECK_EQ(0x2000000U, mr2.counter);
 
     CHECK_EQ_SIZE(megolm_get_data(&mr2), megolm_get_data(&mr1), MEGOLM_RATCHET_LENGTH);
 }
 
-TEST_CASE("Megolm::advance overflow by one") {
+static void test_megolm_advance_overflow_by_one(void **state)
+{
+    (void)state;
 
-    Megolm mr1, mr2;
+    Megolm mr1;
+    Megolm mr2;
 
     megolm_init(&mr1, random_bytes, 0xffffffffUL);
-    megolm_advance_to(&mr1, 0x0);
+    megolm_advance_to(&mr1, 0x0U);
     CHECK_EQ(0x0U, mr1.counter);
 
     megolm_init(&mr2, random_bytes, 0xffffffffUL);
@@ -96,13 +103,16 @@ TEST_CASE("Megolm::advance overflow by one") {
     CHECK_EQ_SIZE(megolm_get_data(&mr2), megolm_get_data(&mr1), MEGOLM_RATCHET_LENGTH);
 }
 
-TEST_CASE("Megolm::advance overflow") {
+static void test_megolm_advance_overflow(void **state)
+{
+    (void)state;
 
-    Megolm mr1, mr2;
+    Megolm mr1;
+    Megolm mr2;
 
     megolm_init(&mr1, random_bytes, 0x1UL);
     megolm_advance_to(&mr1, 0x80000000UL);
-    megolm_advance_to(&mr1, 0x0);
+    megolm_advance_to(&mr1, 0x0U);
     CHECK_EQ(0x0U, mr1.counter);
 
     megolm_init(&mr2, random_bytes, 0x1UL);
@@ -110,4 +120,16 @@ TEST_CASE("Megolm::advance overflow") {
     CHECK_EQ(0x0U, mr2.counter);
 
     CHECK_EQ_SIZE(megolm_get_data(&mr2), megolm_get_data(&mr1), MEGOLM_RATCHET_LENGTH);
+}
+
+int main(void)
+{
+    const struct CMUnitTest tests[] = {
+        cmocka_unit_test(test_megolm_advance),
+        cmocka_unit_test(test_megolm_advance_wraparound),
+        cmocka_unit_test(test_megolm_advance_overflow_by_one),
+        cmocka_unit_test(test_megolm_advance_overflow),
+    };
+
+    return cmocka_run_group_tests(tests, NULL, NULL);
 }
