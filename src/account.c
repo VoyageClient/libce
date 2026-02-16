@@ -8,7 +8,7 @@
 // Any keys thus used should be considered compromised.
 // pickle version 2 does not have fallback keys.
 // pickle version 3 does not store whether the current fallback key is published.
-static const uint32_t ACCOUNT_PICKLE_VERSION = 4;
+enum { ACCOUNT_PICKLE_VERSION = 4 };
 
 static const uint8_t KEY_JSON_ED25519[] = "\"ed25519\":";
 static const uint8_t KEY_JSON_CURVE25519[] = "\"curve25519\":";
