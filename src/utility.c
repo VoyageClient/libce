@@ -17,7 +17,7 @@ size_t _olm_utility_sha256_length(void) {
 
 size_t _olm_utility_sha256(
     OlmUtility * utility,
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output, size_t output_length
 ) {
     if (output_length < _olm_utility_sha256_length()) {
@@ -31,9 +31,9 @@ size_t _olm_utility_sha256(
 
 size_t _olm_utility_ed25519_verify(
     OlmUtility * utility,
-    _olm_ed25519_public_key const * key,
-    uint8_t const * message, size_t message_length,
-    uint8_t const * signature, size_t signature_length
+    const _olm_ed25519_public_key * key,
+    const uint8_t * message, size_t message_length,
+    const uint8_t * signature, size_t signature_length
 ) {
     if (signature_length < ED25519_SIGNATURE_LENGTH) {
         utility->last_error = OLM_BAD_MESSAGE_MAC;

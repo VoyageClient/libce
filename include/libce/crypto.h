@@ -105,7 +105,7 @@ CE_EXPORT void _olm_crypto_aes_encrypt_cbc(
 CE_EXPORT size_t _olm_crypto_aes_decrypt_cbc(
     const _olm_aes256_key *key,
     const _olm_aes256_iv *iv,
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 );
 
@@ -113,7 +113,7 @@ CE_EXPORT size_t _olm_crypto_aes_decrypt_cbc(
 /** Computes SHA-256 of the input. The output buffer must be a least
  * SHA256_OUTPUT_LENGTH (32) bytes long. */
 CE_EXPORT void _olm_crypto_sha256(
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 );
 
@@ -122,8 +122,8 @@ CE_EXPORT void _olm_crypto_sha256(
  * Computes HMAC-SHA-256 of the input for the key. The output buffer must
  * be at least SHA256_OUTPUT_LENGTH (32) bytes long. */
 CE_EXPORT void _olm_crypto_hmac_sha256(
-    uint8_t const * key, size_t key_length,
-    uint8_t const * input, size_t input_length,
+    const uint8_t * key, size_t key_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 );
 
@@ -132,9 +132,9 @@ CE_EXPORT void _olm_crypto_hmac_sha256(
  * https://tools.ietf.org/html/rfc5869
  * Derives key material from the input bytes. */
 CE_EXPORT void _olm_crypto_hkdf_sha256(
-    uint8_t const * input, size_t input_length,
-    uint8_t const * info, size_t info_length,
-    uint8_t const * salt, size_t salt_length,
+    const uint8_t * input, size_t input_length,
+    const uint8_t * info, size_t info_length,
+    const uint8_t * salt, size_t salt_length,
     uint8_t * output, size_t output_length
 );
 
@@ -143,7 +143,7 @@ CE_EXPORT void _olm_crypto_hkdf_sha256(
  * random_32_bytes should be CURVE25519_RANDOM_LENGTH (32) bytes long.
  */
 CE_EXPORT void _olm_crypto_curve25519_generate_key(
-    uint8_t const * random_32_bytes,
+    const uint8_t * random_32_bytes,
     _olm_curve25519_key_pair *output
 );
 
@@ -161,7 +161,7 @@ CE_EXPORT void _olm_crypto_curve25519_shared_secret(
  * random_32_bytes should be ED25519_RANDOM_LENGTH (32) bytes long.
  */
 CE_EXPORT void _olm_crypto_ed25519_generate_key(
-    uint8_t const * random_bytes,
+    const uint8_t * random_bytes,
     _olm_ed25519_key_pair *output
 );
 

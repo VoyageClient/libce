@@ -60,34 +60,34 @@ CE_EXPORT size_t olm_error(void);
 /** A null terminated string describing the most recent error to happen to an
  * account */
 CE_EXPORT const char * olm_account_last_error(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** An error code describing the most recent error to happen to an account */
 CE_EXPORT OlmErrorCode olm_account_last_error_code(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** A null terminated string describing the most recent error to happen to a
  * session */
 CE_EXPORT const char * olm_session_last_error(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 /** An error code describing the most recent error to happen to a session */
 CE_EXPORT OlmErrorCode olm_session_last_error_code(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 /** A null terminated string describing the most recent error to happen to a
  * utility */
 CE_EXPORT const char * olm_utility_last_error(
-    OlmUtility const * utility
+    const OlmUtility * utility
 );
 
 /** An error code describing the most recent error to happen to a utility */
 CE_EXPORT OlmErrorCode olm_utility_last_error_code(
-    OlmUtility const * utility
+    const OlmUtility * utility
 );
 
 /** Clears the memory used to back this account */
@@ -107,12 +107,12 @@ CE_EXPORT size_t olm_clear_utility(
 
 /** Returns the number of bytes needed to store an account */
 CE_EXPORT size_t olm_pickle_account_length(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** Returns the number of bytes needed to store a session */
 CE_EXPORT size_t olm_pickle_session_length(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 /** Stores an account as a base64 string. Encrypts the account using the
@@ -122,7 +122,7 @@ CE_EXPORT size_t olm_pickle_session_length(
  * olm_account_last_error() will be "OUTPUT_BUFFER_TOO_SMALL" */
 CE_EXPORT size_t olm_pickle_account(
     OlmAccount * account,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -133,7 +133,7 @@ CE_EXPORT size_t olm_pickle_account(
  * olm_session_last_error() will be "OUTPUT_BUFFER_TOO_SMALL" */
 CE_EXPORT size_t olm_pickle_session(
     OlmSession * session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -145,7 +145,7 @@ CE_EXPORT size_t olm_pickle_session(
  * buffer is destroyed */
 CE_EXPORT size_t olm_unpickle_account(
     OlmAccount * account,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -157,13 +157,13 @@ CE_EXPORT size_t olm_unpickle_account(
  * buffer is destroyed */
 CE_EXPORT size_t olm_unpickle_session(
     OlmSession * session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
 /** The number of random bytes needed to create an account.*/
 CE_EXPORT size_t olm_create_account_random_length(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** Creates a new account. Returns olm_error() on failure. If there weren't
@@ -191,7 +191,7 @@ CE_EXPORT size_t olm_account_identity_keys(
 
 /** The length of an ed25519 signature encoded as base64. */
 CE_EXPORT size_t olm_account_signature_length(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** Signs a message with the ed25519 key for this account. Returns olm_error()
@@ -199,7 +199,7 @@ CE_EXPORT size_t olm_account_signature_length(
  * olm_account_last_error() will be "OUTPUT_BUFFER_TOO_SMALL" */
 CE_EXPORT size_t olm_account_sign(
     OlmAccount * account,
-    void const * message, size_t message_length,
+    const void * message, size_t message_length,
     void * signature, size_t signature_length
 );
 
@@ -244,13 +244,13 @@ CE_EXPORT size_t olm_account_mark_keys_as_published(
 
 /** The largest number of one time keys this account can store. */
 CE_EXPORT size_t olm_account_max_number_of_one_time_keys(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** The number of random bytes needed to generate a given number of new one
  * time keys. */
 CE_EXPORT size_t olm_account_generate_one_time_keys_random_length(
-    OlmAccount const * account,
+    const OlmAccount * account,
     size_t number_of_keys
 );
 
@@ -266,7 +266,7 @@ CE_EXPORT size_t olm_account_generate_one_time_keys(
 
 /** The number of random bytes needed to generate a fallback key. */
 CE_EXPORT size_t olm_account_generate_fallback_key_random_length(
-    OlmAccount const * account
+    const OlmAccount * account
 );
 
 /** Generates a new fallback key. Only one previous fallback key is
@@ -314,7 +314,7 @@ CE_EXPORT void olm_account_forget_old_fallback_key(
 
 /** The number of random bytes needed to create an outbound session */
 CE_EXPORT size_t olm_create_outbound_session_random_length(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 /** Creates a new out-bound session for sending messages to a given identity_key
@@ -324,9 +324,9 @@ CE_EXPORT size_t olm_create_outbound_session_random_length(
  * be "NOT_ENOUGH_RANDOM". */
 CE_EXPORT size_t olm_create_outbound_session(
     OlmSession * session,
-    OlmAccount const * account,
-    void const * their_identity_key, size_t their_identity_key_length,
-    void const * their_one_time_key, size_t their_one_time_key_length,
+    const OlmAccount * account,
+    const void * their_identity_key, size_t their_identity_key_length,
+    const void * their_one_time_key, size_t their_one_time_key_length,
     void * random, size_t random_length
 );
 
@@ -350,13 +350,13 @@ CE_EXPORT size_t olm_create_inbound_session(
 CE_EXPORT size_t olm_create_inbound_session_from(
     OlmSession * session,
     OlmAccount * account,
-    void const * their_identity_key, size_t their_identity_key_length,
+    const void * their_identity_key, size_t their_identity_key_length,
     void * one_time_key_message, size_t message_length
 );
 
 /** The length of the buffer needed to return the id for this session. */
 CE_EXPORT size_t olm_session_id_length(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 /** An identifier for this session. Will be the same for both ends of the
@@ -368,7 +368,7 @@ CE_EXPORT size_t olm_session_id(
 );
 
 CE_EXPORT int olm_session_has_received_message(
-    OlmSession const *session
+    const OlmSession *session
 );
 
 /**
@@ -405,7 +405,7 @@ CE_EXPORT size_t olm_matches_inbound_session(
  * olm_session_last_error() will be "BAD_MESSAGE_FORMAT". */
 CE_EXPORT size_t olm_matches_inbound_session_from(
     OlmSession * session,
-    void const * their_identity_key, size_t their_identity_key_length,
+    const void * their_identity_key, size_t their_identity_key_length,
     void * one_time_key_message, size_t message_length
 );
 
@@ -422,7 +422,7 @@ CE_EXPORT size_t olm_remove_one_time_keys(
  * Returns OLM_MESSAGE_TYPE_MESSAGE if the message will be a normal message.
  * Returns olm_error on failure. */
 CE_EXPORT size_t olm_encrypt_message_type(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 /** The number of random bytes needed to encrypt the next message. */
@@ -445,7 +445,7 @@ CE_EXPORT size_t olm_encrypt_message_length(
  * "NOT_ENOUGH_RANDOM". */
 CE_EXPORT size_t olm_encrypt(
     OlmSession * session,
-    void const * plaintext, size_t plaintext_length,
+    const void * plaintext, size_t plaintext_length,
     void * random, size_t random_length,
     void * message, size_t message_length
 );
@@ -490,7 +490,7 @@ CE_EXPORT size_t olm_sha256_length(void);
  * olm_utility_last_error() will be "OUTPUT_BUFFER_TOO_SMALL". */
 CE_EXPORT size_t olm_sha256(
     OlmUtility * utility,
-    void const * input, size_t input_length,
+    const void * input, size_t input_length,
     void * output, size_t output_length
 );
 
@@ -499,8 +499,8 @@ CE_EXPORT size_t olm_sha256(
  * then olm_utility_last_error() will be "BAD_MESSAGE_MAC". */
 CE_EXPORT size_t olm_ed25519_verify(
     OlmUtility * utility,
-    void const * key, size_t key_length,
-    void const * message, size_t message_length,
+    const void * key, size_t key_length,
+    const void * message, size_t message_length,
     void * signature, size_t signature_length
 );
 

@@ -49,7 +49,7 @@ size_t _olm_account_new_account_random_length(void);
  * random bytes is too small then last_error will be NOT_ENOUGH_RANDOM */
 size_t _olm_account_new_account(
     OlmAccount * account,
-    uint8_t const * random, size_t random_length
+    const uint8_t * random, size_t random_length
 );
 
 /** Number of bytes needed to output the identity keys for this account */
@@ -82,7 +82,7 @@ size_t _olm_account_signature_length(void);
  */
 size_t _olm_account_sign(
     OlmAccount * account,
-    uint8_t const * message, size_t message_length,
+    const uint8_t * message, size_t message_length,
     uint8_t * signature, size_t signature_length
 );
 
@@ -132,7 +132,7 @@ size_t _olm_account_generate_one_time_keys_random_length(
 size_t _olm_account_generate_one_time_keys(
     OlmAccount * account,
     size_t number_of_keys,
-    uint8_t const * random, size_t random_length
+    const uint8_t * random, size_t random_length
 );
 
 /** The number of random bytes needed to generate a fallback key. */
@@ -143,7 +143,7 @@ size_t _olm_account_generate_fallback_key_random_length(void);
  * NOT_ENOUGH_RANDOM */
 size_t _olm_account_generate_fallback_key(
     OlmAccount * account,
-    uint8_t const * random, size_t random_length
+    const uint8_t * random, size_t random_length
 );
 
 /** Number of bytes needed to output the fallback keys for this account */
@@ -188,29 +188,29 @@ void _olm_account_forget_old_fallback_key(
 );
 
 /** Lookup a one time key with the given public key */
-_OlmOneTimeKey const * _olm_account_lookup_key(
+const _OlmOneTimeKey * _olm_account_lookup_key(
     OlmAccount * account,
-    _olm_curve25519_public_key const * public_key
+    const _olm_curve25519_public_key * public_key
 );
 
 /** Remove a one time key with the given public key */
 size_t _olm_account_remove_key(
     OlmAccount * account,
-    _olm_curve25519_public_key const * public_key
+    const _olm_curve25519_public_key * public_key
 );
 
 size_t _olm_pickle_account_length(
-    OlmAccount const * value
+    const OlmAccount * value
 );
 
 uint8_t * _olm_pickle_account(
-    OlmAccount const * value,
+    const OlmAccount * value,
     uint8_t * pos
 );
 
-uint8_t const * _olm_unpickle_account(
+const uint8_t * _olm_unpickle_account(
     OlmAccount * value,
-    uint8_t const * pos, uint8_t const * end
+    const uint8_t * pos, const uint8_t * end
 );
 
 #ifdef __cplusplus

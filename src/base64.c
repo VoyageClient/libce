@@ -35,11 +35,11 @@ size_t _olm_encode_base64_length(
 }
 
 size_t _olm_encode_base64(
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
-    uint8_t const * end = input + (input_length / 3) * 3;
-    uint8_t const * pos = input;
+    const uint8_t * end = input + (input_length / 3) * 3;
+    const uint8_t * pos = input;
 
     uint8_t * output_pos = output;
     while (pos != end) {
@@ -87,7 +87,7 @@ size_t _olm_decode_base64_length(
 }
 
 size_t _olm_decode_base64(
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
     size_t raw_length = _olm_decode_base64_length(input_length);
@@ -96,8 +96,8 @@ size_t _olm_decode_base64(
         return SIZE_MAX;
     }
 
-    uint8_t const * end = input + (input_length / 4) * 4;
-    uint8_t const * pos = input;
+    const uint8_t * end = input + (input_length / 4) * 4;
+    const uint8_t * pos = input;
 
     while (pos != end) {
         unsigned value = DECODE_BASE64[pos[0] & 0x7F];

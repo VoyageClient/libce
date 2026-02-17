@@ -25,16 +25,16 @@ static const size_t MAX_MESSAGE_GAP = 2000;
  *                            C(n,0)
  */
 static void create_chain_key(
-    _OlmSharedKey const root_key,
-    _olm_curve25519_key_pair const *our_key,
-    _olm_curve25519_public_key const *their_key,
-    _OlmKdfInfo const *info,
+    const _OlmSharedKey root_key,
+    const _olm_curve25519_key_pair *our_key,
+    const _olm_curve25519_public_key *their_key,
+    const _OlmKdfInfo *info,
     _OlmSharedKey *new_root_key,
     _OlmChainKey *new_chain_key
 ) {
     _OlmSharedKey secret;
     uint8_t derived_secrets[2 * OLM_SHARED_KEY_LENGTH];
-    uint8_t const *pos = derived_secrets;
+    const uint8_t *pos = derived_secrets;
 
     _olm_crypto_curve25519_shared_secret(our_key, their_key, secret);
     _olm_crypto_hkdf_sha256(
@@ -54,7 +54,7 @@ static void create_chain_key(
 }
 
 static void advance_chain_key(
-    _OlmChainKey const *chain_key,
+    const _OlmChainKey *chain_key,
     _OlmChainKey *new_chain_key
 ) {
     _olm_crypto_hmac_sha256(
@@ -66,7 +66,7 @@ static void advance_chain_key(
 }
 
 static void create_message_keys(
-    _OlmChainKey const *chain_key,
+    const _OlmChainKey *chain_key,
     _OlmMessageKey *message_key
 ) {
     _olm_crypto_hmac_sha256(
@@ -78,9 +78,9 @@ static void create_message_keys(
 }
 
 static size_t verify_mac_and_decrypt(
-    _olm_cipher const *cipher,
-    _OlmMessageKey const *message_key,
-    _OlmMessageReader const *reader,
+    const _olm_cipher *cipher,
+    const _OlmMessageKey *message_key,
+    const _OlmMessageReader *reader,
     uint8_t *plaintext, size_t max_plaintext_length
 ) {
     return cipher->ops->decrypt(
@@ -93,9 +93,9 @@ static size_t verify_mac_and_decrypt(
 }
 
 static size_t verify_mac_and_decrypt_for_existing_chain(
-    _OlmRatchet const *ratchet,
-    _OlmChainKey const *chain,
-    _OlmMessageReader const *reader,
+    const _OlmRatchet *ratchet,
+    const _OlmChainKey *chain,
+    const _OlmMessageReader *reader,
     uint8_t *plaintext, size_t max_plaintext_length
 ) {
     _OlmChainKey new_chain = *chain;
@@ -124,8 +124,8 @@ static size_t verify_mac_and_decrypt_for_existing_chain(
 }
 
 static size_t verify_mac_and_decrypt_for_new_chain(
-    _OlmRatchet const *ratchet,
-    _OlmMessageReader const *reader,
+    const _OlmRatchet *ratchet,
+    const _OlmMessageReader *reader,
     uint8_t *plaintext, size_t max_plaintext_length
 ) {
     _OlmSharedKey new_root_key;
@@ -164,8 +164,8 @@ static size_t verify_mac_and_decrypt_for_new_chain(
 
 void _olm_ratchet_init(
     _OlmRatchet *ratchet,
-    _OlmKdfInfo const *kdf_info,
-    _olm_cipher const *ratchet_cipher
+    const _OlmKdfInfo *kdf_info,
+    const _olm_cipher *ratchet_cipher
 ) {
     ratchet->kdf_info = kdf_info;
     ratchet->ratchet_cipher = ratchet_cipher;
@@ -177,11 +177,11 @@ void _olm_ratchet_init(
 
 void _olm_ratchet_initialise_as_bob(
     _OlmRatchet *ratchet,
-    uint8_t const *shared_secret, size_t shared_secret_length,
-    _olm_curve25519_public_key const *their_ratchet_key
+    const uint8_t *shared_secret, size_t shared_secret_length,
+    const _olm_curve25519_public_key *their_ratchet_key
 ) {
     uint8_t derived_secrets[2 * OLM_SHARED_KEY_LENGTH];
-    uint8_t const *pos = derived_secrets;
+    const uint8_t *pos = derived_secrets;
     _OlmReceiverChain *receiver_chain;
 
     _olm_crypto_hkdf_sha256(
@@ -203,11 +203,11 @@ void _olm_ratchet_initialise_as_bob(
 
 void _olm_ratchet_initialise_as_alice(
     _OlmRatchet *ratchet,
-    uint8_t const *shared_secret, size_t shared_secret_length,
-    _olm_curve25519_key_pair const *our_ratchet_key
+    const uint8_t *shared_secret, size_t shared_secret_length,
+    const _olm_curve25519_key_pair *our_ratchet_key
 ) {
     uint8_t derived_secrets[2 * OLM_SHARED_KEY_LENGTH];
-    uint8_t const *pos = derived_secrets;
+    const uint8_t *pos = derived_secrets;
     _OlmSenderChain *sender_chain;
 
     _olm_crypto_hkdf_sha256(
@@ -233,20 +233,20 @@ static size_t shared_key_pickle_length(void) {
 
 static uint8_t * shared_key_pickle(
     uint8_t *pos,
-    _OlmSharedKey const value
+    const _OlmSharedKey value
 ) {
     return _olm_pickle_bytes(pos, value, OLM_SHARED_KEY_LENGTH);
 }
 
-static uint8_t const * shared_key_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * shared_key_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmSharedKey value
 ) {
     return _olm_unpickle_bytes(pos, end, value, OLM_SHARED_KEY_LENGTH);
 }
 
 static size_t sender_chain_pickle_length(
-    _OlmSenderChain const *value
+    const _OlmSenderChain *value
 ) {
     size_t length = 0;
     length += _olm_pickle_curve25519_key_pair_length(&value->ratchet_key);
@@ -257,7 +257,7 @@ static size_t sender_chain_pickle_length(
 
 static uint8_t * sender_chain_pickle(
     uint8_t *pos,
-    _OlmSenderChain const *value
+    const _OlmSenderChain *value
 ) {
     pos = _olm_pickle_curve25519_key_pair(pos, &value->ratchet_key);
     pos = shared_key_pickle(pos, value->chain_key.key);
@@ -265,8 +265,8 @@ static uint8_t * sender_chain_pickle(
     return pos;
 }
 
-static uint8_t const * sender_chain_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * sender_chain_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmSenderChain *value
 ) {
     pos = _olm_unpickle_curve25519_key_pair(pos, end, &value->ratchet_key);
@@ -282,10 +282,10 @@ static uint8_t const * sender_chain_unpickle(
 }
 
 static size_t sender_chain_list_pickle_length(
-    _OlmSenderChainList const *value
+    const _OlmSenderChainList *value
 ) {
     size_t length = 0;
-    _OlmSenderChain const *chain;
+    const _OlmSenderChain *chain;
 
     length += _OLM_PICKLE_UINT32_LENGTH((uint32_t)_olm_list_size(value));
     for (chain = _olm_list_begin(value); chain != _olm_list_end(value); ++chain) {
@@ -297,9 +297,9 @@ static size_t sender_chain_list_pickle_length(
 
 static uint8_t * sender_chain_list_pickle(
     uint8_t *pos,
-    _OlmSenderChainList const *value
+    const _OlmSenderChainList *value
 ) {
-    _OlmSenderChain const *chain;
+    const _OlmSenderChain *chain;
 
     pos = _olm_pickle_uint32(pos, (uint32_t)_olm_list_size(value));
     for (chain = _olm_list_begin(value); chain != _olm_list_end(value); ++chain) {
@@ -309,8 +309,8 @@ static uint8_t * sender_chain_list_pickle(
     return pos;
 }
 
-static uint8_t const * sender_chain_list_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * sender_chain_list_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmSenderChainList *value
 ) {
     uint32_t size;
@@ -331,7 +331,7 @@ static uint8_t const * sender_chain_list_unpickle(
 }
 
 static size_t receiver_chain_pickle_length(
-    _OlmReceiverChain const *value
+    const _OlmReceiverChain *value
 ) {
     size_t length = 0;
     length += _olm_pickle_curve25519_public_key_length(&value->ratchet_key);
@@ -342,7 +342,7 @@ static size_t receiver_chain_pickle_length(
 
 static uint8_t * receiver_chain_pickle(
     uint8_t *pos,
-    _OlmReceiverChain const *value
+    const _OlmReceiverChain *value
 ) {
     pos = _olm_pickle_curve25519_public_key(pos, &value->ratchet_key);
     pos = shared_key_pickle(pos, value->chain_key.key);
@@ -350,8 +350,8 @@ static uint8_t * receiver_chain_pickle(
     return pos;
 }
 
-static uint8_t const * receiver_chain_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * receiver_chain_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmReceiverChain *value
 ) {
     pos = _olm_unpickle_curve25519_public_key(pos, end, &value->ratchet_key);
@@ -367,10 +367,10 @@ static uint8_t const * receiver_chain_unpickle(
 }
 
 static size_t receiver_chain_list_pickle_length(
-    _OlmReceiverChainList const *value
+    const _OlmReceiverChainList *value
 ) {
     size_t length = 0;
-    _OlmReceiverChain const *chain;
+    const _OlmReceiverChain *chain;
 
     length += _OLM_PICKLE_UINT32_LENGTH((uint32_t)_olm_list_size(value));
     for (chain = _olm_list_begin(value); chain != _olm_list_end(value); ++chain) {
@@ -382,9 +382,9 @@ static size_t receiver_chain_list_pickle_length(
 
 static uint8_t * receiver_chain_list_pickle(
     uint8_t *pos,
-    _OlmReceiverChainList const *value
+    const _OlmReceiverChainList *value
 ) {
-    _OlmReceiverChain const *chain;
+    const _OlmReceiverChain *chain;
 
     pos = _olm_pickle_uint32(pos, (uint32_t)_olm_list_size(value));
     for (chain = _olm_list_begin(value); chain != _olm_list_end(value); ++chain) {
@@ -394,8 +394,8 @@ static uint8_t * receiver_chain_list_pickle(
     return pos;
 }
 
-static uint8_t const * receiver_chain_list_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * receiver_chain_list_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmReceiverChainList *value
 ) {
     uint32_t size;
@@ -416,7 +416,7 @@ static uint8_t const * receiver_chain_list_unpickle(
 }
 
 static size_t skipped_message_key_pickle_length(
-    _OlmSkippedMessageKey const *value
+    const _OlmSkippedMessageKey *value
 ) {
     size_t length = 0;
     length += _olm_pickle_curve25519_public_key_length(&value->ratchet_key);
@@ -427,7 +427,7 @@ static size_t skipped_message_key_pickle_length(
 
 static uint8_t * skipped_message_key_pickle(
     uint8_t *pos,
-    _OlmSkippedMessageKey const *value
+    const _OlmSkippedMessageKey *value
 ) {
     pos = _olm_pickle_curve25519_public_key(pos, &value->ratchet_key);
     pos = shared_key_pickle(pos, value->message_key.key);
@@ -435,8 +435,8 @@ static uint8_t * skipped_message_key_pickle(
     return pos;
 }
 
-static uint8_t const * skipped_message_key_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * skipped_message_key_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmSkippedMessageKey *value
 ) {
     pos = _olm_unpickle_curve25519_public_key(pos, end, &value->ratchet_key);
@@ -452,10 +452,10 @@ static uint8_t const * skipped_message_key_unpickle(
 }
 
 static size_t skipped_message_key_list_pickle_length(
-    _OlmSkippedMessageKeyList const *value
+    const _OlmSkippedMessageKeyList *value
 ) {
     size_t length = 0;
-    _OlmSkippedMessageKey const *key;
+    const _OlmSkippedMessageKey *key;
 
     length += _OLM_PICKLE_UINT32_LENGTH((uint32_t)_olm_list_size(value));
     for (key = _olm_list_begin(value); key != _olm_list_end(value); ++key) {
@@ -467,9 +467,9 @@ static size_t skipped_message_key_list_pickle_length(
 
 static uint8_t * skipped_message_key_list_pickle(
     uint8_t *pos,
-    _OlmSkippedMessageKeyList const *value
+    const _OlmSkippedMessageKeyList *value
 ) {
-    _OlmSkippedMessageKey const *key;
+    const _OlmSkippedMessageKey *key;
 
     pos = _olm_pickle_uint32(pos, (uint32_t)_olm_list_size(value));
     for (key = _olm_list_begin(value); key != _olm_list_end(value); ++key) {
@@ -479,8 +479,8 @@ static uint8_t * skipped_message_key_list_pickle(
     return pos;
 }
 
-static uint8_t const * skipped_message_key_list_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+static const uint8_t * skipped_message_key_list_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmSkippedMessageKeyList *value
 ) {
     uint32_t size;
@@ -501,7 +501,7 @@ static uint8_t const * skipped_message_key_list_unpickle(
 }
 
 size_t _olm_ratchet_pickle_length(
-    _OlmRatchet const *ratchet
+    const _OlmRatchet *ratchet
 ) {
     size_t length = 0;
     length += OLM_SHARED_KEY_LENGTH;
@@ -513,7 +513,7 @@ size_t _olm_ratchet_pickle_length(
 
 uint8_t * _olm_ratchet_pickle(
     uint8_t *pos,
-    _OlmRatchet const *ratchet
+    const _OlmRatchet *ratchet
 ) {
     pos = shared_key_pickle(pos, ratchet->root_key);
     pos = sender_chain_list_pickle(pos, &ratchet->sender_chain);
@@ -522,8 +522,8 @@ uint8_t * _olm_ratchet_pickle(
     return pos;
 }
 
-uint8_t const * _olm_ratchet_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+const uint8_t * _olm_ratchet_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmRatchet *ratchet,
     bool includes_chain_index
 ) {
@@ -550,7 +550,7 @@ uint8_t const * _olm_ratchet_unpickle(
 }
 
 size_t _olm_ratchet_encrypt_output_length(
-    _OlmRatchet const *ratchet,
+    const _OlmRatchet *ratchet,
     size_t plaintext_length
 ) {
     size_t counter = 0;
@@ -574,15 +574,15 @@ size_t _olm_ratchet_encrypt_output_length(
 }
 
 size_t _olm_ratchet_encrypt_random_length(
-    _OlmRatchet const *ratchet
+    const _OlmRatchet *ratchet
 ) {
     return _olm_list_empty(&ratchet->sender_chain) ? CURVE25519_RANDOM_LENGTH : 0;
 }
 
 size_t _olm_ratchet_encrypt(
     _OlmRatchet *ratchet,
-    uint8_t const *plaintext, size_t plaintext_length,
-    uint8_t const *random, size_t random_length,
+    const uint8_t *plaintext, size_t plaintext_length,
+    const uint8_t *random, size_t random_length,
     uint8_t *output, size_t max_output_length
 ) {
     size_t output_length = _olm_ratchet_encrypt_output_length(
@@ -591,7 +591,7 @@ size_t _olm_ratchet_encrypt(
     _OlmMessageKey keys;
     size_t ciphertext_length;
     uint32_t counter;
-    _olm_curve25519_public_key const *ratchet_key;
+    const _olm_curve25519_public_key *ratchet_key;
     _OlmMessageWriter writer;
     _OlmSenderChain *sender_chain;
 
@@ -659,7 +659,7 @@ size_t _olm_ratchet_encrypt(
 
 size_t _olm_ratchet_decrypt_max_plaintext_length(
     _OlmRatchet *ratchet,
-    uint8_t const *input, size_t input_length
+    const uint8_t *input, size_t input_length
 ) {
     _OlmMessageReader reader;
 
@@ -680,7 +680,7 @@ size_t _olm_ratchet_decrypt_max_plaintext_length(
 
 size_t _olm_ratchet_decrypt(
     _OlmRatchet *ratchet,
-    uint8_t const *input, size_t input_length,
+    const uint8_t *input, size_t input_length,
     uint8_t *plaintext, size_t max_plaintext_length
 ) {
     _OlmMessageReader reader;

@@ -41,9 +41,9 @@ uint8_t * _olm_pickle_uint8(
     uint8_t value
 );
 
-uint8_t const * _olm_unpickle_uint8(
-    uint8_t const * pos,
-    uint8_t const * end,
+const uint8_t * _olm_unpickle_uint8(
+    const uint8_t * pos,
+    const uint8_t * end,
     uint8_t * value
 );
 
@@ -53,9 +53,9 @@ uint8_t * _olm_pickle_uint32(
     uint32_t value
 );
 
-uint8_t const * _olm_unpickle_uint32(
-    uint8_t const * pos,
-    uint8_t const * end,
+const uint8_t * _olm_unpickle_uint32(
+    const uint8_t * pos,
+    const uint8_t * end,
     uint32_t * value
 );
 
@@ -65,22 +65,22 @@ uint8_t * _olm_pickle_bool(
     int value
 );
 
-uint8_t const * _olm_unpickle_bool(
-    uint8_t const * pos,
-    uint8_t const * end,
+const uint8_t * _olm_unpickle_bool(
+    const uint8_t * pos,
+    const uint8_t * end,
     int * value
 );
 
 
 uint8_t * _olm_pickle_bytes(
     uint8_t * pos,
-    uint8_t const * bytes,
+    const uint8_t * bytes,
     size_t bytes_length
 );
 
-uint8_t const * _olm_unpickle_bytes(
-    uint8_t const * pos,
-    uint8_t const * end,
+const uint8_t * _olm_unpickle_bytes(
+    const uint8_t * pos,
+    const uint8_t * end,
     uint8_t * bytes,
     size_t bytes_length
 );

@@ -61,7 +61,7 @@ CE_EXPORT size_t olm_pickle_outbound_group_session_length(
  */
 CE_EXPORT size_t olm_pickle_outbound_group_session(
     OlmOutboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -77,7 +77,7 @@ CE_EXPORT size_t olm_pickle_outbound_group_session(
  */
 CE_EXPORT size_t olm_unpickle_outbound_group_session(
     OlmOutboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -113,7 +113,7 @@ CE_EXPORT size_t olm_group_encrypt_message_length(
  */
 CE_EXPORT size_t olm_group_encrypt(
     OlmOutboundGroupSession *session,
-    uint8_t const * plaintext, size_t plaintext_length,
+    const uint8_t * plaintext, size_t plaintext_length,
     uint8_t * message, size_t message_length
 );
 

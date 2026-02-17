@@ -73,19 +73,19 @@ const char * olm_session_last_error(
 }
 
 OlmErrorCode olm_session_last_error_code(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     return session->last_error;
 }
 
 const char * olm_utility_last_error(
-    OlmUtility const * utility
+    const OlmUtility * utility
 ) {
     return _olm_error_to_string(utility->last_error);
 }
 
 OlmErrorCode olm_utility_last_error_code(
-    OlmUtility const * utility
+    const OlmUtility * utility
 ) {
     return utility->last_error;
 }
@@ -160,20 +160,20 @@ size_t olm_clear_utility(
 }
 
 size_t olm_pickle_account_length(
-    OlmAccount const * account
+    const OlmAccount * account
 ) {
     return _olm_enc_output_length(_olm_pickle_account_length(account));
 }
 
 size_t olm_pickle_session_length(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     return _olm_enc_output_length(_olm_pickle_session_length(session));
 }
 
 size_t olm_pickle_account(
     OlmAccount * account,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     OlmAccount * object = account;
@@ -188,7 +188,7 @@ size_t olm_pickle_account(
 
 size_t olm_pickle_session(
     OlmSession * session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     OlmSession * object = session;
@@ -203,7 +203,7 @@ size_t olm_pickle_session(
 
 size_t olm_unpickle_account(
     OlmAccount * account,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     OlmAccount * object = account;
@@ -215,8 +215,8 @@ size_t olm_unpickle_account(
         return SIZE_MAX;
     }
 
-    uint8_t const * pos = input;
-    uint8_t const * end = pos + raw_length;
+    const uint8_t * pos = input;
+    const uint8_t * end = pos + raw_length;
 
     pos = _olm_unpickle_account(object, pos, end);
 
@@ -238,7 +238,7 @@ size_t olm_unpickle_account(
 
 size_t olm_unpickle_session(
     OlmSession * session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     OlmSession * object = session;
@@ -250,8 +250,8 @@ size_t olm_unpickle_session(
         return SIZE_MAX;
     }
 
-    uint8_t const * pos = input;
-    uint8_t const * end = pos + raw_length;
+    const uint8_t * pos = input;
+    const uint8_t * end = pos + raw_length;
 
     pos = _olm_unpickle_session(pos, end, object);
 
@@ -272,7 +272,7 @@ size_t olm_unpickle_session(
 
 
 size_t olm_create_account_random_length(
-    OlmAccount const * account
+    const OlmAccount * account
 ) {
     return _olm_account_new_account_random_length();
 }
@@ -306,7 +306,7 @@ size_t olm_account_identity_keys(
 
 
 size_t olm_account_signature_length(
-    OlmAccount const * account
+    const OlmAccount * account
 ) {
     return b64_output_length(_olm_account_signature_length());
 }
@@ -314,7 +314,7 @@ size_t olm_account_signature_length(
 
 size_t olm_account_sign(
     OlmAccount * account,
-    void const * message, size_t message_length,
+    const void * message, size_t message_length,
     void * signature, size_t signature_length
 ) {
     size_t raw_length = _olm_account_signature_length();
@@ -357,14 +357,14 @@ size_t olm_account_mark_keys_as_published(
 
 
 size_t olm_account_max_number_of_one_time_keys(
-    OlmAccount const * account
+    const OlmAccount * account
 ) {
     return _olm_account_max_number_of_one_time_keys();
 }
 
 
 size_t olm_account_generate_one_time_keys_random_length(
-    OlmAccount const * account,
+    const OlmAccount * account,
     size_t number_of_keys
 ) {
     return _olm_account_generate_one_time_keys_random_length(number_of_keys);
@@ -387,7 +387,7 @@ size_t olm_account_generate_one_time_keys(
 
 
 size_t olm_account_generate_fallback_key_random_length(
-    OlmAccount const * account
+    const OlmAccount * account
 ) {
     return _olm_account_generate_fallback_key_random_length();
 }
@@ -447,7 +447,7 @@ void olm_account_forget_old_fallback_key(
 
 
 size_t olm_create_outbound_session_random_length(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     return _olm_session_new_outbound_session_random_length();
 }
@@ -455,13 +455,13 @@ size_t olm_create_outbound_session_random_length(
 
 size_t olm_create_outbound_session(
     OlmSession * session,
-    OlmAccount const * account,
-    void const * their_identity_key, size_t their_identity_key_length,
-    void const * their_one_time_key, size_t their_one_time_key_length,
+    const OlmAccount * account,
+    const void * their_identity_key, size_t their_identity_key_length,
+    const void * their_one_time_key, size_t their_one_time_key_length,
     void * random, size_t random_length
 ) {
-    uint8_t const * id_key = their_identity_key;
-    uint8_t const * ot_key = their_one_time_key;
+    const uint8_t * id_key = their_identity_key;
+    const uint8_t * ot_key = their_one_time_key;
     size_t id_key_length = their_identity_key_length;
     size_t ot_key_length = their_one_time_key_length;
 
@@ -508,10 +508,10 @@ size_t olm_create_inbound_session(
 size_t olm_create_inbound_session_from(
     OlmSession * session,
     OlmAccount * account,
-    void const * their_identity_key, size_t their_identity_key_length,
+    const void * their_identity_key, size_t their_identity_key_length,
     void * one_time_key_message, size_t message_length
 ) {
-    uint8_t const * id_key = their_identity_key;
+    const uint8_t * id_key = their_identity_key;
     size_t id_key_length = their_identity_key_length;
 
     if (_olm_decode_base64_length(id_key_length) != CURVE25519_KEY_LENGTH) {
@@ -536,7 +536,7 @@ size_t olm_create_inbound_session_from(
 
 
 size_t olm_session_id_length(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     return b64_output_length(_olm_session_session_id_length());
 }
@@ -563,7 +563,7 @@ size_t olm_session_id(
 
 
 int olm_session_has_received_message(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     return session->received_message;
 }
@@ -594,10 +594,10 @@ size_t olm_matches_inbound_session(
 
 size_t olm_matches_inbound_session_from(
     OlmSession * session,
-    void const * their_identity_key, size_t their_identity_key_length,
+    const void * their_identity_key, size_t their_identity_key_length,
     void * one_time_key_message, size_t message_length
 ) {
-    uint8_t const * id_key = their_identity_key;
+    const uint8_t * id_key = their_identity_key;
     size_t id_key_length = their_identity_key_length;
 
     if (_olm_decode_base64_length(id_key_length) != CURVE25519_KEY_LENGTH) {
@@ -637,7 +637,7 @@ size_t olm_remove_one_time_keys(
 
 
 size_t olm_encrypt_message_type(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     return (size_t)(_olm_session_encrypt_message_type(session));
 }
@@ -664,7 +664,7 @@ size_t olm_encrypt_message_length(
 
 size_t olm_encrypt(
     OlmSession * session,
-    void const * plaintext, size_t plaintext_length,
+    const void * plaintext, size_t plaintext_length,
     void * random, size_t random_length,
     void * message, size_t message_length
 ) {
@@ -736,7 +736,7 @@ size_t olm_sha256_length(void) {
 
 size_t olm_sha256(
     OlmUtility * utility,
-    void const * input, size_t input_length,
+    const void * input, size_t input_length,
     void * output, size_t output_length
 ) {
     size_t raw_length = _olm_utility_sha256_length();
@@ -759,8 +759,8 @@ size_t olm_sha256(
 
 size_t olm_ed25519_verify(
     OlmUtility * utility,
-    void const * key, size_t key_length,
-    void const * message, size_t message_length,
+    const void * key, size_t key_length,
+    const void * message, size_t message_length,
     void * signature, size_t signature_length
 ) {
     if (_olm_decode_base64_length(key_length) != CURVE25519_KEY_LENGTH) {

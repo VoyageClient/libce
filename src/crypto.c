@@ -22,7 +22,7 @@ static const uint8_t HKDF_DEFAULT_SALT[32] = {};
 
 inline static void xor_block(
     uint8_t * block, size_t block_length,
-    uint8_t const * input
+    const uint8_t * input
 ) {
     for (size_t i = 0; i < block_length; ++i) {
         block[i] ^= input[i];
@@ -31,7 +31,7 @@ inline static void xor_block(
 
 
 inline static void hmac_sha256_key(
-    uint8_t const * input_key, size_t input_key_length,
+    const uint8_t * input_key, size_t input_key_length,
     uint8_t * hmac_key
 ) {
     memset(hmac_key, 0, SHA256_BLOCK_LENGTH);
@@ -48,7 +48,7 @@ inline static void hmac_sha256_key(
 
 inline static void hmac_sha256_init(
     SHA256_CTX * context,
-    uint8_t const * hmac_key
+    const uint8_t * hmac_key
 ) {
     uint8_t i_pad[SHA256_BLOCK_LENGTH];
     memcpy(i_pad, hmac_key, SHA256_BLOCK_LENGTH);
@@ -63,7 +63,7 @@ inline static void hmac_sha256_init(
 
 inline static void hmac_sha256_final(
     SHA256_CTX * context,
-    uint8_t const * hmac_key,
+    const uint8_t * hmac_key,
     uint8_t * output
 ) {
     uint8_t o_pad[SHA256_BLOCK_LENGTH + SHA256_OUTPUT_LENGTH];
@@ -82,7 +82,7 @@ inline static void hmac_sha256_final(
 
 
 void _olm_crypto_curve25519_generate_key(
-    uint8_t const * random_32_bytes,
+    const uint8_t * random_32_bytes,
     _olm_curve25519_key_pair *key_pair
 ) {
     memcpy(
@@ -107,7 +107,7 @@ void _olm_crypto_curve25519_shared_secret(
 
 
 void _olm_crypto_ed25519_generate_key(
-    uint8_t const * random_32_bytes,
+    const uint8_t * random_32_bytes,
     _olm_ed25519_key_pair *key_pair
 ) {
     ed25519_create_keypair(
@@ -119,7 +119,7 @@ void _olm_crypto_ed25519_generate_key(
 
 void _olm_crypto_ed25519_sign(
     const _olm_ed25519_key_pair *our_key,
-    uint8_t const * message, size_t message_length,
+    const uint8_t * message, size_t message_length,
     uint8_t * output
 ) {
     ed25519_sign(
@@ -133,8 +133,8 @@ void _olm_crypto_ed25519_sign(
 
 int _olm_crypto_ed25519_verify(
     const _olm_ed25519_public_key *their_key,
-    uint8_t const * message, size_t message_length,
-    uint8_t const * signature
+    const uint8_t * message, size_t message_length,
+    const uint8_t * signature
 ) {
     return 0 != ed25519_verify(
         signature,
@@ -152,9 +152,9 @@ size_t _olm_crypto_aes_encrypt_cbc_length(
 
 
 void _olm_crypto_aes_encrypt_cbc(
-    _olm_aes256_key const *key,
-    _olm_aes256_iv const *iv,
-    uint8_t const * input, size_t input_length,
+    const _olm_aes256_key *key,
+    const _olm_aes256_iv *iv,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
     uint32_t key_schedule[AES_KEY_SCHEDULE_LENGTH];
@@ -183,9 +183,9 @@ void _olm_crypto_aes_encrypt_cbc(
 
 
 size_t _olm_crypto_aes_decrypt_cbc(
-    _olm_aes256_key const *key,
-    _olm_aes256_iv const *iv,
-    uint8_t const * input, size_t input_length,
+    const _olm_aes256_key *key,
+    const _olm_aes256_iv *iv,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
     uint32_t key_schedule[AES_KEY_SCHEDULE_LENGTH];
@@ -208,7 +208,7 @@ size_t _olm_crypto_aes_decrypt_cbc(
 
 
 void _olm_crypto_sha256(
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
     SHA256_CTX context;
@@ -220,8 +220,8 @@ void _olm_crypto_sha256(
 
 
 void _olm_crypto_hmac_sha256(
-    uint8_t const * key, size_t key_length,
-    uint8_t const * input, size_t input_length,
+    const uint8_t * key, size_t key_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
     uint8_t hmac_key[SHA256_BLOCK_LENGTH];
@@ -236,9 +236,9 @@ void _olm_crypto_hmac_sha256(
 
 
 void _olm_crypto_hkdf_sha256(
-    uint8_t const * input, size_t input_length,
-    uint8_t const * salt, size_t salt_length,
-    uint8_t const * info, size_t info_length,
+    const uint8_t * input, size_t input_length,
+    const uint8_t * salt, size_t salt_length,
+    const uint8_t * info, size_t info_length,
     uint8_t * output, size_t output_length
 ) {
     SHA256_CTX context;

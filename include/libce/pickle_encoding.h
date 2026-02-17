@@ -43,7 +43,7 @@ CE_EXPORT uint8_t *_olm_enc_output_pos(uint8_t * output, size_t raw_length);
  * Returns the number of bytes in the encoded pickle.
  */
 CE_EXPORT size_t _olm_enc_output(
-    uint8_t const * key, size_t key_length,
+    const uint8_t * key, size_t key_length,
     uint8_t *pickle, size_t raw_length
 );
 
@@ -54,7 +54,7 @@ CE_EXPORT size_t _olm_enc_output(
  * in which case *last_error will be updated, if last_error is non-NULL.
  */
 CE_EXPORT size_t _olm_enc_input(
-    uint8_t const * key, size_t key_length,
+    const uint8_t * key, size_t key_length,
     uint8_t * input, size_t b64_length,
     OlmErrorCode * last_error
 );

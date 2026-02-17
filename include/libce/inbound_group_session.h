@@ -61,7 +61,7 @@ CE_EXPORT size_t olm_pickle_inbound_group_session_length(
  */
 CE_EXPORT size_t olm_pickle_inbound_group_session(
     OlmInboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -77,7 +77,7 @@ CE_EXPORT size_t olm_pickle_inbound_group_session(
  */
 CE_EXPORT size_t olm_unpickle_inbound_group_session(
     OlmInboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 );
 
@@ -95,7 +95,7 @@ CE_EXPORT size_t olm_unpickle_inbound_group_session(
 CE_EXPORT size_t olm_init_inbound_group_session(
     OlmInboundGroupSession *session,
     /* base64-encoded keys */
-    uint8_t const * session_key, size_t session_key_length
+    const uint8_t * session_key, size_t session_key_length
 );
 
 /**
@@ -111,7 +111,7 @@ CE_EXPORT size_t olm_import_inbound_group_session(
     OlmInboundGroupSession *session,
     /* base64-encoded keys; note that it will be overwritten with the base64-decoded
        data. */
-    uint8_t const * session_key, size_t session_key_length
+    const uint8_t * session_key, size_t session_key_length
 );
 
 

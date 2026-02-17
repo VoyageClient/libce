@@ -68,10 +68,10 @@ size_t _olm_session_new_outbound_session_random_length(void) {
 
 size_t _olm_session_new_outbound_session(
     OlmSession * session,
-    OlmAccount const * local_account,
-    _olm_curve25519_public_key const * identity_key,
-    _olm_curve25519_public_key const * one_time_key,
-    uint8_t const * random, size_t random_length
+    const OlmAccount * local_account,
+    const _olm_curve25519_public_key * identity_key,
+    const _olm_curve25519_public_key * one_time_key,
+    const uint8_t * random, size_t random_length
 ) {
     if (random_length < _olm_session_new_outbound_session_random_length()) {
         session->last_error = OLM_NOT_ENOUGH_RANDOM;
@@ -84,7 +84,7 @@ size_t _olm_session_new_outbound_session(
     _olm_curve25519_key_pair ratchet_key;
     _olm_crypto_curve25519_generate_key(random + CURVE25519_RANDOM_LENGTH, &ratchet_key);
 
-    _olm_curve25519_key_pair const * alice_identity_key_pair = (
+    const _olm_curve25519_key_pair * alice_identity_key_pair = (
         &local_account->identity_keys.curve25519_key
     );
 
@@ -115,8 +115,8 @@ size_t _olm_session_new_outbound_session(
 size_t _olm_session_new_inbound_session(
     OlmSession * session,
     OlmAccount * local_account,
-    _olm_curve25519_public_key const * their_identity_key,
-    uint8_t const * pre_key_message, size_t message_length
+    const _olm_curve25519_public_key * their_identity_key,
+    const uint8_t * pre_key_message, size_t message_length
 ) {
     _OlmPreKeyMessageReader reader;
     _olm_decode_one_time_key_message(&reader, pre_key_message, message_length);
@@ -155,7 +155,7 @@ size_t _olm_session_new_inbound_session(
     _olm_curve25519_public_key ratchet_key;
     _OLM_LOAD_ARRAY(ratchet_key.public_key, message_reader.ratchet_key);
 
-    _OlmOneTimeKey const * our_one_time_key = _olm_account_lookup_key(
+    const _OlmOneTimeKey * our_one_time_key = _olm_account_lookup_key(
         local_account, &session->bob_one_time_key
     );
 
@@ -164,10 +164,10 @@ size_t _olm_session_new_inbound_session(
         return SIZE_MAX;
     }
 
-    _olm_curve25519_key_pair const * bob_identity_key = (
+    const _olm_curve25519_key_pair * bob_identity_key = (
         &local_account->identity_keys.curve25519_key
     );
-    _olm_curve25519_key_pair const * bob_one_time_key = &our_one_time_key->key;
+    const _olm_curve25519_key_pair * bob_one_time_key = &our_one_time_key->key;
 
     // Calculate the shared secret S via triple DH
     uint8_t secret[CURVE25519_SHARED_SECRET_LENGTH * 3];
@@ -208,8 +208,8 @@ size_t _olm_session_session_id(
 
 bool _olm_session_matches_inbound_session(
     OlmSession * session,
-    _olm_curve25519_public_key const * their_identity_key,
-    uint8_t const * pre_key_message, size_t message_length
+    const _olm_curve25519_public_key * their_identity_key,
+    const uint8_t * pre_key_message, size_t message_length
 ) {
     _OlmPreKeyMessageReader reader;
     _olm_decode_one_time_key_message(&reader, pre_key_message, message_length);
@@ -240,7 +240,7 @@ bool _olm_session_matches_inbound_session(
 }
 
 MessageType _olm_session_encrypt_message_type(
-    OlmSession const * session
+    const OlmSession * session
 ) {
     if (session->received_message) {
         return MESSAGE_TYPE_MESSAGE;
@@ -277,8 +277,8 @@ size_t _olm_session_encrypt_random_length(
 
 size_t _olm_session_encrypt(
     OlmSession * session,
-    uint8_t const * plaintext, size_t plaintext_length,
-    uint8_t const * random, size_t random_length,
+    const uint8_t * plaintext, size_t plaintext_length,
+    const uint8_t * random, size_t random_length,
     uint8_t * message, size_t message_length
 ) {
     if (message_length < _olm_session_encrypt_message_length(session, plaintext_length)) {
@@ -328,9 +328,9 @@ size_t _olm_session_encrypt(
 size_t _olm_session_decrypt_max_plaintext_length(
     OlmSession * session,
     MessageType message_type,
-    uint8_t const * message, size_t message_length
+    const uint8_t * message, size_t message_length
 ) {
-    uint8_t const * message_body;
+    const uint8_t * message_body;
     size_t message_body_length;
     if (message_type == MESSAGE_TYPE_MESSAGE) {
         message_body = message;
@@ -360,10 +360,10 @@ size_t _olm_session_decrypt_max_plaintext_length(
 size_t _olm_session_decrypt(
     OlmSession * session,
     MessageType message_type,
-    uint8_t const * message, size_t message_length,
+    const uint8_t * message, size_t message_length,
     uint8_t * plaintext, size_t max_plaintext_length
 ) {
-    uint8_t const * message_body;
+    const uint8_t * message_body;
     size_t message_body_length;
     if (message_type == MESSAGE_TYPE_MESSAGE) {
         message_body = message;
@@ -458,7 +458,7 @@ void _olm_session_describe(
 }
 
 size_t _olm_pickle_session_length(
-    OlmSession const * value
+    const OlmSession * value
 ) {
     size_t length = 0;
     length += _OLM_PICKLE_UINT32_LENGTH(SESSION_PICKLE_VERSION);
@@ -472,7 +472,7 @@ size_t _olm_pickle_session_length(
 
 uint8_t * _olm_pickle_session(
     uint8_t * pos,
-    OlmSession const * value
+    const OlmSession * value
 ) {
     pos = _olm_pickle_uint32(pos, SESSION_PICKLE_VERSION);
     pos = _olm_pickle_bool(pos, value->received_message ? 1 : 0);
@@ -483,8 +483,8 @@ uint8_t * _olm_pickle_session(
     return pos;
 }
 
-uint8_t const * _olm_unpickle_session(
-    uint8_t const * pos, uint8_t const * end,
+const uint8_t * _olm_unpickle_session(
+    const uint8_t * pos, const uint8_t * end,
     OlmSession * value
 ) {
     if (!value) {

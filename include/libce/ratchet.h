@@ -61,18 +61,18 @@ typedef OLM_LIST(
 ) _OlmSkippedMessageKeyList;
 
 typedef struct _OlmKdfInfo {
-    uint8_t const *root_info;
+    const uint8_t *root_info;
     size_t root_info_length;
-    uint8_t const *ratchet_info;
+    const uint8_t *ratchet_info;
     size_t ratchet_info_length;
 } _OlmKdfInfo;
 
 typedef struct _OlmRatchet {
     /** Strings identifying the application to feed into the KDF. */
-    _OlmKdfInfo const *kdf_info;
+    const _OlmKdfInfo *kdf_info;
 
     /** The AEAD cipher to use for encrypting messages. */
-    _olm_cipher const *ratchet_cipher;
+    const _olm_cipher *ratchet_cipher;
 
     /** The last error that happened encrypting or decrypting a message. */
     OlmErrorCode last_error;
@@ -92,60 +92,60 @@ typedef struct _OlmRatchet {
 
 CE_EXPORT void _olm_ratchet_init(
     _OlmRatchet *ratchet,
-    _OlmKdfInfo const *kdf_info,
-    _olm_cipher const *ratchet_cipher
+    const _OlmKdfInfo *kdf_info,
+    const _olm_cipher *ratchet_cipher
 );
 
 CE_EXPORT void _olm_ratchet_initialise_as_bob(
     _OlmRatchet *ratchet,
-    uint8_t const *shared_secret, size_t shared_secret_length,
-    _olm_curve25519_public_key const *their_ratchet_key
+    const uint8_t *shared_secret, size_t shared_secret_length,
+    const _olm_curve25519_public_key *their_ratchet_key
 );
 
 CE_EXPORT void _olm_ratchet_initialise_as_alice(
     _OlmRatchet *ratchet,
-    uint8_t const *shared_secret, size_t shared_secret_length,
-    _olm_curve25519_key_pair const *our_ratchet_key
+    const uint8_t *shared_secret, size_t shared_secret_length,
+    const _olm_curve25519_key_pair *our_ratchet_key
 );
 
 CE_EXPORT size_t _olm_ratchet_encrypt_output_length(
-    _OlmRatchet const *ratchet,
+    const _OlmRatchet *ratchet,
     size_t plaintext_length
 );
 
 CE_EXPORT size_t _olm_ratchet_encrypt_random_length(
-    _OlmRatchet const *ratchet
+    const _OlmRatchet *ratchet
 );
 
 CE_EXPORT size_t _olm_ratchet_encrypt(
     _OlmRatchet *ratchet,
-    uint8_t const *plaintext, size_t plaintext_length,
-    uint8_t const *random, size_t random_length,
+    const uint8_t *plaintext, size_t plaintext_length,
+    const uint8_t *random, size_t random_length,
     uint8_t *output, size_t max_output_length
 );
 
 CE_EXPORT size_t _olm_ratchet_decrypt_max_plaintext_length(
     _OlmRatchet *ratchet,
-    uint8_t const *input, size_t input_length
+    const uint8_t *input, size_t input_length
 );
 
 CE_EXPORT size_t _olm_ratchet_decrypt(
     _OlmRatchet *ratchet,
-    uint8_t const *input, size_t input_length,
+    const uint8_t *input, size_t input_length,
     uint8_t *plaintext, size_t max_plaintext_length
 );
 
 CE_EXPORT size_t _olm_ratchet_pickle_length(
-    _OlmRatchet const *ratchet
+    const _OlmRatchet *ratchet
 );
 
 CE_EXPORT uint8_t * _olm_ratchet_pickle(
     uint8_t *pos,
-    _OlmRatchet const *ratchet
+    const _OlmRatchet *ratchet
 );
 
-CE_EXPORT uint8_t const * _olm_ratchet_unpickle(
-    uint8_t const *pos, uint8_t const *end,
+CE_EXPORT const uint8_t * _olm_ratchet_unpickle(
+    const uint8_t *pos, const uint8_t *end,
     _OlmRatchet *ratchet,
     bool includes_chain_index
 );

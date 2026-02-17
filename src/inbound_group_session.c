@@ -193,7 +193,7 @@ size_t olm_pickle_inbound_group_session_length(
 
 size_t olm_pickle_inbound_group_session(
     OlmInboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     size_t raw_length = raw_pickle_length(session);
@@ -216,7 +216,7 @@ size_t olm_pickle_inbound_group_session(
 
 size_t olm_unpickle_inbound_group_session(
     OlmInboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     const uint8_t *pos;

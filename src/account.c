@@ -15,7 +15,7 @@ static const uint8_t KEY_JSON_CURVE25519[] = "\"curve25519\":";
 
 static uint8_t * _olm_account_write_string_uint8(
     uint8_t * pos,
-    uint8_t const * value,
+    const uint8_t * value,
     size_t value_length
 ) {
     memcpy(pos, value, value_length);
@@ -23,7 +23,7 @@ static uint8_t * _olm_account_write_string_uint8(
 }
 
 static size_t _olm_pickle_identity_keys_length(
-    _OlmIdentityKeys const * value
+    const _OlmIdentityKeys * value
 ) {
     size_t length = 0;
     length += _olm_pickle_ed25519_key_pair_length(&value->ed25519_key);
@@ -33,15 +33,15 @@ static size_t _olm_pickle_identity_keys_length(
 
 static uint8_t * _olm_pickle_identity_keys(
     uint8_t * pos,
-    _OlmIdentityKeys const * value
+    const _OlmIdentityKeys * value
 ) {
     pos = _olm_pickle_ed25519_key_pair(pos, &value->ed25519_key);
     pos = _olm_pickle_curve25519_key_pair(pos, &value->curve25519_key);
     return pos;
 }
 
-static uint8_t const * _olm_unpickle_identity_keys(
-    uint8_t const * pos, uint8_t const * end,
+static const uint8_t * _olm_unpickle_identity_keys(
+    const uint8_t * pos, const uint8_t * end,
     _OlmIdentityKeys * value
 ) {
     pos = _olm_unpickle_ed25519_key_pair(pos, end, &value->ed25519_key); UNPICKLE_OK(pos);
@@ -50,7 +50,7 @@ static uint8_t const * _olm_unpickle_identity_keys(
 }
 
 static size_t _olm_pickle_one_time_key_length(
-    _OlmOneTimeKey const * value
+    const _OlmOneTimeKey * value
 ) {
     size_t length = 0;
     length += _OLM_PICKLE_UINT32_LENGTH(value.id);
@@ -61,7 +61,7 @@ static size_t _olm_pickle_one_time_key_length(
 
 static uint8_t * _olm_pickle_one_time_key(
     uint8_t * pos,
-    _OlmOneTimeKey const * value
+    const _OlmOneTimeKey * value
 ) {
     pos = _olm_pickle_uint32(pos, value->id);
     pos = _olm_pickle_bool(pos, value->published ? 1 : 0);
@@ -69,8 +69,8 @@ static uint8_t * _olm_pickle_one_time_key(
     return pos;
 }
 
-static uint8_t const * _olm_unpickle_one_time_key(
-    uint8_t const * pos, uint8_t const * end,
+static const uint8_t * _olm_unpickle_one_time_key(
+    const uint8_t * pos, const uint8_t * end,
     _OlmOneTimeKey * value
 ) {
     int published;
@@ -84,10 +84,10 @@ static uint8_t const * _olm_unpickle_one_time_key(
 }
 
 static size_t _olm_pickle_one_time_key_list_length(
-    _OlmOneTimeKeyList const * value
+    const _OlmOneTimeKeyList * value
 ) {
     size_t length = 0;
-    _OlmOneTimeKey const * key;
+    const _OlmOneTimeKey * key;
 
     length += _OLM_PICKLE_UINT32_LENGTH((uint32_t)_olm_list_size(value));
     for (key = _olm_list_begin(&*value); key != _olm_list_end(&*value); ++key) {
@@ -98,9 +98,9 @@ static size_t _olm_pickle_one_time_key_list_length(
 
 static uint8_t * _olm_pickle_one_time_key_list(
     uint8_t * pos,
-    _OlmOneTimeKeyList const * value
+    const _OlmOneTimeKeyList * value
 ) {
-    _OlmOneTimeKey const * key;
+    const _OlmOneTimeKey * key;
 
     pos = _olm_pickle_uint32(pos, (uint32_t)_olm_list_size(&*value));
     for (key = _olm_list_begin(&*value); key != _olm_list_end(&*value); ++key) {
@@ -109,8 +109,8 @@ static uint8_t * _olm_pickle_one_time_key_list(
     return pos;
 }
 
-static uint8_t const * _olm_unpickle_one_time_key_list(
-    uint8_t const * pos, uint8_t const * end,
+static const uint8_t * _olm_unpickle_one_time_key_list(
+    const uint8_t * pos, const uint8_t * end,
     _OlmOneTimeKeyList * value
 ) {
     uint32_t size;
@@ -146,7 +146,7 @@ size_t _olm_account_new_account_random_length(void) {
 
 size_t _olm_account_new_account(
     OlmAccount * account,
-    uint8_t const * random, size_t random_length
+    const uint8_t * random, size_t random_length
 ) {
     if (random_length < _olm_account_new_account_random_length()) {
         account->last_error = OLM_NOT_ENOUGH_RANDOM;
@@ -222,7 +222,7 @@ size_t _olm_account_signature_length(void) {
 
 size_t _olm_account_sign(
     OlmAccount * account,
-    uint8_t const * message, size_t message_length,
+    const uint8_t * message, size_t message_length,
     uint8_t * signature, size_t signature_length
 ) {
     if (signature_length < _olm_account_signature_length()) {
@@ -240,8 +240,8 @@ size_t _olm_account_get_one_time_keys_json_length(
 ) {
     size_t length = 0;
     bool is_empty = true;
-    _OlmOneTimeKeyList const * one_time_key_list = &account->one_time_keys;
-    _OlmOneTimeKey const * key;
+    const _OlmOneTimeKeyList * one_time_key_list = &account->one_time_keys;
+    const _OlmOneTimeKey * key;
 
     for (
         key = _olm_list_begin(one_time_key_list);
@@ -271,7 +271,7 @@ size_t _olm_account_get_one_time_keys_json(
     uint8_t * one_time_json, size_t one_time_json_length
 ) {
     uint8_t * pos = one_time_json;
-    _OlmOneTimeKey const * key;
+    const _OlmOneTimeKey * key;
 
     if (one_time_json_length < _olm_account_get_one_time_keys_json_length(account)) {
         account->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
@@ -336,7 +336,7 @@ size_t _olm_account_generate_one_time_keys_random_length(
 size_t _olm_account_generate_one_time_keys(
     OlmAccount * account,
     size_t number_of_keys,
-    uint8_t const * random, size_t random_length
+    const uint8_t * random, size_t random_length
 ) {
     if (random_length < _olm_account_generate_one_time_keys_random_length(number_of_keys)) {
         account->last_error = OLM_NOT_ENOUGH_RANDOM;
@@ -358,7 +358,7 @@ size_t _olm_account_generate_fallback_key_random_length(void) {
 
 size_t _olm_account_generate_fallback_key(
     OlmAccount * account,
-    uint8_t const * random, size_t random_length
+    const uint8_t * random, size_t random_length
 ) {
     if (random_length < _olm_account_generate_fallback_key_random_length()) {
         account->last_error = OLM_NOT_ENOUGH_RANDOM;
@@ -475,11 +475,11 @@ void _olm_account_forget_old_fallback_key(
     }
 }
 
-_OlmOneTimeKey const * _olm_account_lookup_key(
+const _OlmOneTimeKey * _olm_account_lookup_key(
     OlmAccount * account,
-    _olm_curve25519_public_key const * public_key
+    const _olm_curve25519_public_key * public_key
 ) {
-    _OlmOneTimeKey const * key;
+    const _OlmOneTimeKey * key;
     for (
         key = _olm_list_begin(&account->one_time_keys);
         key != _olm_list_end(&account->one_time_keys);
@@ -508,7 +508,7 @@ _OlmOneTimeKey const * _olm_account_lookup_key(
 
 size_t _olm_account_remove_key(
     OlmAccount * account,
-    _olm_curve25519_public_key const * public_key
+    const _olm_curve25519_public_key * public_key
 ) {
     _OlmOneTimeKey * i;
     for (i = _olm_list_begin(&account->one_time_keys); i != _olm_list_end(&account->one_time_keys); ++i) {
@@ -538,7 +538,7 @@ size_t _olm_account_remove_key(
 }
 
 size_t _olm_pickle_account_length(
-    OlmAccount const * value
+    const OlmAccount * value
 ) {
     size_t length = 0;
     length += _OLM_PICKLE_UINT32_LENGTH(ACCOUNT_PICKLE_VERSION);
@@ -556,7 +556,7 @@ size_t _olm_pickle_account_length(
 }
 
 uint8_t * _olm_pickle_account(
-    OlmAccount const * value,
+    const OlmAccount * value,
     uint8_t * pos
 ) {
     pos = _olm_pickle_uint32(pos, ACCOUNT_PICKLE_VERSION);
@@ -573,9 +573,9 @@ uint8_t * _olm_pickle_account(
     return pos;
 }
 
-uint8_t const * _olm_unpickle_account(
+const uint8_t * _olm_unpickle_account(
     OlmAccount * value,
-    uint8_t const * pos, uint8_t const * end
+    const uint8_t * pos, const uint8_t * end
 ) {
     uint32_t pickle_version;
 

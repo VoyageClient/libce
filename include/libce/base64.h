@@ -34,7 +34,7 @@ CE_EXPORT size_t _olm_encode_base64_length(
  * Returns number of bytes encoded
  */
 CE_EXPORT size_t _olm_encode_base64(
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 );
 
@@ -55,7 +55,7 @@ CE_EXPORT size_t _olm_decode_base64_length(
  * Returns number of bytes decoded
  */
 CE_EXPORT size_t _olm_decode_base64(
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     uint8_t * output
 );
 

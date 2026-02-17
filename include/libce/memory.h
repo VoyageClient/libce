@@ -22,8 +22,8 @@ void _olm_unset(
 
 /** Check if two buffers are equal in constant time. */
 bool _olm_is_equal(
-    uint8_t const * buffer_a,
-    uint8_t const * buffer_b,
+    const uint8_t * buffer_a,
+    const uint8_t * buffer_b,
     size_t length
 );
 

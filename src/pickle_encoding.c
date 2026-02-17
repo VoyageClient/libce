@@ -28,7 +28,7 @@ uint8_t * _olm_enc_output_pos(
 }
 
 size_t _olm_enc_output(
-    uint8_t const * key, size_t key_length,
+    const uint8_t * key, size_t key_length,
     uint8_t * output, size_t raw_length
 ) {
     const _olm_cipher *cipher = OLM_CIPHER_BASE(&PICKLE_CIPHER);
@@ -50,7 +50,7 @@ size_t _olm_enc_output(
 }
 
 
-size_t _olm_enc_input(uint8_t const * key, size_t key_length,
+size_t _olm_enc_input(const uint8_t * key, size_t key_length,
                       uint8_t * input, size_t b64_length,
                       OlmErrorCode * last_error
 ) {

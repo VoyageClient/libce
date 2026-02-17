@@ -44,7 +44,7 @@ CE_EXPORT size_t olm_clear_pk_encryption(
 /** Set the recipient's public key for encrypting to */
 CE_EXPORT size_t olm_pk_encryption_set_recipient_key(
     OlmPkEncryption *encryption,
-    void const *public_key, size_t public_key_length
+    const void *public_key, size_t public_key_length
 );
 
 /** Get the length of the ciphertext that will correspond to a plaintext of the
@@ -74,7 +74,7 @@ CE_EXPORT size_t olm_pk_encrypt_random_length(void);
  * olm_pk_encryption_last_error() will be "OLM_INPUT_BUFFER_TOO_SMALL". */
 CE_EXPORT size_t olm_pk_encrypt(
     OlmPkEncryption *encryption,
-    void const * plaintext, size_t plaintext_length,
+    const void * plaintext, size_t plaintext_length,
     void * ciphertext, size_t ciphertext_length,
     void * mac, size_t mac_length,
     void * ephemeral_key, size_t ephemeral_key_size,
@@ -153,7 +153,7 @@ CE_EXPORT size_t olm_pickle_pk_decryption_length(
  * olm_pk_decryption_last_error() will be "OUTPUT_BUFFER_TOO_SMALL" */
 CE_EXPORT size_t olm_pickle_pk_decryption(
     OlmPkDecryption * decryption,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void *pickled, size_t pickled_length
 );
 
@@ -166,7 +166,7 @@ CE_EXPORT size_t olm_pickle_pk_decryption(
  * buffer is destroyed */
 CE_EXPORT size_t olm_unpickle_pk_decryption(
     OlmPkDecryption * decryption,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void *pickled, size_t pickled_length,
     void *pubkey, size_t pubkey_length
 );
@@ -184,8 +184,8 @@ CE_EXPORT size_t olm_pk_max_plaintext_length(
  * olm_pk_encryption_last_error() will be "OUTPUT_BUFFER_TOO_SMALL". */
 CE_EXPORT size_t olm_pk_decrypt(
     OlmPkDecryption * decryption,
-    void const * ephemeral_key, size_t ephemeral_key_length,
-    void const * mac, size_t mac_length,
+    const void * ephemeral_key, size_t ephemeral_key_length,
+    const void * mac, size_t mac_length,
     void * ciphertext, size_t ciphertext_length,
     void * plaintext, size_t max_plaintext_length
 );
@@ -267,7 +267,7 @@ CE_EXPORT size_t olm_pk_signature_length(void);
  */
 CE_EXPORT size_t olm_pk_sign(
     OlmPkSigning *sign,
-    uint8_t const * message, size_t message_length,
+    const uint8_t * message, size_t message_length,
     uint8_t * signature, size_t signature_length
 );
 

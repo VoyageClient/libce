@@ -15,8 +15,8 @@ typedef struct DerivedKeys {
 
 
 static void derive_keys(
-    uint8_t const * kdf_info, size_t kdf_info_length,
-    uint8_t const * key, size_t key_length,
+    const uint8_t * kdf_info, size_t kdf_info_length,
+    const uint8_t * key, size_t key_length,
     DerivedKeys *keys
 ) {
     uint8_t derived_secrets[
@@ -28,7 +28,7 @@ static void derive_keys(
         kdf_info, kdf_info_length,
         derived_secrets, sizeof(derived_secrets)
     );
-    uint8_t const * pos = derived_secrets;
+    const uint8_t * pos = derived_secrets;
     pos = _OLM_LOAD_ARRAY(keys->aes_key.key, pos);
     pos = _OLM_LOAD_ARRAY(keys->mac_key, pos);
     pos = _OLM_LOAD_ARRAY(keys->aes_iv.iv, pos);
@@ -49,8 +49,8 @@ size_t aes_sha_256_cipher_encrypt_ciphertext_length(
 
 size_t aes_sha_256_cipher_encrypt(
     const _olm_cipher *cipher,
-    uint8_t const * key, size_t key_length,
-    uint8_t const * plaintext, size_t plaintext_length,
+    const uint8_t * key, size_t key_length,
+    const uint8_t * plaintext, size_t plaintext_length,
     uint8_t * ciphertext, size_t ciphertext_length,
     uint8_t * output, size_t output_length
 ) {
@@ -91,9 +91,9 @@ size_t aes_sha_256_cipher_decrypt_max_plaintext_length(
 
 size_t aes_sha_256_cipher_decrypt(
     const _olm_cipher *cipher,
-    uint8_t const * key, size_t key_length,
-    uint8_t const * input, size_t input_length,
-    uint8_t const * ciphertext, size_t ciphertext_length,
+    const uint8_t * key, size_t key_length,
+    const uint8_t * input, size_t input_length,
+    const uint8_t * ciphertext, size_t ciphertext_length,
     uint8_t * plaintext, size_t max_plaintext_length
 ) {
     if (max_plaintext_length
@@ -113,7 +113,7 @@ size_t aes_sha_256_cipher_decrypt(
         keys.mac_key, HMAC_KEY_LENGTH, input, input_length - MAC_LENGTH, mac
     );
 
-    uint8_t const * input_mac = input + input_length - MAC_LENGTH;
+    const uint8_t * input_mac = input + input_length - MAC_LENGTH;
     if (!_olm_is_equal(input_mac, mac, MAC_LENGTH)) {
         _OLM_UNSET_VALUE(keys);
         return SIZE_MAX;

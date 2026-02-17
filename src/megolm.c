@@ -35,7 +35,7 @@ static void rehash_part(
 
 
 
-void megolm_init(Megolm *megolm, uint8_t const *random_data, uint32_t counter) {
+void megolm_init(Megolm *megolm, const uint8_t *random_data, uint32_t counter) {
     megolm->counter = counter;
     memcpy(megolm->data, random_data, MEGOLM_RATCHET_LENGTH);
 }

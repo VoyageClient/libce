@@ -42,10 +42,10 @@ size_t _olm_session_new_outbound_session_random_length(void);
  * NOT_ENOUGH_RANDOM if the number of random bytes was too small. */
 size_t _olm_session_new_outbound_session(
     OlmSession * session,
-    OlmAccount const * local_account,
-    _olm_curve25519_public_key const * identity_key,
-    _olm_curve25519_public_key const * one_time_key,
-    uint8_t const * random, size_t random_length
+    const OlmAccount * local_account,
+    const _olm_curve25519_public_key * identity_key,
+    const _olm_curve25519_public_key * one_time_key,
+    const uint8_t * random, size_t random_length
 );
 
 /** Start a new inbound session from a pre-key message.
@@ -55,8 +55,8 @@ size_t _olm_session_new_outbound_session(
 size_t _olm_session_new_inbound_session(
     OlmSession * session,
     OlmAccount * local_account,
-    _olm_curve25519_public_key const * their_identity_key,
-    uint8_t const * pre_key_message, size_t message_length
+    const _olm_curve25519_public_key * their_identity_key,
+    const uint8_t * pre_key_message, size_t message_length
 );
 
 /** The number of bytes written by session_id() */
@@ -80,15 +80,15 @@ size_t _olm_session_session_id(
  */
 bool _olm_session_matches_inbound_session(
     OlmSession * session,
-    _olm_curve25519_public_key const * their_identity_key,
-    uint8_t const * pre_key_message, size_t message_length
+    const _olm_curve25519_public_key * their_identity_key,
+    const uint8_t * pre_key_message, size_t message_length
 );
 
 /** Whether the next message will be a pre-key message or a normal message.
  * An outbound session will send pre-key messages until it receives a
  * message with a ratchet key. */
 MessageType _olm_session_encrypt_message_type(
-    OlmSession const * session
+    const OlmSession * session
 );
 
 size_t _olm_session_encrypt_message_length(
@@ -110,8 +110,8 @@ size_t _olm_session_encrypt_random_length(
   * OUTPUT_BUFFER_TOO_SMALL if the output buffer is too small. */
 size_t _olm_session_encrypt(
     OlmSession * session,
-    uint8_t const * plaintext, size_t plaintext_length,
-    uint8_t const * random, size_t random_length,
+    const uint8_t * plaintext, size_t plaintext_length,
+    const uint8_t * random, size_t random_length,
     uint8_t * message, size_t message_length
 );
 
@@ -120,7 +120,7 @@ size_t _olm_session_encrypt(
 size_t _olm_session_decrypt_max_plaintext_length(
     OlmSession * session,
     MessageType message_type,
-    uint8_t const * message, size_t message_length
+    const uint8_t * message, size_t message_length
 );
 
 /** Decrypt a message. Returns the length of the decrypted plain-text or
@@ -134,7 +134,7 @@ size_t _olm_session_decrypt_max_plaintext_length(
 size_t _olm_session_decrypt(
     OlmSession * session,
     MessageType message_type,
-    uint8_t const * message, size_t message_length,
+    const uint8_t * message, size_t message_length,
     uint8_t * plaintext, size_t max_plaintext_length
 );
 
@@ -150,16 +150,16 @@ void _olm_session_describe(
 );
 
 size_t _olm_pickle_session_length(
-    OlmSession const * value
+    const OlmSession * value
 );
 
 uint8_t * _olm_pickle_session(
     uint8_t * pos,
-    OlmSession const * value
+    const OlmSession * value
 );
 
-CE_EXPORT uint8_t const * _olm_unpickle_session(
-    uint8_t const * pos, uint8_t const * end,
+CE_EXPORT const uint8_t * _olm_unpickle_session(
+    const uint8_t * pos, const uint8_t * end,
     OlmSession * value
 );
 

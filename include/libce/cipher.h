@@ -46,8 +46,8 @@ typedef struct _olm_cipher_ops {
      */
     size_t (*encrypt)(
         const _olm_cipher *cipher,
-        uint8_t const * key, size_t key_length,
-        uint8_t const * plaintext, size_t plaintext_length,
+        const uint8_t * key, size_t key_length,
+        const uint8_t * plaintext, size_t plaintext_length,
         uint8_t * ciphertext, size_t ciphertext_length,
         uint8_t * output, size_t output_length
     );
@@ -77,9 +77,9 @@ typedef struct _olm_cipher_ops {
      */
     size_t (*decrypt)(
         const _olm_cipher *cipher,
-        uint8_t const * key, size_t key_length,
-        uint8_t const * input, size_t input_length,
-        uint8_t const * ciphertext, size_t ciphertext_length,
+        const uint8_t * key, size_t key_length,
+        const uint8_t * input, size_t input_length,
+        const uint8_t * ciphertext, size_t ciphertext_length,
         uint8_t * plaintext, size_t max_plaintext_length
     );
 } _olm_cipher_ops;
@@ -95,7 +95,7 @@ typedef struct _olm_cipher_aes_sha_256 {
     /** context string for the HKDF used for deriving the AES256 key, HMAC key,
      * and AES IV, from the key material passed to encrypt/decrypt.
      */
-    uint8_t const * kdf_info;
+    const uint8_t * kdf_info;
 
     /** length of context string kdf_info */
     size_t kdf_info_length;

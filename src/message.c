@@ -52,8 +52,8 @@ static uint8_t * varint_encode_uint32(
 
 
 static size_t varint_decode_bytes(
-    uint8_t const * varint_start,
-    uint8_t const * varint_end
+    const uint8_t * varint_start,
+    const uint8_t * varint_end
 ) {
     size_t value = 0;
     if (varint_end == varint_start) {
@@ -67,8 +67,8 @@ static size_t varint_decode_bytes(
 }
 
 static uint32_t varint_decode_uint32(
-    uint8_t const * varint_start,
-    uint8_t const * varint_end
+    const uint8_t * varint_start,
+    const uint8_t * varint_end
 ) {
     uint32_t value = 0;
     if (varint_end == varint_start) {
@@ -82,9 +82,9 @@ static uint32_t varint_decode_uint32(
 }
 
 
-static uint8_t const * varint_skip(
-    uint8_t const * input,
-    uint8_t const * input_end
+static const uint8_t * varint_skip(
+    const uint8_t * input,
+    const uint8_t * input_end
 ) {
     while (input != input_end) {
         uint8_t tmp = *(input++);
@@ -103,10 +103,10 @@ static size_t varstring_length(
 }
 
 
-static size_t const VERSION_LENGTH = 1;
-static uint8_t const RATCHET_KEY_TAG = 012;
-static uint8_t const COUNTER_TAG = 020;
-static uint8_t const CIPHERTEXT_TAG = 042;
+static const size_t VERSION_LENGTH = 1;
+static const uint8_t RATCHET_KEY_TAG = 012;
+static const uint8_t COUNTER_TAG = 020;
+static const uint8_t CIPHERTEXT_TAG = 042;
 
 
 static uint8_t * encode_bytes(
@@ -130,14 +130,14 @@ static uint8_t * encode_uint32(
 }
 
 
-static uint8_t const * decode_bytes(
-    uint8_t const * pos, uint8_t const * end,
+static const uint8_t * decode_bytes(
+    const uint8_t * pos, const uint8_t * end,
     uint8_t tag,
-    uint8_t const ** value, size_t * value_length
+    const uint8_t ** value, size_t * value_length
 ) {
     if (pos != end && *pos == tag) {
         ++pos;
-        uint8_t const * len_start = pos;
+        const uint8_t * len_start = pos;
         pos = varint_skip(pos, end);
         size_t len = varint_decode_bytes(len_start, pos);
         if (len > (size_t)(end - pos)) return end;
@@ -148,14 +148,14 @@ static uint8_t const * decode_bytes(
     return pos;
 }
 
-static uint8_t const * decode_uint32(
-    uint8_t const * pos, uint8_t const * end,
+static const uint8_t * decode_uint32(
+    const uint8_t * pos, const uint8_t * end,
     uint8_t tag,
     uint32_t * value, bool * has_value
 ) {
     if (pos != end && *pos == tag) {
         ++pos;
-        uint8_t const * value_start = pos;
+        const uint8_t * value_start = pos;
         pos = varint_skip(pos, end);
         *value = varint_decode_uint32(value_start, pos);
         *has_value = true;
@@ -164,8 +164,8 @@ static uint8_t const * decode_uint32(
 }
 
 
-static uint8_t const * skip_unknown(
-    uint8_t const * pos, uint8_t const * end
+static const uint8_t * skip_unknown(
+    const uint8_t * pos, const uint8_t * end
 ) {
     if (pos != end) {
         uint8_t tag = *pos;
@@ -174,7 +174,7 @@ static uint8_t const * skip_unknown(
             pos = varint_skip(pos, end);
         } else if ((tag & 0x7) == 2) {
             pos = varint_skip(pos, end);
-            uint8_t const * len_start = pos;
+            const uint8_t * len_start = pos;
             pos = varint_skip(pos, end);
             size_t len = varint_decode_bytes(len_start, pos);
             if (len > (size_t)(end - pos)) return end;
@@ -220,12 +220,12 @@ void _olm_encode_message(
 
 void _olm_decode_message(
     _OlmMessageReader * reader,
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     size_t mac_length
 ) {
-    uint8_t const * pos = input;
-    uint8_t const * end = input + input_length - mac_length;
-    uint8_t const * unknown = NULL;
+    const uint8_t * pos = input;
+    const uint8_t * end = input + input_length - mac_length;
+    const uint8_t * unknown = NULL;
 
     reader->version = 0;
     reader->has_counter = false;
@@ -263,10 +263,10 @@ void _olm_decode_message(
 }
 
 
-static uint8_t const ONE_TIME_KEY_ID_TAG = 012;
-static uint8_t const BASE_KEY_TAG = 022;
-static uint8_t const IDENTITY_KEY_TAG = 032;
-static uint8_t const MESSAGE_TAG = 042;
+static const uint8_t ONE_TIME_KEY_ID_TAG = 012;
+static const uint8_t BASE_KEY_TAG = 022;
+static const uint8_t IDENTITY_KEY_TAG = 032;
+static const uint8_t MESSAGE_TAG = 042;
 
 
 size_t _olm_encode_one_time_key_message_length(
@@ -304,11 +304,11 @@ void _olm_encode_one_time_key_message(
 
 void _olm_decode_one_time_key_message(
     _OlmPreKeyMessageReader * reader,
-    uint8_t const * input, size_t input_length
+    const uint8_t * input, size_t input_length
 ) {
-    uint8_t const * pos = input;
-    uint8_t const * end = input + input_length;
-    uint8_t const * unknown = NULL;
+    const uint8_t * pos = input;
+    const uint8_t * end = input + input_length;
+    const uint8_t * unknown = NULL;
 
     reader->version = 0;
     reader->one_time_key = NULL;
@@ -387,10 +387,10 @@ void _olm_decode_group_message(
     size_t mac_length, size_t signature_length,
     _OlmDecodeGroupMessageResults *results
 ) {
-    uint8_t const * pos = input;
+    const uint8_t * pos = input;
     size_t trailer_length = mac_length + signature_length;
-    uint8_t const * end = input + input_length - trailer_length;
-    uint8_t const * unknown = NULL;
+    const uint8_t * end = input + input_length - trailer_length;
+    const uint8_t * unknown = NULL;
 
     bool has_message_index = false;
     results->version = 0;

@@ -37,9 +37,9 @@ typedef struct _OlmMessageReader {
     uint8_t version;
     bool has_counter;
     uint32_t counter;
-    uint8_t const * input; size_t input_length;
-    uint8_t const * ratchet_key; size_t ratchet_key_length;
-    uint8_t const * ciphertext; size_t ciphertext_length;
+    const uint8_t * input; size_t input_length;
+    const uint8_t * ratchet_key; size_t ratchet_key_length;
+    const uint8_t * ciphertext; size_t ciphertext_length;
 } _OlmMessageReader;
 
 typedef struct _OlmPreKeyMessageWriter {
@@ -51,10 +51,10 @@ typedef struct _OlmPreKeyMessageWriter {
 
 typedef struct _OlmPreKeyMessageReader {
     uint8_t version;
-    uint8_t const * identity_key; size_t identity_key_length;
-    uint8_t const * base_key; size_t base_key_length;
-    uint8_t const * one_time_key; size_t one_time_key_length;
-    uint8_t const * message; size_t message_length;
+    const uint8_t * identity_key; size_t identity_key_length;
+    const uint8_t * base_key; size_t base_key_length;
+    const uint8_t * one_time_key; size_t one_time_key_length;
+    const uint8_t * message; size_t message_length;
 } _OlmPreKeyMessageReader;
 
 
@@ -130,7 +130,7 @@ CE_EXPORT void _olm_encode_message(
  */
 CE_EXPORT void _olm_decode_message(
     _OlmMessageReader * reader,
-    uint8_t const * input, size_t input_length,
+    const uint8_t * input, size_t input_length,
     size_t mac_length
 );
 
@@ -164,7 +164,7 @@ void _olm_encode_one_time_key_message(
  */
 void _olm_decode_one_time_key_message(
     _OlmPreKeyMessageReader * reader,
-    uint8_t const * input, size_t input_length
+    const uint8_t * input, size_t input_length
 );
 
 

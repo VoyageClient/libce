@@ -64,7 +64,7 @@ size_t olm_clear_pk_encryption(
 
 size_t olm_pk_encryption_set_recipient_key(
     OlmPkEncryption *encryption,
-    void const *key,
+    const void *key,
     size_t key_length
 ) {
     if (key_length < olm_pk_key_length()) {
@@ -103,7 +103,7 @@ size_t olm_pk_encrypt_random_length(void) {
 
 size_t olm_pk_encrypt(
     OlmPkEncryption *encryption,
-    void const *plaintext,
+    const void *plaintext,
     size_t plaintext_length,
     void *ciphertext,
     size_t ciphertext_length,
@@ -330,7 +330,7 @@ size_t olm_pickle_pk_decryption_length(
 
 size_t olm_pickle_pk_decryption(
     OlmPkDecryption *decryption,
-    void const *key,
+    const void *key,
     size_t key_length,
     void *pickled,
     size_t pickled_length
@@ -360,7 +360,7 @@ size_t olm_pickle_pk_decryption(
 
 size_t olm_unpickle_pk_decryption(
     OlmPkDecryption *decryption,
-    void const *key,
+    const void *key,
     size_t key_length,
     void *pickled,
     size_t pickled_length,
@@ -432,9 +432,9 @@ size_t olm_pk_max_plaintext_length(
 
 size_t olm_pk_decrypt(
     OlmPkDecryption *decryption,
-    void const *ephemeral_key,
+    const void *ephemeral_key,
     size_t ephemeral_key_length,
-    void const *mac,
+    const void *mac,
     size_t mac_length,
     void *ciphertext,
     size_t ciphertext_length,

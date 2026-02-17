@@ -49,7 +49,7 @@ extern const struct _olm_cipher *megolm_cipher;
  * initialize the megolm ratchet. random_data should be at least
  * MEGOLM_RATCHET_LENGTH bytes of randomness.
  */
-CE_EXPORT void megolm_init(Megolm *megolm, uint8_t const *random_data, uint32_t counter);
+CE_EXPORT void megolm_init(Megolm *megolm, const uint8_t *random_data, uint32_t counter);
 
 /** Returns the number of bytes needed to store a megolm */
 CE_EXPORT size_t megolm_pickle_length(const Megolm *megolm);

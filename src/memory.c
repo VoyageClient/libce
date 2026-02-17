@@ -13,8 +13,8 @@ void _olm_unset(
 
 
 bool _olm_is_equal(
-    uint8_t const * buffer_a,
-    uint8_t const * buffer_b,
+    const uint8_t * buffer_a,
+    const uint8_t * buffer_b,
     size_t length
 ) {
     uint8_t volatile result = 0;

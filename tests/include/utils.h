@@ -6,7 +6,7 @@
 #include "libce/pickle_encoding.h"
 
 static inline size_t add_junk_suffix_to_pickle(
-    void const *key,
+    const void *key,
     size_t key_length,
     void *pickled,
     size_t pickled_length,
@@ -14,7 +14,7 @@ static inline size_t add_junk_suffix_to_pickle(
 )
 {
     size_t raw_length = _olm_enc_input(
-        (uint8_t const *)key,
+        (const uint8_t *)key,
         key_length,
         (uint8_t *)pickled,
         pickled_length,
@@ -32,7 +32,7 @@ static inline size_t add_junk_suffix_to_pickle(
     memmove(dest, pickled, new_length);
 
     return _olm_enc_output(
-        (uint8_t const *)key,
+        (const uint8_t *)key,
         key_length,
         (uint8_t *)pickled,
         new_length

@@ -78,7 +78,7 @@ size_t olm_pickle_outbound_group_session_length(
 
 size_t olm_pickle_outbound_group_session(
     OlmOutboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     size_t raw_length = raw_pickle_length(session);
@@ -99,7 +99,7 @@ size_t olm_pickle_outbound_group_session(
 
 size_t olm_unpickle_outbound_group_session(
     OlmOutboundGroupSession *session,
-    void const * key, size_t key_length,
+    const void * key, size_t key_length,
     void * pickled, size_t pickled_length
 ) {
     const uint8_t *pos;
@@ -201,7 +201,7 @@ size_t olm_group_encrypt_message_length(
 
 /** write an un-base64-ed message to the buffer */
 static size_t _encrypt(
-    OlmOutboundGroupSession *session, uint8_t const * plaintext, size_t plaintext_length,
+    OlmOutboundGroupSession *session, const uint8_t * plaintext, size_t plaintext_length,
     uint8_t * buffer
 ) {
     size_t ciphertext_length, mac_length, message_length;
@@ -253,7 +253,7 @@ static size_t _encrypt(
 
 size_t olm_group_encrypt(
     OlmOutboundGroupSession *session,
-    uint8_t const * plaintext, size_t plaintext_length,
+    const uint8_t * plaintext, size_t plaintext_length,
     uint8_t * message, size_t max_message_length
 ) {
     size_t rawmsglen;

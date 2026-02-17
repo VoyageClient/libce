@@ -23,7 +23,7 @@ static void test_list_insert(void **state)
     CHECK_EQ((size_t)4U, _olm_list_size(&test_list));
 
     int i = 0;
-    for (int const *item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
+    for (const int *item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
         CHECK_EQ(i++, *item);
     }
 
@@ -51,7 +51,7 @@ static void test_list_insert_beginning(void **state)
     CHECK_EQ((size_t)4U, _olm_list_size(&test_list));
 
     int i = 4;
-    for (int const *item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
+    for (const int *item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
         CHECK_EQ(--i, *item);
     }
 }
@@ -74,7 +74,7 @@ static void test_list_erase(void **state)
     CHECK_EQ((size_t)3U, _olm_list_size(&test_list));
 
     int i = 0;
-    for (int const *item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
+    for (const int *item = _olm_list_begin(&test_list); item != _olm_list_end(&test_list); ++item) {
         CHECK_EQ(i + 1, *item);
         ++i;
     }
