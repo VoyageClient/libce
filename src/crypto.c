@@ -1,16 +1,11 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/crypto.h"
-#include "libce/memory.h"
-
-#include <string.h>
-#include <stdint.h>
 
 #include "crypto-algorithms/aes.h"
 #include "crypto-algorithms/sha256.h"
-
 #include "ed25519/src/ed25519.h"
 #include "curve25519-donna.h"
-
+#include "libce/memory.h"
 
 static const uint8_t CURVE25519_BASEPOINT[32] = {9};
 static const size_t AES_KEY_SCHEDULE_LENGTH = 60;

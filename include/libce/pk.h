@@ -2,10 +2,10 @@
 #ifndef OLM_PK_H_
 #define OLM_PK_H_
 
+#include "libce/error.h"
+
 #include <stddef.h>
 #include <stdint.h>
-
-#include "libce/error.h"
 
 #include "libce/olm_export.h"
 

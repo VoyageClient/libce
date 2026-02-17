@@ -1,18 +1,13 @@
 /* See LICENSE file for copyright and license details. */
-
-/* C-compatible crpyto utility functions. At some point all of crypto.hh will
- * move here.
- */
-
 #ifndef OLM_CRYPTO_H_
 #define OLM_CRYPTO_H_
+
+#include <stdint.h>
+#include <stdlib.h>
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
 #include "libce/olm_export.h"
-
-#include <stdint.h>
-#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

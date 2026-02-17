@@ -1,13 +1,13 @@
 /* See LICENSE file for copyright and license details. */
 #ifndef OLM_H_
-#define OLM_H_
-
-#include <stddef.h>
-#include <stdint.h>
+#define OLM_H
 
 #include "libce/error.h"
 #include "libce/inbound_group_session.h"
 #include "libce/outbound_group_session.h"
+
+#include <stddef.h>
+#include <stdint.h>
 
 #include "libce/olm_export.h"
 

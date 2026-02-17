@@ -1,7 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/utility.h"
 
-
 void _olm_utility_init(
     OlmUtility * utility
 ) {

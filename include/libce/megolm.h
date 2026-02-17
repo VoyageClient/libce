@@ -2,10 +2,6 @@
 #ifndef OLM_MEGOLM_H_
 #define OLM_MEGOLM_H_
 
-/**
- * implementation of the Megolm multi-part ratchet used in group chats.
- */
-
 #include <stdint.h>
 #include <stdlib.h>
 

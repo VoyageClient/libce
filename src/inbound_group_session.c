@@ -1,8 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/inbound_group_session.h"
 
-#include <string.h>
-
 #include "libce/base64.h"
 #include "libce/cipher.h"
 #include "libce/crypto.h"
@@ -12,7 +10,6 @@
 #include "libce/message.h"
 #include "libce/pickle.h"
 #include "libce/pickle_encoding.h"
-
 
 #define OLM_PROTOCOL_VERSION     3
 #define GROUP_SESSION_ID_LENGTH  ED25519_PUBLIC_KEY_LENGTH

@@ -1,12 +1,13 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/olm.h"
-#include "libce/session.h"
+
 #include "libce/account.h"
-#include "libce/cipher.h"
-#include "libce/pickle_encoding.h"
-#include "libce/utility.h"
 #include "libce/base64.h"
+#include "libce/cipher.h"
 #include "libce/memory.h"
+#include "libce/pickle_encoding.h"
+#include "libce/session.h"
+#include "libce/utility.h"
 
 static size_t b64_output_length(
     size_t raw_length

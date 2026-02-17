@@ -1,8 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-
-/* C bindings for base64 functions */
-
-
 #ifndef OLM_BASE64_H_
 #define OLM_BASE64_H_
 

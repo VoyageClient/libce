@@ -2,9 +2,9 @@
 #ifndef OLM_MEMORY_H_
 #define OLM_MEMORY_H_
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
 #include <string.h>
 
 #ifdef __cplusplus

@@ -1,8 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/pk.h"
 
-#include <string.h>
-
 #include "libce/base64.h"
 #include "libce/cipher.h"
 #include "libce/crypto.h"

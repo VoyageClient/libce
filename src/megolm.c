@@ -1,11 +1,11 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/megolm.h"
 
-#include <string.h>
-
 #include "libce/cipher.h"
 #include "libce/crypto.h"
 #include "libce/pickle.h"
+
+#include <string.h>
 
 static const _olm_cipher_aes_sha_256 MEGOLM_CIPHER =
     OLM_CIPHER_INIT_AES_SHA_256("MEGOLM_KEYS");

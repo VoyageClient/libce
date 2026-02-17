@@ -5,7 +5,6 @@
 
 #include <string.h>
 
-
 uint8_t * _olm_pickle_uint8(
     uint8_t * pos,
     uint8_t value

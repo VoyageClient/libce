@@ -2,10 +2,10 @@
 #ifndef OLM_OUTBOUND_GROUP_SESSION_H_
 #define OLM_OUTBOUND_GROUP_SESSION_H_
 
+#include "libce/error.h"
+
 #include <stddef.h>
 #include <stdint.h>
-
-#include "libce/error.h"
 
 #include "libce/olm_export.h"
 

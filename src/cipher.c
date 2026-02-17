@@ -1,9 +1,11 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/cipher.h"
+
 #include "libce/crypto.h"
 #include "libce/memory.h"
-#include <string.h>
+
 #include <stdint.h>
+#include <string.h>
 
 #define HMAC_KEY_LENGTH 32
 

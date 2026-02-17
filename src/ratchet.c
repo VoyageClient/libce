@@ -1,8 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/ratchet.h"
 
-#include <string.h>
-
 #include "libce/cipher.h"
 #include "libce/memory.h"
 #include "libce/message.h"

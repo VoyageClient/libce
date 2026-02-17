@@ -2,9 +2,9 @@
 #ifndef OLM_SAS_H_
 #define OLM_SAS_H_
 
-#include <stddef.h>
-
 #include "libce/error.h"
+
+#include <stddef.h>
 
 #include "libce/olm_export.h"
 

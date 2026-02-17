@@ -1,15 +1,10 @@
 /* See LICENSE file for copyright and license details. */
-
-/**
- * functions for encoding and decoding messages in the Olm protocol.
- */
-
 #ifndef OLM_MESSAGE_H_
 #define OLM_MESSAGE_H_
 
-#include <stdint.h>
-#include <stddef.h>
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally

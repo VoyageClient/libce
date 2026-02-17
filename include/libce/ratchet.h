@@ -2,13 +2,11 @@
 #ifndef OLM_RATCHET_H_
 #define OLM_RATCHET_H_
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-
 #include "libce/crypto.h"
 #include "libce/error.h"
 #include "libce/list.h"
+
+#include <stdbool.h>
 
 // Note: exports in this file are only for unit tests. Nobody else should be
 // using this externally.

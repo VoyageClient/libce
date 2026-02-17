@@ -5,10 +5,10 @@
 #ifndef OLM_PICKLE_ENCODING_H_
 #define OLM_PICKLE_ENCODING_H_
 
+#include "libce/error.h"
+
 #include <stddef.h>
 #include <stdint.h>
-
-#include "libce/error.h"
 
 // Note: exports in this file are only for unit tests.  Nobody else should be
 // using this externally
