@@ -16,7 +16,10 @@
 extern "C" {
 #endif
 
+#ifndef OLM_TYPEDEF__olm_cipher
+#define OLM_TYPEDEF__olm_cipher
 typedef struct _olm_cipher _olm_cipher;
+#endif
 
 /** length of a shared key: the root key R(i), chain key C(i,j), and message
  * key M(i,j). */

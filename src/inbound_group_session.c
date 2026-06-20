@@ -17,7 +17,7 @@
 #define SESSION_KEY_VERSION      2
 #define SESSION_EXPORT_VERSION   1
 
-typedef struct OlmInboundGroupSession {
+struct OlmInboundGroupSession {
     /** our earliest known ratchet value */
     Megolm initial_ratchet;
 
@@ -39,7 +39,7 @@ typedef struct OlmInboundGroupSession {
     int signing_key_verified;
 
     OlmErrorCode last_error;
-} OlmInboundGroupSession;
+};
 
 size_t olm_inbound_group_session_size(void) {
     return sizeof(OlmInboundGroupSession);

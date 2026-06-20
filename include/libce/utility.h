@@ -12,9 +12,14 @@
 extern "C" {
 #endif
 
-typedef struct OlmUtility {
+#ifndef OLM_TYPEDEF_OlmUtility
+#define OLM_TYPEDEF_OlmUtility
+typedef struct OlmUtility OlmUtility;
+#endif
+
+struct OlmUtility {
     OlmErrorCode last_error;
-} OlmUtility;
+};
 
 /** Initialise an Olm utility object. */
 void _olm_utility_init(

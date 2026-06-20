@@ -16,7 +16,7 @@
 #define PICKLE_VERSION           1
 #define SESSION_KEY_VERSION      2
 
-typedef struct OlmOutboundGroupSession {
+struct OlmOutboundGroupSession {
     /** the Megolm ratchet providing the encryption keys */
     Megolm ratchet;
 
@@ -24,7 +24,7 @@ typedef struct OlmOutboundGroupSession {
     _olm_ed25519_key_pair signing_key;
 
     OlmErrorCode last_error;
-} OlmOutboundGroupSession;
+};
 
 
 size_t olm_outbound_group_session_size(void) {

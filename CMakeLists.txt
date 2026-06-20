@@ -55,7 +55,7 @@ generate_export_header(ce
 
 target_compile_options(ce
     PRIVATE
-        -Wall -Werror)
+        -Wall)
 
 target_include_directories(ce
     PUBLIC

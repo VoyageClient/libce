@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #ifndef OLM_H_
-#define OLM_H
+#define OLM_H_
 
 #include "libce/error.h"
 #include "libce/inbound_group_session.h"
@@ -18,9 +18,18 @@ extern "C" {
 static const size_t OLM_MESSAGE_TYPE_PRE_KEY = 0;
 static const size_t OLM_MESSAGE_TYPE_MESSAGE = 1;
 
+#ifndef OLM_TYPEDEF_OlmAccount
+#define OLM_TYPEDEF_OlmAccount
 typedef struct OlmAccount OlmAccount;
+#endif
+#ifndef OLM_TYPEDEF_OlmSession
+#define OLM_TYPEDEF_OlmSession
 typedef struct OlmSession OlmSession;
+#endif
+#ifndef OLM_TYPEDEF_OlmUtility
+#define OLM_TYPEDEF_OlmUtility
 typedef struct OlmUtility OlmUtility;
+#endif
 
 /** Get the version number of the library.
  * Arguments will be updated if non-null.

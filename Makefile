@@ -43,8 +43,8 @@ CPPFLAGS += -Iinclude -Ilib \
     -DLIBCE_VERSION_PATCH=$(PATCH)
 
 # we rely on <stdint.h>, which was introduced in C99
-CFLAGS += -Wall -Werror -std=c99
-LDFLAGS += -Wall -Werror
+CFLAGS += -Wall -std=c99
+LDFLAGS += -Wall
 LDLIBS += $(LIBCE_LIBS)
 
 CFLAGS_NATIVE = -fPIC

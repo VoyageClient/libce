@@ -12,21 +12,29 @@
 extern "C" {
 #endif
 
+#ifndef OLM_TYPEDEF_OlmAccount
+#define OLM_TYPEDEF_OlmAccount
 typedef struct OlmAccount OlmAccount;
+#endif
 
 typedef enum MessageType {
     MESSAGE_TYPE_PRE_KEY = 0,
     MESSAGE_TYPE_MESSAGE = 1
 } MessageType;
 
-typedef struct OlmSession {
+#ifndef OLM_TYPEDEF_OlmSession
+#define OLM_TYPEDEF_OlmSession
+typedef struct OlmSession OlmSession;
+#endif
+
+struct OlmSession {
     OlmErrorCode last_error;
     _OlmRatchet ratchet;
     _olm_curve25519_public_key alice_identity_key;
     _olm_curve25519_public_key alice_base_key;
     _olm_curve25519_public_key bob_one_time_key;
     bool received_message;
-} OlmSession;
+};
 
 /** Initialise an Olm session object. */
 void _olm_session_init(

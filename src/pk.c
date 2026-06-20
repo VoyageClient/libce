@@ -19,10 +19,10 @@ static const _olm_cipher *olm_pk_cipher =
     OLM_CIPHER_BASE(&olm_pk_cipher_aes_sha256);
 
 
-typedef struct OlmPkEncryption {
+struct OlmPkEncryption {
     OlmErrorCode last_error;
     _olm_curve25519_public_key recipient_key;
-} OlmPkEncryption;
+};
 
 
 const char * olm_pk_encryption_last_error(
@@ -170,10 +170,10 @@ size_t olm_pk_encrypt(
 }
 
 
-typedef struct OlmPkDecryption {
+struct OlmPkDecryption {
     OlmErrorCode last_error;
     _olm_curve25519_key_pair key_pair;
-} OlmPkDecryption;
+};
 
 
 const char * olm_pk_decryption_last_error(
@@ -519,10 +519,10 @@ size_t olm_pk_get_private_key(
 }
 
 
-typedef struct OlmPkSigning {
+struct OlmPkSigning {
     OlmErrorCode last_error;
     _olm_ed25519_key_pair key_pair;
-} OlmPkSigning;
+};
 
 
 size_t olm_pk_signing_size(void) {

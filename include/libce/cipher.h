@@ -13,7 +13,10 @@
 extern "C" {
 #endif
 
+#ifndef OLM_TYPEDEF__olm_cipher
+#define OLM_TYPEDEF__olm_cipher
 typedef struct _olm_cipher _olm_cipher;
+#endif
 
 typedef struct _olm_cipher_ops {
     /**
@@ -84,10 +87,10 @@ typedef struct _olm_cipher_ops {
     );
 } _olm_cipher_ops;
 
-typedef struct _olm_cipher {
+struct _olm_cipher {
     const _olm_cipher_ops *ops;
     /* cipher-specific fields follow */
-} _olm_cipher;
+};
 
 typedef struct _olm_cipher_aes_sha_256 {
     _olm_cipher base_cipher;

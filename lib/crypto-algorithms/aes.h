@@ -16,8 +16,11 @@
 #define AES_BLOCK_SIZE 16               // AES operates on 16 bytes at a time
 
 /**************************** DATA TYPES ****************************/
+#ifndef CRYPTO_ALGORITHMS_BYTE_WORD
+#define CRYPTO_ALGORITHMS_BYTE_WORD
 typedef unsigned char BYTE;            // 8-bit byte
 typedef unsigned int WORD;             // 32-bit word, change to "long" for 16-bit machines
+#endif
 
 /*********************** FUNCTION DECLARATIONS **********************/
 ///////////////////

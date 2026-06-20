@@ -6,12 +6,12 @@
 #include "libce/error.h"
 #include "libce/memory.h"
 
-typedef struct OlmSAS {
+struct OlmSAS {
     OlmErrorCode last_error;
     _olm_curve25519_key_pair curve25519_key;
     uint8_t secret[CURVE25519_SHARED_SECRET_LENGTH];
     int their_key_set;
-} OlmSAS;
+};
 
 const char * olm_sas_last_error(
     const OlmSAS * sas

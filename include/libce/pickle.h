@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "libce/crypto.h"
+
 /* Convenience macro for checking the return value of internal unpickling
  * functions and returning early on failure. */
 #ifndef UNPICKLE_OK
@@ -29,11 +31,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-typedef struct _olm_curve25519_public_key _olm_curve25519_public_key;
-typedef struct _olm_curve25519_key_pair _olm_curve25519_key_pair;
-typedef struct _olm_ed25519_public_key _olm_ed25519_public_key;
-typedef struct _olm_ed25519_key_pair _olm_ed25519_key_pair;
 
 
 uint8_t * _olm_pickle_uint8(

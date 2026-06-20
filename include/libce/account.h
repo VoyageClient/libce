@@ -27,7 +27,12 @@ typedef struct _OlmOneTimeKey {
 
 typedef OLM_LIST(_OlmOneTimeKey, MAX_ONE_TIME_KEYS) _OlmOneTimeKeyList;
 
-typedef struct OlmAccount {
+#ifndef OLM_TYPEDEF_OlmAccount
+#define OLM_TYPEDEF_OlmAccount
+typedef struct OlmAccount OlmAccount;
+#endif
+
+struct OlmAccount {
     OlmErrorCode last_error;
     _OlmIdentityKeys identity_keys;
     _OlmOneTimeKeyList one_time_keys;
@@ -35,7 +40,7 @@ typedef struct OlmAccount {
     _OlmOneTimeKey prev_fallback_key;
     uint8_t num_fallback_keys;
     uint32_t next_one_time_key_id;
-} OlmAccount;
+};
 
 /** Initialise an Olm account object. */
 void _olm_account_init(
