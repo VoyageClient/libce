@@ -1,0 +1,59 @@
+apply plugin: 'com.android.library'
+
+// Track the parent project's shared versions when included as a module; fall
+// back to standalone defaults when this repo is built on its own.
+def v = project.hasProperty('versions') ? project.versions : [:]
+
+android {
+    namespace "org.matrix.olm"
+    compileSdk v.compileSdk ?: 35
+    ndkVersion project.findProperty('libceNdkVersion') ?: '23.2.8568313'
+
+    defaultConfig {
+        minSdk v.minSdk ?: 16
+        targetSdk v.targetSdk ?: 35
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "OLM_VERSION", "\"0.2.2\""
+        resValue "string", "git_olm_revision", "libce-0.2.2"
+        resValue "string", "git_olm_revision_date", ""
+        resValue "string", "git_olm_revision_unix_date", ""
+
+        externalNativeBuild {
+            ndkBuild {
+                abiFilters 'arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'
+            }
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility v.sourceCompat ?: JavaVersion.VERSION_11
+        targetCompatibility v.targetCompat ?: JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+
+    androidTestImplementation 'androidx.test:core:1.4.0'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+}

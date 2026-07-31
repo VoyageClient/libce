@@ -71,9 +71,20 @@ To build libce as a static library, run:
 make static
 ```
 
+### Android
+
+The repository also ships an Android wrapper (Java bindings over JNI) under the
+``android/`` directory. To build the Android library, run:
+
+```bash
+cd android
+./gradlew clean build
+```
+
 ## Release process
 
-First: bump version numbers in ``common.mk`` and ``CMakeLists.txt``.
+First: bump version numbers in ``common.mk``, ``CMakeLists.txt`` and
+``android/gradle.properties``.
 
 Also, ensure that everything is committed to git.
 

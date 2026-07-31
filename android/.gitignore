@@ -1,0 +1,24 @@
+#IDEs
+/.idea
+*.iml
+
+#OS
+.DS_Store
+
+#builds
+build/
+*.apk
+*.aar
+
+.gradle
+/local.properties
+
+# Native build
+.cxx/
+**/src/main/obj
+/olm-sdk/doc
+**/src/main/libs/**/*.so
+
+# Test
+/olm-sdk/src/main/libs/**/gdbserver
+/olm-sdk/src/main/libs/**/gdb.setup
