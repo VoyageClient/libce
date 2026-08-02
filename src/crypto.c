@@ -1,14 +1,12 @@
 /* See LICENSE file for copyright and license details. */
 #include "libce/crypto.h"
 
-#include "crypto-algorithms/aes.h"
+#include "aes-ct64/aes_ct64.h"
 #include "libce/memory.h"
 
 #include <sodium.h>
 #include <stdlib.h>
 
-static const size_t AES_KEY_SCHEDULE_LENGTH = 60;
-static const size_t AES_KEY_BITS = 8 * AES256_KEY_LENGTH;
 static const size_t AES_BLOCK_LENGTH = 16;
 
 
@@ -30,16 +28,6 @@ inline static void reduce_scalar(
     memcpy(padded, scalar, 32);
     crypto_core_ed25519_scalar_reduce(reduced, padded);
     _OLM_UNSET_VALUE(padded);
-}
-
-
-inline static void xor_block(
-    uint8_t * block, size_t block_length,
-    const uint8_t * input
-) {
-    for (size_t i = 0; i < block_length; ++i) {
-        block[i] ^= input[i];
-    }
 }
 
 
@@ -68,9 +56,10 @@ void _olm_crypto_curve25519_shared_secret(
     /* sodium returns -1 for small-order peer keys but still writes the
      * all-zero secret; the protocol's MACs reject anything derived from
      * it, so contributory behavior is not required here. */
-    (void)crypto_scalarmult_curve25519(
+    int ignored = crypto_scalarmult_curve25519(
         output, our_key->private_key.private_key, their_key->public_key
     );
+    (void)ignored;
 }
 
 
@@ -170,28 +159,20 @@ void _olm_crypto_aes_encrypt_cbc(
     const uint8_t * input, size_t input_length,
     uint8_t * output
 ) {
-    uint32_t key_schedule[AES_KEY_SCHEDULE_LENGTH];
-    aes_key_setup(key->key, key_schedule, AES_KEY_BITS);
-    uint8_t input_block[AES_BLOCK_LENGTH];
-    memcpy(input_block, iv->iv, AES_BLOCK_LENGTH);
-    while (input_length >= AES_BLOCK_LENGTH) {
-        xor_block(input_block, AES_BLOCK_LENGTH, input);
-        aes_encrypt(input_block, output, key_schedule, AES_KEY_BITS);
-        memcpy(input_block, output, AES_BLOCK_LENGTH);
-        input += AES_BLOCK_LENGTH;
-        output += AES_BLOCK_LENGTH;
-        input_length -= AES_BLOCK_LENGTH;
-    }
-    size_t i = 0;
-    for (; i < input_length; ++i) {
-        input_block[i] ^= input[i];
-    }
-    for (; i < AES_BLOCK_LENGTH; ++i) {
-        input_block[i] ^= AES_BLOCK_LENGTH - input_length;
-    }
-    aes_encrypt(input_block, output, key_schedule, AES_KEY_BITS);
-    _OLM_UNSET_VALUE(key_schedule);
-    _OLM_UNSET_VALUE(input_block);
+    br_aes_ct64_cbcenc_keys keys;
+    uint8_t iv_copy[AES_BLOCK_LENGTH];
+    size_t padded_length = _olm_crypto_aes_encrypt_cbc_length(input_length);
+    br_aes_ct64_cbcenc_init(&keys, key->key, AES256_KEY_LENGTH);
+    memcpy(iv_copy, iv->iv, AES_BLOCK_LENGTH);
+    /* memmove: pickling encrypts fully in place (input == output) */
+    memmove(output, input, input_length);
+    memset(
+        output + input_length, AES_BLOCK_LENGTH - input_length % AES_BLOCK_LENGTH,
+        padded_length - input_length
+    );
+    br_aes_ct64_cbcenc_run(&keys, iv_copy, output, padded_length);
+    _OLM_UNSET_VALUE(keys);
+    _OLM_UNSET_VALUE(iv_copy);
 }
 
 
@@ -204,20 +185,15 @@ size_t _olm_crypto_aes_decrypt_cbc(
     if (input_length == 0 || input_length % AES_BLOCK_LENGTH != 0) {
         return SIZE_MAX;
     }
-    uint32_t key_schedule[AES_KEY_SCHEDULE_LENGTH];
-    aes_key_setup(key->key, key_schedule, AES_KEY_BITS);
-    uint8_t block1[AES_BLOCK_LENGTH];
-    uint8_t block2[AES_BLOCK_LENGTH];
-    memcpy(block1, iv->iv, AES_BLOCK_LENGTH);
-    for (size_t i = 0; i < input_length; i += AES_BLOCK_LENGTH) {
-        memcpy(block2, &input[i], AES_BLOCK_LENGTH);
-        aes_decrypt(&input[i], &output[i], key_schedule, AES_KEY_BITS);
-        xor_block(&output[i], AES_BLOCK_LENGTH, block1);
-        memcpy(block1, block2, AES_BLOCK_LENGTH);
-    }
-    _OLM_UNSET_VALUE(key_schedule);
-    _OLM_UNSET_VALUE(block1);
-    _OLM_UNSET_VALUE(block2);
+    br_aes_ct64_cbcdec_keys keys;
+    uint8_t iv_copy[AES_BLOCK_LENGTH];
+    br_aes_ct64_cbcdec_init(&keys, key->key, AES256_KEY_LENGTH);
+    memcpy(iv_copy, iv->iv, AES_BLOCK_LENGTH);
+    /* memmove: unpickling decrypts fully in place (input == output) */
+    memmove(output, input, input_length);
+    br_aes_ct64_cbcdec_run(&keys, iv_copy, output, input_length);
+    _OLM_UNSET_VALUE(keys);
+    _OLM_UNSET_VALUE(iv_copy);
     size_t padding = output[input_length - 1];
     return (padding > input_length) ? SIZE_MAX : (input_length - padding);
 }

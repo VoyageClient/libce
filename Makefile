@@ -19,8 +19,7 @@ DEBUG_TARGET := $(BUILD_DIR)/libce_debug.$(SO).$(VERSION)
 
 PUBLIC_HEADERS := include/libce/olm.h include/libce/outbound_group_session.h include/libce/inbound_group_session.h include/libce/pk.h include/libce/sas.h include/libce/error.h include/libce/olm_export.h
 
-SOURCES := $(wildcard src/*.c) \
-    lib/crypto-algorithms/aes.c
+SOURCES := $(wildcard src/*.c) $(wildcard lib/aes-ct64/*.c)
 
 TEST_SOURCES := $(wildcard tests/test_*.c)
 

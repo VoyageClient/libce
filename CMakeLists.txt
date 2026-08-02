@@ -41,7 +41,11 @@ add_library(ce
     src/outbound_group_session.c
     src/pickle_encoding.c
 
-    lib/crypto-algorithms/aes.c)
+    lib/aes-ct64/aes_ct64.c
+    lib/aes-ct64/aes_ct64_enc.c
+    lib/aes-ct64/aes_ct64_dec.c
+    lib/aes-ct64/aes_ct64_cbcenc.c
+    lib/aes-ct64/aes_ct64_cbcdec.c)
 add_library(LibCE::LibCE ALIAS ce)
 
 # restrict the exported symbols
