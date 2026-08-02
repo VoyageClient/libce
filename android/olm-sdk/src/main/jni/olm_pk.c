@@ -165,6 +165,11 @@ JNIEXPORT jbyteArray OLM_PK_ENCRYPTION_FUNC_DEF(encryptJni)(
         LOGE(" ## pkEncryptJni(): failure - invalid clear message");
         errorMessage = "invalid clear message";
     }
+    else if (!aEncryptedMsg)
+    {
+        LOGE(" ## pkEncryptJni(): failure - invalid encrypted message");
+        errorMessage = "invalid encrypted message";
+    }
     else if (!(plaintextPtr = (*env)->GetByteArrayElements(env, aPlaintextBuffer, &plaintextIsCopied)))
     {
         LOGE(" ## pkEncryptJni(): failure - plaintext JNI allocation OOM");
@@ -352,7 +357,7 @@ JNIEXPORT void OLM_PK_DECRYPTION_FUNC_DEF(releasePkDecryptionJni)(JNIEnv *env, j
     }
     else
     {
-        LOGD(" ## releasePkDecryptionJni(): decryptionPtr=%p", encryptionPtr);
+        LOGD(" ## releasePkDecryptionJni(): decryptionPtr=%p", decryptionPtr);
         olm_clear_pk_decryption(decryptionPtr);
 
         LOGD(" ## releasePkDecryptionJni(): IN");
@@ -417,10 +422,11 @@ JNIEXPORT jbyteArray OLM_PK_DECRYPTION_FUNC_DEF(setPrivateKeyJni)(JNIEnv *env, j
             else
             {
                 publicKeyRet = (*env)->NewByteArray(env, publicKeyLength);
-                (*env)->SetByteArrayRegion(env, 
+                (*env)->SetByteArrayRegion(env,
                     publicKeyRet, 0, publicKeyLength, (jbyte*)publicKeyPtr
                 );
             }
+            free(publicKeyPtr);
         }
     }
 
@@ -481,6 +487,7 @@ JNIEXPORT jbyteArray OLM_PK_DECRYPTION_FUNC_DEF(generateKeyJni)(JNIEnv *env, job
             (*env)->SetByteArrayRegion(env, publicKeyRet, 0, publicKeyLength, (jbyte*)publicKeyPtr);
             LOGD("## pkGenerateKeyJni(): public key generated");
         }
+        free(publicKeyPtr);
     }
 
     if (randomBuffPtr)
@@ -532,11 +539,12 @@ JNIEXPORT jbyteArray OLM_PK_DECRYPTION_FUNC_DEF(privateKeyJni)(JNIEnv *env, jobj
             else
             {
                 privateKeyRet = (*env)->NewByteArray(env, privateKeyLength);
-                (*env)->SetByteArrayRegion(env, 
+                (*env)->SetByteArrayRegion(env,
                     privateKeyRet, 0, privateKeyLength, (jbyte*)privateKeyPtr
                 );
-                memset(privateKeyPtr, 0, privateKeyLength);
             }
+            memset(privateKeyPtr, 0, privateKeyLength);
+            free(privateKeyPtr);
         }
     }
 
@@ -598,16 +606,6 @@ JNIEXPORT jbyteArray OLM_PK_DECRYPTION_FUNC_DEF(decryptJni)(
         LOGE("## pkDecryptJni(): failure - ciphertext JNI allocation OOM");
         errorMessage = "ciphertext JNI allocation OOM";
     }
-    else if (!(ciphertextJstring = (jstring)(*env)->GetObjectField(env, aEncryptedMsg, ciphertextFieldId)))
-    {
-        LOGE("## pkDecryptJni(): failure - no ciphertext");
-        errorMessage = "no ciphertext";
-    }
-    else if (!(ciphertextPtr = (*env)->GetStringUTFChars(env, ciphertextJstring, 0)))
-    {
-        LOGE("## decryptMessageJni(): failure - ciphertext JNI allocation OOM");
-        errorMessage = "ciphertext JNI allocation OOM";
-    }
     else if (!(macFieldId = (*env)->GetFieldID(env, encryptedMsgJClass,"mMac","Ljava/lang/String;")))
     {
         LOGE("## pkDecryptJni(): failure - unable to get MAC field");
@@ -654,6 +652,7 @@ JNIEXPORT jbyteArray OLM_PK_DECRYPTION_FUNC_DEF(decryptJni)(
         else if (!(tempCiphertextPtr = (uint8_t*)malloc(ciphertextLength)))
         {
             LOGE("## pkDecryptJni(): failure - temp ciphertext JNI allocation OOM");
+            errorMessage = "temp ciphertext JNI allocation OOM";
         }
         else
         {
@@ -887,11 +886,12 @@ JNIEXPORT jbyteArray OLM_PK_SIGNING_FUNC_DEF(setKeyFromSeedJni)(JNIEnv *env, job
                     errorMessage = "publicKeyRet JNI allocation OOM";
                     LOGE(" ## setPkSigningKeyFromSeedJni(): falure - %s", errorMessage);
                 } else {
-                    (*env)->SetByteArrayRegion(env, 
+                    (*env)->SetByteArrayRegion(env,
                         publicKeyRet, 0, publicKeyLength, (jbyte*)publicKeyPtr
                     );
                 }
             }
+            free(publicKeyPtr);
         }
     }
 
@@ -964,11 +964,12 @@ JNIEXPORT jbyteArray OLM_PK_SIGNING_FUNC_DEF(pkSignJni)(JNIEnv *env, jobject thi
                     errorMessage = "signatureRet JNI allocation OOM";
                     LOGE(" ## setPkSignJni(): falure - %s", errorMessage);
                 } else {
-                    (*env)->SetByteArrayRegion(env, 
+                    (*env)->SetByteArrayRegion(env,
                         signatureRet, 0, signatureLength, (jbyte*)signaturePtr
                     );
                 }
             }
+            free(signaturePtr);
         }
     }
 

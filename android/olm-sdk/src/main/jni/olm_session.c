@@ -665,6 +665,14 @@ JNIEXPORT jbyteArray OLM_SESSION_FUNC_DEF(decryptMessageJni)(JNIEnv *env, jobjec
 
         // create a dedicated temp buffer to be used in next Olm API calls
         tempEncryptedPtr = (char*)(malloc(encryptedMsgLength*sizeof(uint8_t)));
+
+        if (!tempEncryptedPtr)
+        {
+            LOGE("## decryptMessageJni(): failure - tempEncryptedPtr allocation OOM");
+            errorMessage = "tempEncryptedPtr allocation OOM";
+        }
+        else
+        {
         memcpy(tempEncryptedPtr, encryptedMsgPtr, encryptedMsgLength);
         LOGD("## decryptMessageJni(): MsgType=%lu encryptedMsgLength=%lu encryptedMsg=%.*s",(long unsigned int)(encryptedMsgType),(long unsigned int)(encryptedMsgLength), (int)(encryptedMsgLength), encryptedMsgPtr);
 
@@ -687,6 +695,13 @@ JNIEXPORT jbyteArray OLM_SESSION_FUNC_DEF(decryptMessageJni)(JNIEnv *env, jobjec
             // allocate output decrypted message
             plainTextMsgPtr = (uint8_t*)(malloc(maxPlainTextLength*sizeof(uint8_t)));
 
+            if (!plainTextMsgPtr)
+            {
+                LOGE("## decryptMessageJni(): failure - plainTextMsgPtr allocation OOM");
+                errorMessage = "plainTextMsgPtr allocation OOM";
+            }
+            else
+            {
             // decrypt, but before reload encrypted buffer (previous one was destroyed)
             memcpy(tempEncryptedPtr, encryptedMsgPtr, encryptedMsgLength);
             size_t plaintextLength = olm_decrypt(sessionPtr,
@@ -709,6 +724,8 @@ JNIEXPORT jbyteArray OLM_SESSION_FUNC_DEF(decryptMessageJni)(JNIEnv *env, jobjec
             }
 
             memset(plainTextMsgPtr, 0, maxPlainTextLength);
+            }
+        }
         }
     }
 
@@ -831,7 +848,7 @@ JNIEXPORT jbyteArray OLM_SESSION_FUNC_DEF(olmSessionDescribeJni(JNIEnv *env, job
             }
             else
             {
-                LOGD("## olmSessionDescribeJni(): success - describe=%.*s", (char*)describePtr);
+                LOGD("## olmSessionDescribeJni(): success - describe=%s", (char*)describePtr);
 
                 returnValue = (*env)->NewByteArray(env, length);
                 (*env)->SetByteArrayRegion(env, returnValue, 0, length, (jbyte*)describePtr);
@@ -1020,6 +1037,7 @@ JNIEXPORT jlong OLM_SESSION_FUNC_DEF(deserializeJni)(JNIEnv *env, jobject thiz, 
         {
             olm_clear_session(sessionPtr);
             free(sessionPtr);
+            sessionPtr = NULL;
         }
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
     }

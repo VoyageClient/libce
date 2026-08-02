@@ -103,6 +103,7 @@ JNIEXPORT jlong OLM_ACCOUNT_FUNC_DEF(createNewAccountJni)(JNIEnv *env, jobject t
         {
             olm_clear_account(accountPtr);
             free(accountPtr);
+            accountPtr = NULL;
         }
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
     }
@@ -625,9 +626,14 @@ JNIEXPORT jbyteArray OLM_ACCOUNT_FUNC_DEF(signMessageJni)(JNIEnv *env, jobject t
 
         // signature memory allocation
         size_t signatureLength = olm_account_signature_length(accountPtr);
-        void* signedMsgPtr = malloc(signatureLength * sizeof(uint8_t));
+        void* signedMsgPtr = NULL;
 
-        if (!signedMsgPtr)
+        if (!messageToSign)
+        {
+            LOGE("## signMessageJni(): failure - message JNI allocation OOM");
+            errorMessage = "message JNI allocation OOM";
+        }
+        else if (!(signedMsgPtr = malloc(signatureLength * sizeof(uint8_t))))
         {
             LOGE("## signMessageJni(): failure - signature allocation OOM");
             errorMessage = "signature allocation OOM";
@@ -841,6 +847,7 @@ JNIEXPORT jlong OLM_ACCOUNT_FUNC_DEF(deserializeJni)(JNIEnv *env, jobject thiz, 
         {
             olm_clear_account(accountPtr);
             free(accountPtr);
+            accountPtr = NULL;
         }
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
     }

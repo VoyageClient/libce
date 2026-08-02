@@ -30,12 +30,11 @@ JNIEXPORT jlong OLM_SAS_FUNC_DEF(createNewSASJni)(JNIEnv *env, jobject thiz)
     {
         LOGE("## createNewSASJni(): failure - init SAS OOM");
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), "init sas OOM");
+        return 0;
     }
-    else
-    {
-        sasPtr = olm_sas(sasPtr)
-        LOGD(" ## createNewSASJni(): success - sasPtr=%p (jlong)(intptr_t)accountPtr=%lld",sasPtr,(jlong)(intptr_t)sasPtr);
-    }
+
+    sasPtr = olm_sas(sasPtr);
+    LOGD(" ## createNewSASJni(): success - sasPtr=%p (jlong)(intptr_t)accountPtr=%lld",sasPtr,(jlong)(intptr_t)sasPtr);
 
     size_t randomSize = olm_create_sas_random_length(sasPtr);
     uint8_t *randomBuffPtr = NULL;
@@ -105,18 +104,24 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(getPubKeyJni)(JNIEnv *env, jobject thiz)
     {
         size_t pubKeyLength = olm_sas_pubkey_length(sasPtr);
         void *pubkey = malloc(pubKeyLength*sizeof(uint8_t));
-        size_t result = olm_sas_get_pubkey(sasPtr, pubkey, pubKeyLength);
-        if (result == olm_error())
+        if (!pubkey)
         {
-            errorMessage = (const char *)olm_sas_last_error(sasPtr);
-            LOGE("## getPubKeyJni(): failure - error getting pub key Msg=%s", errorMessage);
+            LOGE("## getPubKeyJni(): failure - pub key allocation OOM");
+            errorMessage = "pub key allocation OOM";
         }
         else
         {
-            returnValue = (*env)->NewByteArray(env, pubKeyLength);
-            (*env)->SetByteArrayRegion(env, returnValue, 0 , pubKeyLength, (jbyte*)pubkey);
-        }
-        if (pubkey) {
+            size_t result = olm_sas_get_pubkey(sasPtr, pubkey, pubKeyLength);
+            if (result == olm_error())
+            {
+                errorMessage = (const char *)olm_sas_last_error(sasPtr);
+                LOGE("## getPubKeyJni(): failure - error getting pub key Msg=%s", errorMessage);
+            }
+            else
+            {
+                returnValue = (*env)->NewByteArray(env, pubKeyLength);
+                (*env)->SetByteArrayRegion(env, returnValue, 0 , pubKeyLength, (jbyte*)pubkey);
+            }
             free(pubkey);
         }
     }
@@ -194,6 +199,11 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(generateShortCodeJni)(JNIEnv *env, jobject
         LOGE("## generateShortCodeJni(): failure - invalid info");
         errorMessage = "invalid info";
     }
+    else if (byteNb <= 0)
+    {
+        LOGE("## generateShortCodeJni(): failure - invalid byteNb");
+        errorMessage = "invalid byteNb";
+    }
     else if (!(infoPtr = (*env)->GetByteArrayElements(env, infoStringBytes, &infoWasCopied)))
     {
         LOGE(" ## generateShortCodeJni(): failure - info JNI allocation OOM");
@@ -202,11 +212,27 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(generateShortCodeJni)(JNIEnv *env, jobject
     else {
         size_t shortBytesCodeLength = (size_t) byteNb;
         void *shortBytesCode = malloc(shortBytesCodeLength * sizeof(uint8_t));
-        size_t infoLength = (size_t)(*env)->GetArrayLength(env, infoStringBytes);
-        olm_sas_generate_bytes(sasPtr, infoPtr, infoLength, shortBytesCode, shortBytesCodeLength);
-        returnValue = (*env)->NewByteArray(env, shortBytesCodeLength);
-        (*env)->SetByteArrayRegion(env, returnValue, 0 , shortBytesCodeLength, (jbyte*)shortBytesCode);
-        free(shortBytesCode);
+        if (!shortBytesCode)
+        {
+            LOGE(" ## generateShortCodeJni(): failure - short code allocation OOM");
+            errorMessage = "short code allocation OOM";
+        }
+        else
+        {
+            size_t infoLength = (size_t)(*env)->GetArrayLength(env, infoStringBytes);
+            size_t result = olm_sas_generate_bytes(sasPtr, infoPtr, infoLength, shortBytesCode, shortBytesCodeLength);
+            if (result == olm_error())
+            {
+                errorMessage = (const char *)olm_sas_last_error(sasPtr);
+                LOGE("## generateShortCodeJni(): failure - error generating SAS bytes Msg=%s", errorMessage);
+            }
+            else
+            {
+                returnValue = (*env)->NewByteArray(env, shortBytesCodeLength);
+                (*env)->SetByteArrayRegion(env, returnValue, 0 , shortBytesCodeLength, (jbyte*)shortBytesCode);
+            }
+            free(shortBytesCode);
+        }
     }
 
     // free alloc
@@ -253,6 +279,11 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(calculateMacJni)(JNIEnv *env, jobject thiz
         LOGE(" ## calculateMacJni(): failure - message JNI allocation OOM");
         errorMessage = "message JNI allocation OOM";
     }
+    else if (!infoBuffer)
+    {
+        LOGE("## calculateMacJni(): failure - invalid info");
+        errorMessage = "invalid info";
+    }
     else if (!(infoPtr = (*env)->GetByteArrayElements(env, infoBuffer, &infoWasCopied)))
     {
         LOGE(" ## calculateMacJni(): failure - info JNI allocation OOM");
@@ -265,19 +296,25 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(calculateMacJni)(JNIEnv *env, jobject thiz
 
         void *macPtr = malloc(macLength*sizeof(uint8_t));
 
-        size_t result = olm_sas_calculate_mac(sasPtr,messagePtr,messageLength,infoPtr,infoLength,macPtr,macLength);
-        if (result == olm_error())
+        if (!macPtr)
         {
-            errorMessage = (const char *)olm_sas_last_error(sasPtr);
-            LOGE("## calculateMacJni(): failure - error calculating SAS mac Msg=%s", errorMessage);
+            LOGE(" ## calculateMacJni(): failure - mac allocation OOM");
+            errorMessage = "mac allocation OOM";
         }
         else
         {
-            returnValue = (*env)->NewByteArray(env, macLength);
-            (*env)->SetByteArrayRegion(env, returnValue, 0 , macLength, (jbyte*)macPtr);
-        }
+            size_t result = olm_sas_calculate_mac(sasPtr,messagePtr,messageLength,infoPtr,infoLength,macPtr,macLength);
+            if (result == olm_error())
+            {
+                errorMessage = (const char *)olm_sas_last_error(sasPtr);
+                LOGE("## calculateMacJni(): failure - error calculating SAS mac Msg=%s", errorMessage);
+            }
+            else
+            {
+                returnValue = (*env)->NewByteArray(env, macLength);
+                (*env)->SetByteArrayRegion(env, returnValue, 0 , macLength, (jbyte*)macPtr);
+            }
 
-        if (macPtr) {
             free(macPtr);
         }
     }
@@ -333,6 +370,11 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(calculateMacFixedBase64Jni)(JNIEnv *env, j
         LOGE(" ## calculateMacFixedBase64Jni(): failure - message JNI allocation OOM");
         errorMessage = "message JNI allocation OOM";
     }
+    else if (!infoBuffer)
+    {
+        LOGE("## calculateMacFixedBase64Jni(): failure - invalid info");
+        errorMessage = "invalid info";
+    }
     else if (!(infoPtr = (*env)->GetByteArrayElements(env, infoBuffer, &infoWasCopied)))
     {
         LOGE(" ## calculateMacFixedBase64Jni(): failure - info JNI allocation OOM");
@@ -345,19 +387,25 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(calculateMacFixedBase64Jni)(JNIEnv *env, j
 
         void *macPtr = malloc(macLength*sizeof(uint8_t));
 
-        size_t result = olm_sas_calculate_mac_fixed_base64(sasPtr,messagePtr,messageLength,infoPtr,infoLength,macPtr,macLength);
-        if (result == olm_error())
+        if (!macPtr)
         {
-            errorMessage = (const char *)olm_sas_last_error(sasPtr);
-            LOGE("## calculateMacFixedBase64Jni(): failure - error calculating SAS mac Msg=%s", errorMessage);
+            LOGE(" ## calculateMacFixedBase64Jni(): failure - mac allocation OOM");
+            errorMessage = "mac allocation OOM";
         }
         else
         {
-            returnValue = (*env)->NewByteArray(env, macLength);
-            (*env)->SetByteArrayRegion(env, returnValue, 0 , macLength, (jbyte*)macPtr);
-        }
+            size_t result = olm_sas_calculate_mac_fixed_base64(sasPtr,messagePtr,messageLength,infoPtr,infoLength,macPtr,macLength);
+            if (result == olm_error())
+            {
+                errorMessage = (const char *)olm_sas_last_error(sasPtr);
+                LOGE("## calculateMacFixedBase64Jni(): failure - error calculating SAS mac Msg=%s", errorMessage);
+            }
+            else
+            {
+                returnValue = (*env)->NewByteArray(env, macLength);
+                (*env)->SetByteArrayRegion(env, returnValue, 0 , macLength, (jbyte*)macPtr);
+            }
 
-        if (macPtr) {
             free(macPtr);
         }
     }
@@ -413,6 +461,11 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(calculateMacLongKdfJni)(JNIEnv *env, jobje
         LOGE(" ## calculateMacLongKdfJni(): failure - message JNI allocation OOM");
         errorMessage = "message JNI allocation OOM";
     }
+    else if (!infoBuffer)
+    {
+        LOGE("## calculateMacLongKdfJni(): failure - invalid info");
+        errorMessage = "invalid info";
+    }
     else if (!(infoPtr = (*env)->GetByteArrayElements(env, infoBuffer, &infoWasCopied)))
     {
         LOGE(" ## calculateMacLongKdfJni(): failure - info JNI allocation OOM");
@@ -425,19 +478,25 @@ JNIEXPORT jbyteArray OLM_SAS_FUNC_DEF(calculateMacLongKdfJni)(JNIEnv *env, jobje
 
         void *macPtr = malloc(macLength*sizeof(uint8_t));
 
-        size_t result = olm_sas_calculate_mac_long_kdf(sasPtr,messagePtr,messageLength,infoPtr,infoLength,macPtr,macLength);
-        if (result == olm_error())
+        if (!macPtr)
         {
-            errorMessage = (const char *)olm_sas_last_error(sasPtr);
-            LOGE("## calculateMacLongKdfJni(): failure - error calculating SAS mac Msg=%s", errorMessage);
+            LOGE(" ## calculateMacLongKdfJni(): failure - mac allocation OOM");
+            errorMessage = "mac allocation OOM";
         }
         else
         {
-            returnValue = (*env)->NewByteArray(env, macLength);
-            (*env)->SetByteArrayRegion(env, returnValue, 0 , macLength, (jbyte*)macPtr);
-        }
+            size_t result = olm_sas_calculate_mac_long_kdf(sasPtr,messagePtr,messageLength,infoPtr,infoLength,macPtr,macLength);
+            if (result == olm_error())
+            {
+                errorMessage = (const char *)olm_sas_last_error(sasPtr);
+                LOGE("## calculateMacLongKdfJni(): failure - error calculating SAS mac Msg=%s", errorMessage);
+            }
+            else
+            {
+                returnValue = (*env)->NewByteArray(env, macLength);
+                (*env)->SetByteArrayRegion(env, returnValue, 0 , macLength, (jbyte*)macPtr);
+            }
 
-        if (macPtr) {
             free(macPtr);
         }
     }

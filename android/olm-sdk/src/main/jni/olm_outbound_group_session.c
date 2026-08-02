@@ -122,6 +122,7 @@ JNIEXPORT jlong OLM_OUTBOUND_GROUP_SESSION_FUNC_DEF(createNewSessionJni)(JNIEnv 
         {
             olm_clear_outbound_group_session(sessionPtr);
             free(sessionPtr);
+            sessionPtr = NULL;
         }
 
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
@@ -269,6 +270,7 @@ JNIEXPORT jbyteArray OLM_OUTBOUND_GROUP_SESSION_FUNC_DEF(sessionKeyJni)(JNIEnv *
             }
 
             // free alloc
+            memset(sessionKeyPtr, 0, sessionKeyLength*sizeof(uint8_t));
             free(sessionKeyPtr);
         }
     }
@@ -553,6 +555,7 @@ JNIEXPORT jlong OLM_OUTBOUND_GROUP_SESSION_FUNC_DEF(deserializeJni)(JNIEnv *env,
         {
             olm_clear_outbound_group_session(sessionPtr);
             free(sessionPtr);
+            sessionPtr = NULL;
         }
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
     }

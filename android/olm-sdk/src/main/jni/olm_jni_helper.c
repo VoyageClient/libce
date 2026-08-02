@@ -17,7 +17,7 @@
 
 #include "olm_jni_helper.h"
 #include "libce/olm.h"
-#include <sys/time.h>
+#include <sodium.h>
 
 
 /**
@@ -29,7 +29,6 @@
 bool setRandomInBuffer(JNIEnv *env, uint8_t **aBuffer2Ptr, size_t aRandomSize)
 {
     bool retCode = false;
-    int bufferLen = aRandomSize*sizeof(uint8_t);
 
     if (!aBuffer2Ptr)
     {
@@ -39,7 +38,11 @@ bool setRandomInBuffer(JNIEnv *env, uint8_t **aBuffer2Ptr, size_t aRandomSize)
     {
         LOGE("## setRandomInBuffer(): failure - random size=0");
     }
-    else if (!(*aBuffer2Ptr = (uint8_t*)malloc(bufferLen)))
+    else if (sodium_init() == -1)
+    {
+        LOGE("## setRandomInBuffer(): failure - sodium_init()");
+    }
+    else if (!(*aBuffer2Ptr = (uint8_t*)malloc(aRandomSize)))
     {
         LOGE("## setRandomInBuffer(): failure - alloc mem OOM");
     }
@@ -47,60 +50,8 @@ bool setRandomInBuffer(JNIEnv *env, uint8_t **aBuffer2Ptr, size_t aRandomSize)
     {
         LOGD("## setRandomInBuffer(): randomSize=%lu",(long unsigned int)(aRandomSize));
 
-        // use the secureRandom class
-        jclass cls = (*env)->FindClass(env, "java/security/SecureRandom");
-
-        if (cls)
-        {
-            jobject newObj = 0;
-            jmethodID constructor = (*env)->GetMethodID(env, cls, "<init>", "()V");
-            jmethodID nextByteMethod = (*env)->GetMethodID(env, cls, "nextBytes", "([B)V");
-
-            if (constructor)
-            {
-                newObj = (*env)->NewObject(env, cls, constructor);
-                jbyteArray tempByteArray = (*env)->NewByteArray(env, bufferLen);
-
-                if (newObj && tempByteArray)
-                {
-                    (*env)->CallVoidMethod(env, newObj, nextByteMethod, tempByteArray);
-
-                    if (!(*env)->ExceptionOccurred(env))
-                    {
-                        jbyte* buffer = (*env)->GetByteArrayElements(env, tempByteArray, NULL);
-
-                        if (buffer)
-                        {
-                            memcpy(*aBuffer2Ptr, buffer, bufferLen);
-                            retCode = true;
-
-                            // clear tempByteArray to hide sensitive data.
-                            memset(buffer, 0, bufferLen);
-                            (*env)->SetByteArrayRegion(env, tempByteArray, 0, bufferLen, buffer);
-
-                            // ensure that the buffer is released
-                            (*env)->ReleaseByteArrayElements(env, tempByteArray, buffer, JNI_ABORT);
-                        }
-                    }
-                }
-
-                if (tempByteArray)
-                {
-                    (*env)->DeleteLocalRef(env, tempByteArray);
-                }
-
-                if (newObj)
-                {
-                    (*env)->DeleteLocalRef(env, newObj);
-                }
-            }
-        }
-
-        // debug purpose
-        /*for(int i = 0; i < aRandomSize; i++)
-        {
-            LOGD("## setRandomInBuffer(): randomBuffPtr[%ld]=%d",i, (*aBuffer2Ptr)[i]);
-        }*/
+        randombytes_buf(*aBuffer2Ptr, aRandomSize);
+        retCode = true;
     }
 
     return retCode;

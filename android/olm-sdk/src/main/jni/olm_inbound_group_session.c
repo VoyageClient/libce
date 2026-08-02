@@ -132,6 +132,7 @@ JNIEXPORT jlong OLM_INBOUND_GROUP_SESSION_FUNC_DEF(createNewSessionJni)(JNIEnv *
         {
             olm_clear_inbound_group_session(sessionPtr);
             free(sessionPtr);
+            sessionPtr = NULL;
         }
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
     }
@@ -283,6 +284,13 @@ JNIEXPORT jbyteArray OLM_INBOUND_GROUP_SESSION_FUNC_DEF(decryptMessageJni)(JNIEn
                 // allocate output decrypted message
                 uint8_t *plainTextMsgPtr = (uint8_t*)(malloc(maxPlainTextLength*sizeof(uint8_t)));
 
+                if (!plainTextMsgPtr)
+                {
+                    LOGE(" ## decryptMessageJni(): failure - plainTextMsgPtr allocation OOM");
+                    errorMessage = "plainTextMsgPtr allocation OOM";
+                }
+                else
+                {
                 // decrypt, but before reload encrypted buffer (previous one was destroyed)
                 memcpy(tempEncryptedPtr, encryptedMsgPtr, encryptedMsgLength);
                 size_t plaintextLength = olm_group_decrypt(sessionPtr,
@@ -307,10 +315,8 @@ JNIEXPORT jbyteArray OLM_INBOUND_GROUP_SESSION_FUNC_DEF(decryptMessageJni)(JNIEn
                     LOGD(" ## decryptMessageJni(): UTF-8 Conversion - decrypted returnedLg=%lu OK",(long unsigned int)(plaintextLength));
                 }
 
-                if (plainTextMsgPtr)
-                {
-                    memset(plainTextMsgPtr, 0, maxPlainTextLength*sizeof(uint8_t));
-                    free(plainTextMsgPtr);
+                memset(plainTextMsgPtr, 0, maxPlainTextLength*sizeof(uint8_t));
+                free(plainTextMsgPtr);
                 }
             }
 
@@ -645,6 +651,7 @@ JNIEXPORT jlong OLM_INBOUND_GROUP_SESSION_FUNC_DEF(deserializeJni)(JNIEnv *env, 
         {
             olm_clear_inbound_group_session(sessionPtr);
             free(sessionPtr);
+            sessionPtr = NULL;
         }
         (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
     }
