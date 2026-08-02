@@ -5,6 +5,7 @@ final: prev: {
     src = ./..;
 
     nativeBuildInputs = [ prev.cmake ];
+    buildInputs = [ prev.libsodium prev.cmocka ];
     doCheck = true;
     checkPhase = ''
       (cd tests && ctest . -j $NIX_BUILD_CORES)
@@ -17,6 +18,7 @@ final: prev: {
     src = ./..;
 
     nativeBuildInputs = [ prev.cmake ];
+    buildInputs = [ prev.libsodium prev.cmocka ];
 
     doCheck = true;
     checkPhase = ''
@@ -29,6 +31,7 @@ final: prev: {
 
     src = ./..;
 
+    buildInputs = [ prev.libsodium prev.cmocka ];
     doCheck = true;
     makeFlags = [ "PREFIX=$out" ];
   };

@@ -34,8 +34,6 @@ add_library(ce
     src/utility.c
     src/pk.c
     src/sas.c
-
-    src/ed25519.c
     src/error.c
     src/inbound_group_session.c
     src/megolm.c
@@ -43,9 +41,7 @@ add_library(ce
     src/outbound_group_session.c
     src/pickle_encoding.c
 
-    lib/crypto-algorithms/aes.c
-    lib/crypto-algorithms/sha256.c
-    lib/curve25519-donna/curve25519-donna.c)
+    lib/crypto-algorithms/aes.c)
 add_library(LibCE::LibCE ALIAS ce)
 
 # restrict the exported symbols

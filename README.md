@@ -18,6 +18,11 @@ section below for more details.
 
 ## Building
 
+Building requires [libsodium](https://libsodium.org) (the Android build compiles
+it from the `lib/libsodium` submodule instead, so clone with
+`--recurse-submodules`). The tests additionally require
+[cmocka](https://cmocka.org).
+
 To build libce as a shared library run:
 
 ```bash
