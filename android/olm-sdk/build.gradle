@@ -14,8 +14,8 @@ android {
         targetSdk v.targetSdk ?: 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "OLM_VERSION", "\"0.2.2\""
-        resValue "string", "git_olm_revision", "libce-0.2.2"
+        buildConfigField "String", "OLM_VERSION", "\"0.2.3\""
+        resValue "string", "git_olm_revision", "libce-0.2.3"
         resValue "string", "git_olm_revision_date", ""
         resValue "string", "git_olm_revision_unix_date", ""
 

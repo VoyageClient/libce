@@ -854,3 +854,225 @@ JNIEXPORT jlong OLM_ACCOUNT_FUNC_DEF(deserializeJni)(JNIEnv *env, jobject thiz, 
 
     return (jlong)(intptr_t)accountPtr;
 }
+
+/**
+ * Seal the account as an MSC3814 dehydrated device.<br>
+ * @param aKeyBuffer 32 byte key the device is sealed with
+ * @return a two element array holding the base64 nonce and the base64 device
+ **/
+JNIEXPORT jobjectArray OLM_ACCOUNT_FUNC_DEF(dehydrateJni)(JNIEnv *env, jobject thiz, jbyteArray aKeyBuffer)
+{
+    const char* errorMessage = NULL;
+    jobjectArray retValue = 0;
+    jbyte* keyPtr = NULL;
+    jboolean keyIsCopied = JNI_FALSE;
+    OlmAccount* accountPtr = NULL;
+    uint8_t* randomBuffPtr = NULL;
+    void* devicePtr = NULL;
+    void* noncePtr = NULL;
+    size_t randomSize = 0;
+
+    LOGD("## dehydrateJni(): IN");
+
+    if (!aKeyBuffer)
+    {
+        LOGE(" ## dehydrateJni(): failure - invalid key");
+        errorMessage = "invalid key";
+    }
+    else if (!(accountPtr = getAccountInstanceId(env, thiz)))
+    {
+        LOGE(" ## dehydrateJni(): failure - invalid account ptr");
+        errorMessage = "invalid account ptr";
+    }
+    else if (!(keyPtr = (*env)->GetByteArrayElements(env, aKeyBuffer, &keyIsCopied)))
+    {
+        LOGE(" ## dehydrateJni(): failure - keyPtr JNI allocation OOM");
+        errorMessage = "keyPtr JNI allocation OOM";
+    }
+    else
+    {
+        size_t deviceLength = olm_account_dehydrate_length(accountPtr);
+        size_t nonceLength = olm_dehydrated_device_nonce_length();
+        size_t keyLength = (size_t)(*env)->GetArrayLength(env, aKeyBuffer);
+
+        randomSize = olm_account_dehydrate_random_length(accountPtr);
+        devicePtr = malloc(deviceLength);
+        noncePtr = malloc(nonceLength);
+
+        if (!devicePtr || !noncePtr)
+        {
+            LOGE(" ## dehydrateJni(): failure - output buffer OOM");
+            errorMessage = "output buffer OOM";
+        }
+        else if ((0 != randomSize) && !setRandomInBuffer(env, &randomBuffPtr, randomSize))
+        {
+            LOGE(" ## dehydrateJni(): failure - random buffer init");
+            errorMessage = "random buffer init";
+        }
+        else if (olm_account_dehydrate(accountPtr,
+                                       (void const *)keyPtr,
+                                       keyLength,
+                                       (void*)randomBuffPtr,
+                                       randomSize,
+                                       noncePtr,
+                                       nonceLength,
+                                       devicePtr,
+                                       deviceLength) == olm_error())
+        {
+            errorMessage = olm_account_last_error(accountPtr);
+            LOGE(" ## dehydrateJni(): failure - olm_account_dehydrate() Msg=%s", errorMessage);
+        }
+        else
+        {
+            jclass byteArrayClass = (*env)->FindClass(env, "[B");
+            jbyteArray nonceBuffer = (*env)->NewByteArray(env, nonceLength);
+            jbyteArray deviceBuffer = (*env)->NewByteArray(env, deviceLength);
+
+            if (!byteArrayClass || !nonceBuffer || !deviceBuffer)
+            {
+                LOGE(" ## dehydrateJni(): failure - result JNI allocation OOM");
+                errorMessage = "result JNI allocation OOM";
+            }
+            else
+            {
+                (*env)->SetByteArrayRegion(env, nonceBuffer, 0, nonceLength, (jbyte*)noncePtr);
+                (*env)->SetByteArrayRegion(env, deviceBuffer, 0, deviceLength, (jbyte*)devicePtr);
+                retValue = (*env)->NewObjectArray(env, 2, byteArrayClass, NULL);
+
+                if (!retValue)
+                {
+                    LOGE(" ## dehydrateJni(): failure - result JNI allocation OOM");
+                    errorMessage = "result JNI allocation OOM";
+                }
+                else
+                {
+                    (*env)->SetObjectArrayElement(env, retValue, 0, nonceBuffer);
+                    (*env)->SetObjectArrayElement(env, retValue, 1, deviceBuffer);
+                }
+            }
+        }
+    }
+
+    if (randomBuffPtr)
+    {
+        memset(randomBuffPtr, 0, randomSize);
+        free(randomBuffPtr);
+    }
+
+    free(devicePtr);
+    free(noncePtr);
+
+    if (keyPtr)
+    {
+        if (keyIsCopied) {
+            memset(keyPtr, 0, (size_t)(*env)->GetArrayLength(env, aKeyBuffer));
+        }
+        (*env)->ReleaseByteArrayElements(env, aKeyBuffer, keyPtr, JNI_ABORT);
+    }
+
+    if (errorMessage)
+    {
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
+    }
+
+    return retValue;
+}
+
+/**
+ * Allocate a new account and initialise it from an MSC3814 dehydrated device.<br>
+ * @param aKeyBuffer 32 byte key the device was sealed with
+ * @param aNonceBuffer the base64 nonce the device was sealed with
+ * @param aDeviceBuffer the base64 dehydrated device
+ * @return the rehydrated account
+ **/
+JNIEXPORT jlong OLM_ACCOUNT_FUNC_DEF(rehydrateJni)(JNIEnv *env, jobject thiz, jbyteArray aKeyBuffer, jbyteArray aNonceBuffer, jbyteArray aDeviceBuffer)
+{
+    const char* errorMessage = NULL;
+    OlmAccount* accountPtr = NULL;
+    jbyte* keyPtr = NULL;
+    jboolean keyIsCopied = JNI_FALSE;
+    jbyte* noncePtr = NULL;
+    jbyte* devicePtr = NULL;
+
+    LOGD("## rehydrateJni(): IN");
+
+    if (!aKeyBuffer)
+    {
+        LOGE(" ## rehydrateJni(): failure - invalid key");
+        errorMessage = "invalid key";
+    }
+    else if (!aNonceBuffer || !aDeviceBuffer)
+    {
+        LOGE(" ## rehydrateJni(): failure - invalid dehydrated device");
+        errorMessage = "invalid dehydrated device";
+    }
+    else if (!(accountPtr = initializeAccountMemory()))
+    {
+        LOGE(" ## rehydrateJni(): failure - account failure OOM");
+        errorMessage = "account failure OOM";
+    }
+    else if (!(keyPtr = (*env)->GetByteArrayElements(env, aKeyBuffer, &keyIsCopied)))
+    {
+        LOGE(" ## rehydrateJni(): failure - keyPtr JNI allocation OOM");
+        errorMessage = "keyPtr JNI allocation OOM";
+    }
+    else if (!(noncePtr = (*env)->GetByteArrayElements(env, aNonceBuffer, 0)))
+    {
+        LOGE(" ## rehydrateJni(): failure - noncePtr JNI allocation OOM");
+        errorMessage = "noncePtr JNI allocation OOM";
+    }
+    else if (!(devicePtr = (*env)->GetByteArrayElements(env, aDeviceBuffer, 0)))
+    {
+        LOGE(" ## rehydrateJni(): failure - devicePtr JNI allocation OOM");
+        errorMessage = "devicePtr JNI allocation OOM";
+    }
+    else
+    {
+        size_t keyLength = (size_t)(*env)->GetArrayLength(env, aKeyBuffer);
+        size_t nonceLength = (size_t)(*env)->GetArrayLength(env, aNonceBuffer);
+        size_t deviceLength = (size_t)(*env)->GetArrayLength(env, aDeviceBuffer);
+
+        if (olm_account_rehydrate(accountPtr,
+                                  (void const *)keyPtr,
+                                  keyLength,
+                                  (void const *)noncePtr,
+                                  nonceLength,
+                                  (void*)devicePtr,
+                                  deviceLength) == olm_error())
+        {
+            errorMessage = olm_account_last_error(accountPtr);
+            LOGE(" ## rehydrateJni(): failure - olm_account_rehydrate() Msg=%s", errorMessage);
+        }
+    }
+
+    if (keyPtr)
+    {
+        if (keyIsCopied) {
+            memset(keyPtr, 0, (size_t)(*env)->GetArrayLength(env, aKeyBuffer));
+        }
+        (*env)->ReleaseByteArrayElements(env, aKeyBuffer, keyPtr, JNI_ABORT);
+    }
+
+    if (noncePtr)
+    {
+        (*env)->ReleaseByteArrayElements(env, aNonceBuffer, noncePtr, JNI_ABORT);
+    }
+
+    if (devicePtr)
+    {
+        (*env)->ReleaseByteArrayElements(env, aDeviceBuffer, devicePtr, JNI_ABORT);
+    }
+
+    if (errorMessage)
+    {
+        if (accountPtr)
+        {
+            olm_clear_account(accountPtr);
+            free(accountPtr);
+            accountPtr = NULL;
+        }
+        (*env)->ThrowNew(env, (*env)->FindClass(env, "java/lang/Exception"), errorMessage);
+    }
+
+    return (jlong)(intptr_t)accountPtr;
+}

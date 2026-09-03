@@ -137,6 +137,7 @@ void _olm_account_init(
         account->last_error = OLM_SUCCESS;
         account->num_fallback_keys = 0;
         account->next_one_time_key_id = 0;
+        account->ed25519_seed_known = false;
         _olm_list_init(&account->one_time_keys);
     }
 }
@@ -155,6 +156,8 @@ size_t _olm_account_new_account(
     }
 
     _olm_crypto_ed25519_generate_key(random, &account->identity_keys.ed25519_key);
+    _OLM_LOAD_ARRAY(account->ed25519_seed, random);
+    account->ed25519_seed_known = true;
     random += ED25519_RANDOM_LENGTH;
     _olm_crypto_curve25519_generate_key(random, &account->identity_keys.curve25519_key);
 

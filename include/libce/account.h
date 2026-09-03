@@ -40,6 +40,10 @@ struct OlmAccount {
     _OlmOneTimeKey prev_fallback_key;
     uint8_t num_fallback_keys;
     uint32_t next_one_time_key_id;
+    /* Pickles only keep the expanded Ed25519 key, so an account restored from
+     * one cannot be dehydrated: MSC3814 stores the seed. */
+    uint8_t ed25519_seed[ED25519_RANDOM_LENGTH];
+    bool ed25519_seed_known;
 };
 
 /** Initialise an Olm account object. */

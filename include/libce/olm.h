@@ -320,6 +320,49 @@ CE_EXPORT void olm_account_forget_old_fallback_key(
     OlmAccount * account
 );
 
+/** The number of random bytes needed to seal a dehydrated device. */
+CE_EXPORT size_t olm_account_dehydrate_random_length(
+    const OlmAccount * account
+);
+
+/** The number of bytes needed to hold the base64 nonce written by
+ * olm_account_dehydrate. */
+CE_EXPORT size_t olm_dehydrated_device_nonce_length(void);
+
+/** The number of bytes needed to hold the base64 dehydrated device written by
+ * olm_account_dehydrate. */
+CE_EXPORT size_t olm_account_dehydrate_length(
+    const OlmAccount * account
+);
+
+/** Seals the account as an MSC3814 dehydrated device, writing the base64
+ * ciphertext and the base64 nonce it was sealed with. The key must be 32 bytes.
+ * The random buffer is overwritten with zeroes.
+ *
+ * Returns olm_error() on failure. An account restored from a pickle can't be
+ * dehydrated, since pickles don't keep the Ed25519 seed; in that case
+ * olm_account_last_error() will be "OLM_UNSEEDED_ACCOUNT". */
+CE_EXPORT size_t olm_account_dehydrate(
+    OlmAccount * account,
+    void const * key, size_t key_length,
+    void * random, size_t random_length,
+    void * nonce, size_t nonce_length,
+    void * dehydrated_device, size_t dehydrated_device_length
+);
+
+/** Restores an account sealed by olm_account_dehydrate, discarding whatever the
+ * account held before. The nonce and dehydrated device are base64, and the
+ * dehydrated device buffer is overwritten.
+ *
+ * Returns olm_error() on failure. If the key is wrong then
+ * olm_account_last_error() will be "BAD_MESSAGE_MAC". */
+CE_EXPORT size_t olm_account_rehydrate(
+    OlmAccount * account,
+    void const * key, size_t key_length,
+    void const * nonce, size_t nonce_length,
+    void * dehydrated_device, size_t dehydrated_device_length
+);
+
 
 /** The number of random bytes needed to create an outbound session */
 CE_EXPORT size_t olm_create_outbound_session_random_length(

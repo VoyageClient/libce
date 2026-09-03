@@ -76,7 +76,8 @@ SODIUM_SRC_FILES := \
     crypto_aead/aegis128l/aead_aegis128l.c \
     crypto_aead/aegis128l/aegis128l_soft.c \
     crypto_aead/aegis256/aead_aegis256.c \
-    crypto_aead/aegis256/aegis256_soft.c
+    crypto_aead/aegis256/aegis256_soft.c \
+    crypto_aead/chacha20poly1305/aead_chacha20poly1305.c
 
 LOCAL_SRC_FILES := $(addprefix $(SRC_ROOT_DIR)/lib/libsodium/src/libsodium/,$(SODIUM_SRC_FILES))
 
@@ -115,6 +116,7 @@ LOCAL_SRC_FILES := $(SRC_ROOT_DIR)/src/account.c \
 $(SRC_ROOT_DIR)/src/base64.c \
 $(SRC_ROOT_DIR)/src/cipher.c \
 $(SRC_ROOT_DIR)/src/crypto.c \
+$(SRC_ROOT_DIR)/src/dehydrated_device.c \
 $(SRC_ROOT_DIR)/src/memory.c \
 $(SRC_ROOT_DIR)/src/message.c \
 $(SRC_ROOT_DIR)/src/olm.c \

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(ce VERSION 0.2.2 LANGUAGES C)
+project(ce VERSION 0.2.3 LANGUAGES C)
 
 option(CE_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
@@ -26,6 +26,7 @@ add_library(ce
     src/base64.c
     src/cipher.c
     src/crypto.c
+    src/dehydrated_device.c
     src/memory.c
     src/message.c
     src/pickle.c

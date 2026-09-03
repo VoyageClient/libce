@@ -54,6 +54,10 @@ JNIEXPORT jbyteArray OLM_ACCOUNT_FUNC_DEF(signMessageJni)(JNIEnv *env, jobject t
 JNIEXPORT jbyteArray OLM_ACCOUNT_FUNC_DEF(serializeJni)(JNIEnv *env, jobject thiz, jbyteArray aKeyBuffer);
 JNIEXPORT jlong OLM_ACCOUNT_FUNC_DEF(deserializeJni)(JNIEnv *env, jobject thiz, jbyteArray aSerializedDataBuffer, jbyteArray aKeyBuffer);
 
+// dehydrated devices
+JNIEXPORT jobjectArray OLM_ACCOUNT_FUNC_DEF(dehydrateJni)(JNIEnv *env, jobject thiz, jbyteArray aKeyBuffer);
+JNIEXPORT jlong OLM_ACCOUNT_FUNC_DEF(rehydrateJni)(JNIEnv *env, jobject thiz, jbyteArray aKeyBuffer, jbyteArray aNonceBuffer, jbyteArray aDeviceBuffer);
+
 #ifdef __cplusplus
 }
 #endif

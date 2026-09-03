@@ -19,7 +19,8 @@ static const char * ERRORS[] = {
     "BAD_SIGNATURE",
     "OLM_INPUT_BUFFER_TOO_SMALL",
     "OLM_SAS_THEIR_KEY_NOT_SET",
-    "OLM_PICKLE_EXTRA_DATA"
+    "OLM_PICKLE_EXTRA_DATA",
+    "OLM_UNSEEDED_ACCOUNT"
 };
 
 const char * _olm_error_to_string(OlmErrorCode error)

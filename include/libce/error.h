@@ -53,6 +53,12 @@ typedef enum OlmErrorCode {
      */
     OLM_PICKLE_EXTRA_DATA = 17,
 
+    /**
+     * The account doesn't know its Ed25519 seed, so it can't be dehydrated.
+     * Accounts restored from a pickle are in this state.
+     */
+    OLM_UNSEEDED_ACCOUNT = 18,
+
     /* remember to update the list of string constants in error.c when updating
      * this list. */
 } OlmErrorCode;

@@ -68,6 +68,14 @@ public class OlmAccount extends CommonSerializeUtils implements Serializable {
         }
     }
 
+    private OlmAccount(byte[] aKey, byte[] aNonce, byte[] aDehydratedDevice) throws OlmException {
+        try {
+            mNativeId = rehydrateJni(aKey, aNonce, aDehydratedDevice);
+        } catch (Exception e) {
+            throw new OlmException(OlmException.EXCEPTION_CODE_ACCOUNT_REHYDRATE, e.getMessage());
+        }
+    }
+
     /**
      * Create a new account and return it to JAVA side.<br>
      * Since a C prt is returned as a jlong, special care will be taken
@@ -75,6 +83,57 @@ public class OlmAccount extends CommonSerializeUtils implements Serializable {
      * @return the initialized OlmAccount* instance or throw an exception if fails
      **/
     private native long createNewAccountJni();
+
+    /**
+     * An account sealed as a dehydrated device, as defined in MSC3814.
+     */
+    public static class DehydratedDevice {
+        /** The base64 nonce the device was sealed with. */
+        public final byte[] nonce;
+
+        /** The base64 sealed device. */
+        public final byte[] device;
+
+        DehydratedDevice(byte[] aNonce, byte[] aDevice) {
+            nonce = aNonce;
+            device = aDevice;
+        }
+    }
+
+    /**
+     * Seal this account as a dehydrated device.<br>
+     * Only an account this process created can be dehydrated: a pickle keeps the
+     * expanded Ed25519 key rather than the seed the dehydrated device format stores.
+     * @param aKey 32 byte key to seal the device with
+     * @return the sealed device
+     * @exception OlmException the failure reason
+     */
+    public DehydratedDevice dehydrate(byte[] aKey) throws OlmException {
+        try {
+            byte[][] result = dehydrateJni(aKey);
+            return new DehydratedDevice(result[0], result[1]);
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "## dehydrate() failed " + e.getMessage());
+            throw new OlmException(OlmException.EXCEPTION_CODE_ACCOUNT_DEHYDRATE, e.getMessage());
+        }
+    }
+
+    /**
+     * Restore an account from a device sealed by {@link #dehydrate(byte[])}.<br>
+     * The dehydrated device buffer is decoded in place, so the caller should not reuse it.
+     * @param aKey 32 byte key the device was sealed with
+     * @param aNonce the base64 nonce the device was sealed with
+     * @param aDehydratedDevice the base64 sealed device
+     * @return the rehydrated account
+     * @exception OlmException the failure reason
+     */
+    public static OlmAccount rehydrate(byte[] aKey, byte[] aNonce, byte[] aDehydratedDevice) throws OlmException {
+        return new OlmAccount(aKey, aNonce, aDehydratedDevice);
+    }
+
+    private native byte[][] dehydrateJni(byte[] aKeyBuffer);
+
+    private native long rehydrateJni(byte[] aKeyBuffer, byte[] aNonceBuffer, byte[] aDehydratedDeviceBuffer);
 
     /**
      * Getter on the account ID.

@@ -4,6 +4,7 @@
 #include "libce/account.h"
 #include "libce/base64.h"
 #include "libce/cipher.h"
+#include "libce/dehydrated_device.h"
 #include "libce/memory.h"
 #include "libce/pickle_encoding.h"
 #include "libce/session.h"
@@ -403,6 +404,93 @@ size_t olm_account_generate_fallback_key(
     );
     _olm_unset(random, random_length);
     return result;
+}
+
+
+size_t olm_account_dehydrate_random_length(
+    const OlmAccount * account
+) {
+    return DEHYDRATED_DEVICE_NONCE_LENGTH;
+}
+
+
+size_t olm_dehydrated_device_nonce_length(void) {
+    return _olm_encode_base64_length(DEHYDRATED_DEVICE_NONCE_LENGTH);
+}
+
+
+size_t olm_account_dehydrate_length(
+    const OlmAccount * account
+) {
+    return _olm_encode_base64_length(_olm_account_dehydrate_length(account));
+}
+
+
+size_t olm_account_dehydrate(
+    OlmAccount * account,
+    void const * key, size_t key_length,
+    void * random, size_t random_length,
+    void * nonce, size_t nonce_length,
+    void * dehydrated_device, size_t dehydrated_device_length
+) {
+    size_t raw_length = _olm_account_dehydrate_length(account);
+    size_t base64_length = _olm_encode_base64_length(raw_length);
+    size_t nonce_base64_length = olm_dehydrated_device_nonce_length();
+    uint8_t * raw;
+
+    if (random_length < DEHYDRATED_DEVICE_NONCE_LENGTH) {
+        account->last_error = OLM_NOT_ENOUGH_RANDOM;
+        return SIZE_MAX;
+    }
+
+    if (dehydrated_device_length < base64_length
+            || nonce_length < nonce_base64_length) {
+        account->last_error = OLM_OUTPUT_BUFFER_TOO_SMALL;
+        return SIZE_MAX;
+    }
+
+    /* Encrypt into the tail of the output buffer, then base64 in place. */
+    raw = ((uint8_t *) dehydrated_device) + base64_length - raw_length;
+    if (_olm_account_dehydrate(
+            account, key, key_length, random, DEHYDRATED_DEVICE_NONCE_LENGTH,
+            raw, raw_length
+    ) == SIZE_MAX) {
+        _olm_unset(random, random_length);
+        return SIZE_MAX;
+    }
+    _olm_encode_base64(raw, raw_length, dehydrated_device);
+
+    raw = ((uint8_t *) nonce) + nonce_base64_length - DEHYDRATED_DEVICE_NONCE_LENGTH;
+    memcpy(raw, random, DEHYDRATED_DEVICE_NONCE_LENGTH);
+    _olm_encode_base64(raw, DEHYDRATED_DEVICE_NONCE_LENGTH, nonce);
+    _olm_unset(random, random_length);
+
+    return base64_length;
+}
+
+
+size_t olm_account_rehydrate(
+    OlmAccount * account,
+    void const * key, size_t key_length,
+    void const * nonce, size_t nonce_length,
+    void * dehydrated_device, size_t dehydrated_device_length
+) {
+    uint8_t raw_nonce[DEHYDRATED_DEVICE_NONCE_LENGTH];
+    size_t raw_nonce_length = _olm_decode_base64_length(nonce_length);
+    size_t raw_length = _olm_decode_base64_length(dehydrated_device_length);
+
+    if (raw_length == SIZE_MAX || raw_nonce_length != DEHYDRATED_DEVICE_NONCE_LENGTH) {
+        account->last_error = OLM_INVALID_BASE64;
+        return SIZE_MAX;
+    }
+
+    _olm_decode_base64(nonce, nonce_length, raw_nonce);
+    _olm_decode_base64(dehydrated_device, dehydrated_device_length, dehydrated_device);
+
+    return _olm_account_rehydrate(
+        account, key, key_length, raw_nonce, sizeof(raw_nonce),
+        dehydrated_device, raw_length
+    );
 }
 
 

@@ -12,6 +12,7 @@ endif()
 set(TEST_LIST
     base64
     crypto
+    dehydrated_device
     group_session
     list
     megolm
