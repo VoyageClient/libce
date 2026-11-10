@@ -8,3 +8,4 @@ Description: Implementation of the Double Ratchet cryptographic ratchet in C99
 Version: @PROJECT_VERSION@
 Cflags: -I${includedir}
 Libs: -L${libdir} -lce
+Requires.private: libsodium

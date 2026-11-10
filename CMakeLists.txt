@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.10)
 
 project(ce VERSION 0.2.3 LANGUAGES C)
 
+include(GNUInstallDirs)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(SODIUM REQUIRED IMPORTED_TARGET libsodium)
+
 option(CE_TESTS "Build tests" ON)
 option(BUILD_SHARED_LIBS "Build as a shared library" ON)
 
@@ -52,7 +56,7 @@ add_library(LibCE::LibCE ALIAS ce)
 # restrict the exported symbols
 include(GenerateExportHeader)
 generate_export_header(ce
-  EXPORT_FILE_NAME ${CMAKE_CURRENT_SOURCE_DIR}/include/libce/olm_export.h)
+  EXPORT_FILE_NAME ${CMAKE_CURRENT_BINARY_DIR}/include/libce/olm_export.h)
 
 target_compile_options(ce
     PRIVATE
@@ -60,6 +64,7 @@ target_compile_options(ce
 
 target_include_directories(ce
     PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
     PRIVATE
@@ -76,9 +81,7 @@ set_target_properties(ce PROPERTIES
 
 target_link_libraries(ce
     PUBLIC
-        sodium)
-
-include(GNUInstallDirs)
+        PkgConfig::SODIUM)
 
 # Make a pkg-config file
 configure_file(libce.pc.in libce.pc @ONLY NEWLINE_STYLE UNIX)
@@ -98,7 +101,7 @@ install(TARGETS ce
 set_target_properties(ce PROPERTIES EXPORT_NAME LibCE)
 install(FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libce/olm.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/libce/olm_export.h
+    ${CMAKE_CURRENT_BINARY_DIR}/include/libce/olm_export.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libce/outbound_group_session.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libce/inbound_group_session.h
     ${CMAKE_CURRENT_SOURCE_DIR}/include/libce/pk.h
@@ -107,7 +110,7 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libce)
 
 if (UNIX AND NOT APPLE)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pc
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libce.pc
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
     )
 endif ()

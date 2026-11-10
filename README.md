@@ -47,7 +47,7 @@ cmake --build build
 The library can also be used as a dependency with CMake using:
 
 ```cmake
-find_package(LibCE:LibCE REQUIRED)
+find_package(CE CONFIG REQUIRED)
 target_link_libraries(my_exe LibCE::LibCE)
 ```
 
